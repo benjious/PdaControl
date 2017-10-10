@@ -23,7 +23,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-
+//这是master
 public class LoginActivity extends AppCompatActivity {
 
     @Bind(R.id.textView)
