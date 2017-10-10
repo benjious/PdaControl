@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/MaduoInstore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/MaduoInStore"
+        android:layout_alignBaseline="@+id/repairAck"
+        android:layout_alignBottom="@+id/repairAck"
+        android:layout_alignStart="@+id/emptyAck"/>
+
+    <Button
+        android:id="@+id/goodInStore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/goodInStore"
+        android:layout_alignBaseline="@+id/numAck"
+        android:layout_alignBottom="@+id/numAck"
+        android:layout_toEndOf="@+id/quitLogin"/>
+
+    <Button
+        android:id="@+id/numAck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/numAck"
+        android:layout_marginBottom="48dp"
+        android:layout_above="@+id/someAck"
+        android:layout_alignStart="@+id/repairAck"/>
+
+    <Button
+        android:id="@+id/emptyAck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/emptyInStore"
+        android:layout_alignBaseline="@+id/someAck"
+        android:layout_alignBottom="@+id/someAck"
+        android:layout_alignStart="@+id/goodInStore"/>
+
+    <Button
+        android:id="@+id/someAck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/someAck"
+        android:layout_marginBottom="46dp"
+        android:layout_above="@+id/repairAck"
+        android:layout_alignStart="@+id/repairAck"/>
+
+    <Button
+        android:id="@+id/repairAck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/repairAck"
+        android:layout_marginBottom="61dp"
+        android:layout_above="@+id/quitLogin"
+        android:layout_toStartOf="@+id/quitLogin"/>
+
+    <Button
+        android:id="@+id/quitLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/quitLogin"
+        android:layout_marginBottom="41dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/welcome"
+        android:textSize="24sp"
+        android:layout_width="127dp"
+        android:layout_height="44dp"
+        android:text="@string/welcome"
+        android:layout_above="@+id/numAck"
+        android:layout_alignStart="@+id/numAck"
+        android:layout_marginBottom="32dp"
+        android:layout_alignEnd="@+id/goodInStore"/>
+
+</RelativeLayout>
