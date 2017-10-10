@@ -106,6 +106,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @OnClick(R.id.progressBar)
     public void onViewClicked() {
+
     }
 
 
