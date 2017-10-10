@@ -18,7 +18,7 @@ import org.apache.http.params.CoreConnectionPNames;
  * Created by Benjious on 2017/10/8.
  */
 
-//这是function分支
+//这是function1分支
 public class ClientPost {
 
     private static String IP = "192.168.137.1:8080";
