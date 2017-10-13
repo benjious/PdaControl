@@ -61,7 +61,7 @@
         android:layout_marginTop="39dp"/>
 
     <Spinner
-        android:id="@+id/Stylespin"
+        android:id="@+id/StyleSpin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/inStoreStyle"
@@ -71,24 +71,22 @@
 
 
     <TextView
+        android:layout_below="@+id/inStoreStyle"
+        android:layout_marginTop="51dp"
         android:id="@+id/inStorePoint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop=""
         android:text="@string/inStorePoint"
-        android:layout_alignTop="@+id/spinner4"
         android:layout_alignStart="@+id/stockId"/>
 
     <Spinner
-        android:id="@+id/spinner4"
+        android:id="@+id/pointSpin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="28dp"
-        android:layout_above="@+id/back"
+        android:layout_alignTop="@+id/inStorePoint"
         android:layout_alignStart="@+id/stockIdEdit"
-        android:layout_alignEnd="@+id/Stylespin"/>
-
-
+        android:layout_alignEnd="@+id/StyleSpin"/>
 
 
 
@@ -96,10 +94,10 @@
         android:id="@+id/next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/inStoreStyle"
-        android:layout_below="@+id/inStoreStyle"
-        android:layout_marginTop="101dp"
-        android:text="下一步"/>
+        android:text="下一步"
+        android:layout_alignBaseline="@+id/back"
+        android:layout_alignBottom="@+id/back"
+        android:layout_alignStart="@+id/inStorePoint"/>
 
     <Button
         android:id="@+id/back"
@@ -107,8 +105,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="30dp"
         android:text="返回"
-        android:layout_alignTop="@+id/next"
-        android:layout_alignEnd="@+id/spinner4"/>
+        android:layout_below="@+id/pointSpin"
+        android:layout_alignEnd="@+id/pointSpin"
+        android:layout_marginTop="16dp"/>
 
     <TextView
         android:id="@+id/textView3"
