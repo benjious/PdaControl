@@ -14,4 +14,8 @@
     <string name="repairAck">补料确认</string>
     <string name="quitLogin">退出登录</string>
     <string name="goout">退出</string>
+    <string name="inStoreSite">入库站口</string>
+    <string name="stockId">托盘编号</string>
+    <string name="inStoreStyle">入库类型</string>
+    <string name="inStorePoint">入库库位</string>
 </resources>

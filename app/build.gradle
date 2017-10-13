@@ -26,7 +26,12 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+
     compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.squareup.okhttp:okhttp:2.7.0'
+    compile 'com.google.code.gson:gson:2.2.4'
+
+
     testCompile 'junit:junit:4.12'
     compile files('libs/httpclient-4.2.5.jar')
     compile files('libs/httpcore-4.4.4.jar')

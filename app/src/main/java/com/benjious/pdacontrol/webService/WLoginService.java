@@ -41,9 +41,6 @@ public class WLoginService {
                 return parseInfo(inputStream);
             }
 
-
-
-
         } catch (Exception e) {
             e.printStackTrace();
 
