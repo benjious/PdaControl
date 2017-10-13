@@ -2,29 +2,26 @@ package com.benjious.pdacontrol.webService;
 
 import android.util.Log;
 
+import com.benjious.pdacontrol.been.UsersALL;
+import com.benjious.pdacontrol.interfazes.OnLoadGoodLisenter;
 import com.benjious.pdacontrol.util.OkHttpUtils;
+import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import static android.R.string.ok;
 
 
 /**
  * Created by Benjious on 2017/10/8.
  */
 
-public class WLoginService   {
+public class WLoginService {
     private static String IP = "192.168.137.1:8080";
     public static final String TAG = "WLoginService xyz =";
 
     //通过GET方式获取HTTP服务器数据
-    public static String executeHttpGet(String username, String password) {
-        HttpURLConnection connection = null;
-        InputStream inputStream = null;
+    public static String executeHttpGet(String username, String password, final OnLoadGoodLisenter lisenter) {
+        final String[] holdMsg = {""};
 
         try {
             String path = "http://" + IP + "/liku/LogLet";
@@ -33,58 +30,30 @@ public class WLoginService   {
 
             path = path + "?username=" + username + "&password=" + password;
             Log.d(TAG, "xyz  executeHttpGet: " + path);
-//            connection = (HttpURLConnection) new URL(path).openConnection();
-//            connection.setConnectTimeout(3000);
-//            connection.setReadTimeout(3000);
-//            connection.setDoInput(true);
-//            connection.setRequestMethod("GET");
-//            connection.setRequestProperty("Charset", "UTF-8");
-//
-//            Log.d(TAG, "返回的相应码 ： " + connectn.getResponseCode());
-
-
-//            if (connection.getResponseCode() == 200) {
-//                inputStream = connection.getInputStream();
-//                return parseInfo(inputStream);
-//            }
 
 
             OkHttpUtils.ResultCallback<String> resultCallback = new OkHttpUtils.ResultCallback<String>() {
                 @Override
                 public void onSuccess(String response) {
-                    System.out.println("返回的response 是： " + response);
+                    Gson gson = new Gson();
+                    UsersALL usersALL = gson.fromJson(response, UsersALL.class);
+                    Log.d(TAG, "xyz  onSuccess: 1111" + usersALL.getUsers().get(0).getUsername());
+                    lisenter.onSuccess(usersALL.getUsers().get(0).getUsername());
                 }
+
 
                 @Override
                 public void onFailure(Exception e) {
-
+                    lisenter.onFailure("出错", e);
                 }
             };
-            String path1 = "http://192.168.137.1:8080/liku/getJson?page=0";
-            Log.d(TAG, "xyz  executeHttpGet: 执行了吗？？？？？？？？");
-            OkHttpUtils.get(path1, resultCallback);
+            OkHttpUtils.get(path, resultCallback);
 
-            return "";
         } catch (Exception e) {
             e.printStackTrace();
-
-        } finally {
-//            //意外退出时进行连接关闭保护
-//            if (connection != null) {
-//                connection.disconnect();
-//            }
-//
-//            if (inputStream != null) {
-//                try {
-//                    inputStream.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//
-//            }
         }
-        Log.d(TAG, "xyz  executeHttpGet: 上面没执行到");
-        return null;
+        Log.d(TAG, "xyz  executeHttpGet: " + holdMsg[0]);
+        return holdMsg[0];
     }
 
     //将输入流转化成string 型

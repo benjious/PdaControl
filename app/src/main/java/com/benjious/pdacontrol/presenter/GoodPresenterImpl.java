@@ -20,9 +20,9 @@ public class GoodPresenterImpl implements GoodPresenter ,OnLoadGoodLisenter{
     }
 
 
+
     @Override
-    public void onSuccess(List<Binsta> list) {
-        mCommonView.hideProgress();
+    public void onSuccess(String respone) {
 
     }
 

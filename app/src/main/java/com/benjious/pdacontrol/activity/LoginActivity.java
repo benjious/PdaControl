@@ -3,9 +3,7 @@ package com.benjious.pdacontrol.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -17,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.benjious.pdacontrol.R;
+import com.benjious.pdacontrol.interfazes.OnLoadGoodLisenter;
 import com.benjious.pdacontrol.webService.WLoginService;
 
 import butterknife.Bind;
@@ -24,7 +23,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 //这是master
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements OnLoadGoodLisenter {
 
     @Bind(R.id.textView)
     TextView mTextView;
@@ -43,12 +42,9 @@ public class LoginActivity extends AppCompatActivity {
     Button mNetSettingButton;
     @Bind(R.id.comeBackMsg)
     TextView mComeBackMsg;
-
-
     public static final String TAG = "LoginActivity xyz =";
-    public static final String  USERNAME ="USERNAME";
+    public static final String USERNAME = "USERNAME";
 
-    private static Handler sHandler = new Handler();
     @Bind(R.id.progressBar)
     ProgressBar mProgressBar;
     @Bind(R.id.out)
@@ -89,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
                 mLoginButton.setEnabled(false);
-                new MyTask().execute();
+                WLoginService.executeHttpGet(username, password, LoginActivity.this);
 
             }
         });
@@ -110,45 +106,32 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onSuccess(final String respone) {
+        holdMsg=respone;
+        mProgressBar.setVisibility(View.INVISIBLE);
+        Log.d(TAG, "xyz  onPostExecute: 返回的数据是什么： " + respone);
+        if (respone == null || respone.equals("")) {
+            Toast toast = Toast.makeText(LoginActivity.this, "没有此账号用户", Toast.LENGTH_LONG);
+            toast.show();
+            mLoginButton.setEnabled(true);
+            mAccountText.setText("");
+            mPasswordText.setText("");
 
-    private class MyTask extends AsyncTask<String, Integer, String> {
+        } else {
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mProgressBar.setVisibility(View.VISIBLE);
+            Log.d(TAG, "xyz  run: respone: " + respone);
+            mComeBackMsg.setText(respone);
+            goToMain();
         }
 
-        @Override
-        protected String doInBackground(String... params) {
-            holdMsg = WLoginService.executeHttpGet(username, password);
-            return holdMsg;
-        }
-
-        @Override
-        protected void onPostExecute(final String s) {
-            super.onPostExecute(s);
-            mProgressBar.setVisibility(View.INVISIBLE);
-            Log.d(TAG, "xyz  onPostExecute: 返回的数据是什么： "+ s);
-            if (s == null || s.equals("")) {
-                Toast toast = Toast.makeText(LoginActivity.this, "没有此账号用户", Toast.LENGTH_LONG);
-                toast.show();
-                mLoginButton.setEnabled(true);
-                mAccountText.setText("");
-                mPasswordText.setText("");
-
-            }else {
-                sHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mComeBackMsg.setText(s);
-                        goToMain();
-                    }
-                });
-            }
-        }
     }
 
+    @Override
+    public void onFailure(String str, Exception e) {
+        mProgressBar.setVisibility(View.INVISIBLE);
+        Toast.makeText(this, "请求服务器出现错误！！"+e.toString(), Toast.LENGTH_SHORT).show();
+    }
 
 
     //检查网络
@@ -166,9 +149,7 @@ public class LoginActivity extends AppCompatActivity {
         intent.putExtra(USERNAME, holdMsg);
         intent.setClass(LoginActivity.this, MainActivity.class);
         startActivity(intent);
-        Log.d(TAG, "xyz  onClick: ");
     }
-
 
 
 }

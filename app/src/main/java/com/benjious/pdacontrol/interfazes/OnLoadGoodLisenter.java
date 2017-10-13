@@ -9,8 +9,7 @@ import java.util.List;
  */
 
 public interface OnLoadGoodLisenter {
-    void onSuccess(List<Binsta> list);
-
+    void onSuccess(String respone);
     void onFailure(String str, Exception e);
 
 }

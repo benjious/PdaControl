@@ -1,12 +1,14 @@
 package com.benjious.pdacontrol.been;
 
+/**
+ * Created by Benjious on 2017/10/13.
+ */
+
 public class User {
     private String username;
-    private String password;
 
-    public User(String username, String password) {
+    public User(String username) {
         this.username = username;
-        this.password = password;
     }
 
     public String getUsername() {
@@ -17,11 +19,10 @@ public class User {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                '}';
     }
 }

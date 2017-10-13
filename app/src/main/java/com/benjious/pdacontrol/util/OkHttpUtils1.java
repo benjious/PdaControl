@@ -3,7 +3,6 @@ package com.benjious.pdacontrol.util;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import com.google.gson.internal.$Gson$Types;
 import com.squareup.okhttp.Callback;
@@ -25,13 +24,13 @@ import java.util.concurrent.TimeUnit;
  * Created by Benjious on 2017/1/8.
  */
 
-public class OkHttpUtils {
+public class OkHttpUtils1 {
     private static final String TAG="OkHttpUtils";
-    private static OkHttpUtils mInstance;
+    private static OkHttpUtils1 mInstance;
     private OkHttpClient mOkHttpClient;
     private Handler mDelivery;
 
-    private OkHttpUtils() {
+    private OkHttpUtils1() {
         mOkHttpClient=new OkHttpClient();
         mOkHttpClient.setConnectTimeout(10, TimeUnit.SECONDS);
         mOkHttpClient.setWriteTimeout(10, TimeUnit.SECONDS);
@@ -43,9 +42,9 @@ public class OkHttpUtils {
         mDelivery=new Handler(Looper.getMainLooper());
     }
 
-    private synchronized static OkHttpUtils getmInstance() {
+    private synchronized static OkHttpUtils1 getmInstance() {
         if (mInstance == null) {
-            mInstance = new OkHttpUtils();
+            mInstance = new OkHttpUtils1();
         }
         return mInstance;
     }
@@ -87,25 +86,18 @@ public class OkHttpUtils {
     }
 
     private void sendFailCallback(final ResultCallback callback, final Exception e) {
-        mDelivery.post(new Runnable() {
-            @Override
-            public void run() {
+
                 if (callback != null) {
                     callback.onFailure(e);
                 }
-            }
-        });
     }
 
     private void sendSuccessCallBack(final ResultCallback callback, final Object obj) {
-        mDelivery.post(new Runnable() {
-            @Override
-            public void run() {
+
                 if (callback != null) {
                     callback.onSuccess(obj);
                 }
-            }
-        });
+
     }
 
     private Request buildPostRequest(String url, List<Param> params) {
