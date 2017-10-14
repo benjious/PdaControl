@@ -11,5 +11,5 @@ import java.util.List;
 public interface OnLoadGoodLisenter {
     void onSuccess(String respone);
     void onFailure(String str, Exception e);
-
+    void onFailure();
 }

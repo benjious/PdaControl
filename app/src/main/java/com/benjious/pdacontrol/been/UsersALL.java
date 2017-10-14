@@ -6,7 +6,7 @@ import java.util.List;
  * Created by Benjious on 2017/10/13.
  */
 
-public class UsersALL {
+public class UsersALL<User> {
     private List<User> Users;
     private int total;
 

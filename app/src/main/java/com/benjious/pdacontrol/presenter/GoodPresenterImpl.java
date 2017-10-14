@@ -30,4 +30,9 @@ public class GoodPresenterImpl implements GoodPresenter ,OnLoadGoodLisenter{
     public void onFailure(String str, Exception e) {
 
     }
+
+    @Override
+    public void onFailure() {
+
+    }
 }

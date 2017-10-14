@@ -35,10 +35,19 @@ public class WLoginService {
             OkHttpUtils.ResultCallback<String> resultCallback = new OkHttpUtils.ResultCallback<String>() {
                 @Override
                 public void onSuccess(String response) {
+                    if (response == null) {
+                        return;
+                    }
                     Gson gson = new Gson();
                     UsersALL usersALL = gson.fromJson(response, UsersALL.class);
-                    Log.d(TAG, "xyz  onSuccess: 1111" + usersALL.getUsers().get(0).getUsername());
-                    lisenter.onSuccess(usersALL.getUsers().get(0).getUsername());
+                    Log.d(TAG, "xyz  onSuccess: UserALL" + (usersALL.getUsers().size()));
+                    Log.d(TAG, "xyz  onSuccess: UserALL.count:" + usersALL.getTotal());
+                    if (usersALL.getUsers().size() != 0) {
+                        lisenter.onSuccess(usersALL.getUsers().get(0).getUsername());
+
+                    }else {
+                        lisenter.onFailure();
+                    }
                 }
 
 
