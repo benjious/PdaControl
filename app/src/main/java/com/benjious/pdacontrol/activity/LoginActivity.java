@@ -153,7 +153,7 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
     }
 
     @Override
-    public void addData(final String response) {
+    public void addData(final String response,int type) {
         holdMsg = response;
         mProgressBar.setVisibility(View.INVISIBLE);
         Log.d(TAG, "xyz  onPostExecute: 返回的数据是什么： " + response);

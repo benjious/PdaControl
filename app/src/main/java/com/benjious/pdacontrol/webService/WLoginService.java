@@ -2,6 +2,7 @@ package com.benjious.pdacontrol.webService;
 
 import android.util.Log;
 
+import com.benjious.pdacontrol.url.Url;
 import com.benjious.pdacontrol.been.UsersALL;
 import com.benjious.pdacontrol.util.OkHttpUtils;
 import com.benjious.pdacontrol.view.CommonView;
@@ -17,8 +18,8 @@ import java.io.InputStream;
  */
 
 public class WLoginService {
-    private static String IP = "192.168.137.1:8080";
     public static final String TAG = "WLoginService xyz =";
+    public static final int LOGIN =3 ;
     public static final int SERVER_OFFLINE =1 ;
     public static final int NO_REAL_DATA =2 ;
 
@@ -27,7 +28,7 @@ public class WLoginService {
         final String[] holdMsg = {""};
 
         try {
-            String path = "http://" + IP + "/liku/LogLet";
+            String path = Url.PATH+"/LogLet";
             username = charSetConvert(username);
             path = path + "?username=" + username + "&password=" + password;
             Log.d(TAG, "xyz  executeHttpGet: " + path);
@@ -46,7 +47,7 @@ public class WLoginService {
                     }else {
                         if (usersALL.getUsers().size() != 0) {
                             Log.d(TAG, "xyz  onSuccess: ----" + usersALL.getUsers().get(0).getUsername());
-                            view.addData(usersALL.getUsers().get(0).getUsername());
+                            view.addData(usersALL.getUsers().get(0).getUsername(),LOGIN);
                         } else {
                             view.showLoadFail(NO_REAL_DATA);
                         }

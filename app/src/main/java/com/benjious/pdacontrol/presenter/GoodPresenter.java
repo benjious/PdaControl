@@ -6,5 +6,5 @@ package com.benjious.pdacontrol.presenter;
  */
 
 public interface GoodPresenter {
-    void loadData(String url );
+    void loadData(String url,int style );
 }
