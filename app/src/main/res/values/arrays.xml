@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="good_style">
+        <item>原材料入库</item>
+        <item>半成品入库</item>
+    </string-array>
+</resources>

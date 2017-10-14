@@ -18,6 +18,8 @@ import java.io.InputStream;
 public class WLoginService {
     private static String IP = "192.168.137.1:8080";
     public static final String TAG = "WLoginService xyz =";
+    public static final int SERVER_OFFLINE =1 ;
+    public static final int NO_COUNTER =2 ;
 
     //通过GET方式获取HTTP服务器数据
     public static String executeHttpGet(String username, String password, final OnLoadGoodLisenter lisenter) {
@@ -39,15 +41,17 @@ public class WLoginService {
                         return;
                     }
                     Gson gson = new Gson();
-
                     UsersALL usersALL = gson.fromJson(response, UsersALL.class);
+                    if (usersALL==null) {
+                        lisenter.onFailure(SERVER_OFFLINE);
+                    }
                     Log.d(TAG, "xyz  onSuccess: UserALL" + (usersALL.getUsers().size()));
                     Log.d(TAG, "xyz  onSuccess: UserALL.count:" + usersALL.getNumber());
                     if (usersALL.getUsers().size() != 0) {
                         Log.d(TAG, "xyz  onSuccess: ----"+usersALL.getUsers().get(0).getUsername());
                         lisenter.onSuccess(usersALL.getUsers().get(0).getUsername());
                     }else {
-                        lisenter.onFailure();
+                        lisenter.onFailure(NO_COUNTER);
                     }
                 }
 

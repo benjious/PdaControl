@@ -9,9 +9,13 @@ import java.util.List;
  */
 
 public interface CommonView {
+    //显示进度条
     void showProgress();
+    //隐藏进度条
     void hideProgress();
+    //加载数据
     void addData(List<Binsta> list);
+    //加载失败
     void showLoadFail();
 
 }

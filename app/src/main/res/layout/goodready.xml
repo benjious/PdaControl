@@ -119,4 +119,13 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="34dp"/>
 
+    <ProgressBar
+        android:id="@+id/progressBar2"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/inStorePointEdit"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="11dp"/>
+
 </RelativeLayout>

@@ -107,11 +107,11 @@ public class LoginActivity extends AppCompatActivity implements OnLoadGoodLisent
 
     @Override
     public void onSuccess(final String respone) {
-        holdMsg=respone;
+        holdMsg = respone;
         mProgressBar.setVisibility(View.INVISIBLE);
         Log.d(TAG, "xyz  onPostExecute: 返回的数据是什么： " + respone);
         if (respone == null || respone.equals("")) {
-           noCount();
+            noCount();
         } else {
 
             Log.d(TAG, "xyz  run: respone: " + respone);
@@ -121,7 +121,7 @@ public class LoginActivity extends AppCompatActivity implements OnLoadGoodLisent
 
     }
 
-    private void noCount(){
+    private void noCount() {
         Toast toast = Toast.makeText(LoginActivity.this, "没有此账号用户", Toast.LENGTH_LONG);
         toast.show();
         mLoginButton.setEnabled(true);
@@ -134,14 +134,18 @@ public class LoginActivity extends AppCompatActivity implements OnLoadGoodLisent
     @Override
     public void onFailure(String str, Exception e) {
         mProgressBar.setVisibility(View.INVISIBLE);
-        Toast.makeText(this, "请求服务器出现错误！！"+e.toString(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "请求服务器出现错误！！" + e.toString(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onFailure() {
-        noCount();
+    public void onFailure(int failnum) {
+        if (failnum == WLoginService.SERVER_OFFLINE) {
+            mProgressBar.setVisibility(View.INVISIBLE);
+            Toast.makeText(this, "请求服务器出现错误！！", Toast.LENGTH_SHORT).show();
+        } else if (failnum == WLoginService.NO_COUNTER) {
+            noCount();
+        }
     }
-
 
     //检查网络
     private boolean checkNetwork() {
