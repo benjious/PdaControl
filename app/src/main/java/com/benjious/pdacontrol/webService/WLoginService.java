@@ -39,12 +39,13 @@ public class WLoginService {
                         return;
                     }
                     Gson gson = new Gson();
+
                     UsersALL usersALL = gson.fromJson(response, UsersALL.class);
                     Log.d(TAG, "xyz  onSuccess: UserALL" + (usersALL.getUsers().size()));
-                    Log.d(TAG, "xyz  onSuccess: UserALL.count:" + usersALL.getTotal());
+                    Log.d(TAG, "xyz  onSuccess: UserALL.count:" + usersALL.getNumber());
                     if (usersALL.getUsers().size() != 0) {
+                        Log.d(TAG, "xyz  onSuccess: ----"+usersALL.getUsers().get(0).getUsername());
                         lisenter.onSuccess(usersALL.getUsers().get(0).getUsername());
-
                     }else {
                         lisenter.onFailure();
                     }

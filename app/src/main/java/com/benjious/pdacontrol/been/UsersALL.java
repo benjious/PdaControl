@@ -6,14 +6,10 @@ import java.util.List;
  * Created by Benjious on 2017/10/13.
  */
 
-public class UsersALL<User> {
+public class UsersALL {
     private List<User> Users;
-    private int total;
-
-    public UsersALL(List<User> users, int total) {
-        Users = users;
-        this.total = total;
-    }
+    private int number;
+    private String data;
 
     public List<User> getUsers() {
         return Users;
@@ -23,12 +19,20 @@ public class UsersALL<User> {
         Users = users;
     }
 
-    public int getTotal() {
-        return total;
+    public int getNumber() {
+        return number;
     }
 
-    public void setTotal(int total) {
-        this.total = total;
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 
     @Override
