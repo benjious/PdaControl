@@ -14,8 +14,11 @@ public interface CommonView {
     //隐藏进度条
     void hideProgress();
     //加载数据
-    void addData(List<Binsta> list);
-    //加载失败
-    void showLoadFail();
+    void addData(String response);
+    //请求到数据，但是出现异常
+    void loadExecption(Exception e);
+    //请求成功，但数据有问题
+    void showLoadFail(int failNum);
+
 
 }

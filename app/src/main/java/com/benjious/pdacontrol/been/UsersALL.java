@@ -8,8 +8,18 @@ import java.util.List;
 
 public class UsersALL {
     private List<User> Users;
+
     private int number;
     private String data;
+    private boolean yesNo;
+
+    public boolean isYesNo() {
+        return yesNo;
+    }
+
+    public void setYesNo(boolean yesNo) {
+        this.yesNo = yesNo;
+    }
 
     public List<User> getUsers() {
         return Users;

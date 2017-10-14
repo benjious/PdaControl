@@ -3,12 +3,13 @@ package com.benjious.pdacontrol.webService;
 import android.util.Log;
 
 import com.benjious.pdacontrol.been.UsersALL;
-import com.benjious.pdacontrol.interfazes.OnLoadGoodLisenter;
 import com.benjious.pdacontrol.util.OkHttpUtils;
+import com.benjious.pdacontrol.view.CommonView;
 import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+
 
 
 /**
@@ -19,17 +20,15 @@ public class WLoginService {
     private static String IP = "192.168.137.1:8080";
     public static final String TAG = "WLoginService xyz =";
     public static final int SERVER_OFFLINE =1 ;
-    public static final int NO_COUNTER =2 ;
+    public static final int NO_REAL_DATA =2 ;
 
     //通过GET方式获取HTTP服务器数据
-    public static String executeHttpGet(String username, String password, final OnLoadGoodLisenter lisenter) {
+    public static String executeHttpGet(String username, String password, final CommonView view) {
         final String[] holdMsg = {""};
 
         try {
             String path = "http://" + IP + "/liku/LogLet";
             username = charSetConvert(username);
-
-
             path = path + "?username=" + username + "&password=" + password;
             Log.d(TAG, "xyz  executeHttpGet: " + path);
 
@@ -43,22 +42,21 @@ public class WLoginService {
                     Gson gson = new Gson();
                     UsersALL usersALL = gson.fromJson(response, UsersALL.class);
                     if (usersALL==null) {
-                        lisenter.onFailure(SERVER_OFFLINE);
-                    }
-                    Log.d(TAG, "xyz  onSuccess: UserALL" + (usersALL.getUsers().size()));
-                    Log.d(TAG, "xyz  onSuccess: UserALL.count:" + usersALL.getNumber());
-                    if (usersALL.getUsers().size() != 0) {
-                        Log.d(TAG, "xyz  onSuccess: ----"+usersALL.getUsers().get(0).getUsername());
-                        lisenter.onSuccess(usersALL.getUsers().get(0).getUsername());
+                        view.showLoadFail(SERVER_OFFLINE);
                     }else {
-                        lisenter.onFailure(NO_COUNTER);
+                        if (usersALL.getUsers().size() != 0) {
+                            Log.d(TAG, "xyz  onSuccess: ----" + usersALL.getUsers().get(0).getUsername());
+                            view.addData(usersALL.getUsers().get(0).getUsername());
+                        } else {
+                            view.showLoadFail(NO_REAL_DATA);
+                        }
                     }
                 }
 
 
                 @Override
                 public void onFailure(Exception e) {
-                    lisenter.onFailure("出错", e);
+                    view.loadExecption(e);
                 }
             };
             OkHttpUtils.get(path, resultCallback);

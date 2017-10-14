@@ -148,8 +148,6 @@ public class Pallet {
             commandString = "select * from WMS_STACKING where PALLET_ID = '" + pallet_id + "'and STATUS = 0 or PALLET_ID = '" + pallet_id + "'and STATUS = 1";
         else
             commandString = "select * from WMS_BA_PALLET_MAPPING where PALLET_ID = '" + pallet_id + "'";
-
-
             return commandString;
     }
 
@@ -171,5 +169,5 @@ public class Pallet {
 //        else
 //            return false;
 //    }
-//}
+
 }

@@ -15,15 +15,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.benjious.pdacontrol.R;
+import com.benjious.pdacontrol.been.Binsta;
 import com.benjious.pdacontrol.interfazes.OnLoadGoodLisenter;
+import com.benjious.pdacontrol.view.CommonView;
 import com.benjious.pdacontrol.webService.WLoginService;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 //这是master
-public class LoginActivity extends AppCompatActivity implements OnLoadGoodLisenter {
+public class LoginActivity extends AppCompatActivity implements CommonView {
 
     @Bind(R.id.textView)
     TextView mTextView;
@@ -105,21 +109,7 @@ public class LoginActivity extends AppCompatActivity implements OnLoadGoodLisent
     }
 
 
-    @Override
-    public void onSuccess(final String respone) {
-        holdMsg = respone;
-        mProgressBar.setVisibility(View.INVISIBLE);
-        Log.d(TAG, "xyz  onPostExecute: 返回的数据是什么： " + respone);
-        if (respone == null || respone.equals("")) {
-            noCount();
-        } else {
 
-            Log.d(TAG, "xyz  run: respone: " + respone);
-            mComeBackMsg.setText(respone);
-            goToMain();
-        }
-
-    }
 
     private void noCount() {
         Toast toast = Toast.makeText(LoginActivity.this, "没有此账号用户", Toast.LENGTH_LONG);
@@ -131,21 +121,8 @@ public class LoginActivity extends AppCompatActivity implements OnLoadGoodLisent
     }
 
 
-    @Override
-    public void onFailure(String str, Exception e) {
-        mProgressBar.setVisibility(View.INVISIBLE);
-        Toast.makeText(this, "请求服务器出现错误！！" + e.toString(), Toast.LENGTH_SHORT).show();
-    }
 
-    @Override
-    public void onFailure(int failnum) {
-        if (failnum == WLoginService.SERVER_OFFLINE) {
-            mProgressBar.setVisibility(View.INVISIBLE);
-            Toast.makeText(this, "请求服务器出现错误！！", Toast.LENGTH_SHORT).show();
-        } else if (failnum == WLoginService.NO_COUNTER) {
-            noCount();
-        }
-    }
+
 
     //检查网络
     private boolean checkNetwork() {
@@ -165,4 +142,44 @@ public class LoginActivity extends AppCompatActivity implements OnLoadGoodLisent
     }
 
 
+    @Override
+    public void showProgress() {
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        mProgressBar.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void addData(final String response) {
+        holdMsg = response;
+        mProgressBar.setVisibility(View.INVISIBLE);
+        Log.d(TAG, "xyz  onPostExecute: 返回的数据是什么： " + response);
+        if (response == null || response.equals("")) {
+            noCount();
+        } else {
+
+            Log.d(TAG, "xyz  run: respone: " + response);
+            mComeBackMsg.setText(response);
+            goToMain();
+        }
+    }
+
+    @Override
+    public void loadExecption(Exception e) {
+        mProgressBar.setVisibility(View.INVISIBLE);
+        Toast.makeText(this, "请求服务器出现错误！！" + e.toString(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showLoadFail(int failNum) {
+        if (failNum == WLoginService.SERVER_OFFLINE) {
+            mProgressBar.setVisibility(View.INVISIBLE);
+            Toast.makeText(this, "请求服务器出现错误！！", Toast.LENGTH_SHORT).show();
+        } else if (failNum == WLoginService.NO_REAL_DATA) {
+            noCount();
+        }
+    }
 }
