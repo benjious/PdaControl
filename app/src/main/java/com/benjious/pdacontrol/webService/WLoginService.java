@@ -20,8 +20,7 @@ import java.io.InputStream;
 public class WLoginService {
     public static final String TAG = "WLoginService xyz =";
     public static final int LOGIN =3 ;
-    public static final int SERVER_OFFLINE =1 ;
-    public static final int NO_REAL_DATA =2 ;
+
 
     //通过GET方式获取HTTP服务器数据
     public static String executeHttpGet(String username, String password, final CommonView view) {
@@ -43,13 +42,13 @@ public class WLoginService {
                     Gson gson = new Gson();
                     UsersALL usersALL = gson.fromJson(response, UsersALL.class);
                     if (usersALL==null) {
-                        view.showLoadFail(SERVER_OFFLINE);
+                        view.showLoadFail(OkHttpUtils.SERVER_OFFLINE);
                     }else {
                         if (usersALL.getUsers().size() != 0) {
                             Log.d(TAG, "xyz  onSuccess: ----" + usersALL.getUsers().get(0).getUsername());
                             view.addData(usersALL.getUsers().get(0).getUsername(),LOGIN);
                         } else {
-                            view.showLoadFail(NO_REAL_DATA);
+                            view.showLoadFail(OkHttpUtils.NO_REAL_DATA);
                         }
                     }
                 }

@@ -30,6 +30,10 @@ public class OkHttpUtils {
     private static OkHttpUtils mInstance;
     private OkHttpClient mOkHttpClient;
     private Handler mDelivery;
+    public static final int NO_REAL_DATA =2 ;
+    public static final int SERVER_OFFLINE =1 ;
+
+
 
     private OkHttpUtils() {
         mOkHttpClient=new OkHttpClient();

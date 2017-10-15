@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.benjious.pdacontrol.R;
 import com.benjious.pdacontrol.been.Binsta;
 import com.benjious.pdacontrol.interfazes.OnLoadGoodLisenter;
+import com.benjious.pdacontrol.util.OkHttpUtils;
 import com.benjious.pdacontrol.view.CommonView;
 import com.benjious.pdacontrol.webService.WLoginService;
 
@@ -25,6 +26,8 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static android.R.string.ok;
 
 //这是master
 public class LoginActivity extends AppCompatActivity implements CommonView {
@@ -160,7 +163,6 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
         if (response == null || response.equals("")) {
             noCount();
         } else {
-
             Log.d(TAG, "xyz  run: respone: " + response);
             mComeBackMsg.setText(response);
             goToMain();
@@ -175,10 +177,10 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
 
     @Override
     public void showLoadFail(int failNum) {
-        if (failNum == WLoginService.SERVER_OFFLINE) {
+        if (failNum == OkHttpUtils.SERVER_OFFLINE) {
             mProgressBar.setVisibility(View.INVISIBLE);
             Toast.makeText(this, "请求服务器出现错误！！", Toast.LENGTH_SHORT).show();
-        } else if (failNum == WLoginService.NO_REAL_DATA) {
+        } else if (failNum == OkHttpUtils.NO_REAL_DATA) {
             noCount();
         }
     }
