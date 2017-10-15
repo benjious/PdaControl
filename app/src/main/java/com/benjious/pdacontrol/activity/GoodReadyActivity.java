@@ -2,7 +2,6 @@ package com.benjious.pdacontrol.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -14,14 +13,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.benjious.pdacontrol.R;
-import com.benjious.pdacontrol.been.Pallet;
 import com.benjious.pdacontrol.been.UsersALL;
 import com.benjious.pdacontrol.presenter.GoodPresenter;
 import com.benjious.pdacontrol.presenter.GoodPresenterImpl;
 import com.benjious.pdacontrol.url.Url;
 import com.benjious.pdacontrol.util.OkHttpUtils;
 import com.benjious.pdacontrol.view.CommonView;
-import com.benjious.pdacontrol.webService.WLoginService;
 import com.google.gson.Gson;
 
 
@@ -33,7 +30,7 @@ import butterknife.OnClick;
  * Created by Benjious on 2017/10/12.
  */
 
-public class GoodReadyActivity extends AppCompatActivity implements CommonView {
+public class GoodReadyActivity extends BaseActivity implements CommonView {
     @Bind(R.id.inStoreSite)
     TextView mInStoreSite;
     @Bind(R.id.inStorePointEdit)
@@ -67,6 +64,7 @@ public class GoodReadyActivity extends AppCompatActivity implements CommonView {
     public static final String TAG = "GoodReadyActivity xyz =";
     private GoodPresenter mPresenter;
     private GoodPresenter mGoodCheckPortpre;
+    private GoodPresenter mGoodNextStackId;
 
     private boolean checkPort = false;
     private int checkPallet = -2;
@@ -98,6 +96,7 @@ public class GoodReadyActivity extends AppCompatActivity implements CommonView {
     @Override
     public void addData(String response, int type) {
         hideProgress();
+        mNext.setEnabled(true);
         try {
             Gson gson = new Gson();
             UsersALL usersALL = gson.fromJson(response, UsersALL.class);
@@ -110,7 +109,7 @@ public class GoodReadyActivity extends AppCompatActivity implements CommonView {
                     Log.d(TAG, "xyz  addData: 显示一下数据 " + checkPallet);
                 } else if (type == GoodPresenterImpl.CHECK_PORT) {
                     checkPort = usersALL.isYesNo();
-                    Log.d(TAG, "xyz  addData: 显示二下数据："+checkPort);
+                    Log.d(TAG, "xyz  addData: 显示二下数据：" + checkPort);
                 }
             }
         } catch (Exception e) {
@@ -123,18 +122,21 @@ public class GoodReadyActivity extends AppCompatActivity implements CommonView {
     @Override
     public void loadExecption(Exception e) {
         hideProgress();
-        Toast.makeText(this, "请求服务器出现错误！！" + e.toString(), Toast.LENGTH_SHORT).show();
+        mNext.setEnabled(true);
+        Toast.makeText(this, "请求过程中出现异常！！" + e.toString(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showLoadFail(int failNum) {
         hideProgress();
+        mNext.setEnabled(true);
         if (failNum == OkHttpUtils.SERVER_OFFLINE) {
             Toast.makeText(this, "请求服务器出现错误！！", Toast.LENGTH_SHORT).show();
         } else if (failNum == OkHttpUtils.NO_REAL_DATA) {
             mProgressBar2.setVisibility(View.INVISIBLE);
             Toast.makeText(this, "获取数据成功，但数据为空！！", Toast.LENGTH_SHORT).show();
         }
+
     }
 
 
@@ -150,22 +152,40 @@ public class GoodReadyActivity extends AppCompatActivity implements CommonView {
     }
 
     private void nextStep() {
-        showProgress();
-        if ((!(mInStorePointEdit.getText().toString().equals(""))) && (!(mStockIdEdit.getText().toString().equals(""))) && (!((mStyleSpin.getSelectedItem()).equals("")))) {
-            String pallet_id = mStockIdEdit.getText().toString();
-            String p_code = mInStorePointEdit.getText().toString();
+        if (super.checkNetworkState()) {
+            if ((!(mInStorePointEdit.getText().toString().equals(""))) && (!(mStockIdEdit.getText().toString().equals(""))) && (!((mStyleSpin.getSelectedItem()).equals("")))) {
+                String pallet_id = mStockIdEdit.getText().toString();
+                String p_code = mInStorePointEdit.getText().toString();
 
-            //进行数据库查询
-            mPresenter = new GoodPresenterImpl(this);
-            String checkUrl = Url.PATH + "/CheckPallet?pallet_id=" + pallet_id + "&status=" + 1;
-            Log.d(TAG, "xyz  nextStep: checkUrl " + checkUrl);
-            mPresenter.loadData(checkUrl, GoodPresenterImpl.CHECK_PALLET_ID);
-            String checkPortUrl = Url.PATH + "/CheckPort?p_code=" + p_code;
-            Log.d(TAG, "xyz  nextStep: checkPortUrl " + checkPortUrl);
-            mGoodCheckPortpre = new GoodPresenterImpl(this);
-            mGoodCheckPortpre.loadData(checkPortUrl, GoodPresenterImpl.CHECK_PORT);
+                //进行数据库查询
+//            mPresenter = new GoodPresenterImpl(this);
+                String checkUrl = Url.PATH + "/CheckPallet?pallet_id=" + pallet_id + "&status=" + 1;
+                Log.d(TAG, "xyz  nextStep: checkUrl " + checkUrl);
+//            mPresenter.loadData(checkUrl, GoodPresenterImpl.CHECK_PALLET_ID);
+                GoodPresenterImpl.getGoodPresenter(this).loadData(checkUrl, GoodPresenterImpl.CHECK_PALLET_ID);
+
+                String checkPortUrl = Url.PATH + "/CheckPort?p_code=" + p_code;
+                Log.d(TAG, "xyz  nextStep: checkPortUrl " + checkPortUrl);
+//            mGoodCheckPortpre = new GoodPresenterImpl(this);
+                GoodPresenterImpl.getGoodPresenter(this).loadData(checkPortUrl, GoodPresenterImpl.CHECK_PORT);
+//            mGoodCheckPortpre.loadData(checkPortUrl, GoodPresenterImpl.CHECK_PORT);
+                showProgress();
+                mNext.setEnabled(false);
+
+
+                Log.d(TAG, "xyz  nextStep: 预先显示一下值 " + checkPallet + "  " + checkPort);
+                if (checkPallet == 1 && checkPort) {
+                    String newStack_url= Url.PATH + "/GetNewStackId?strKind=" + "SIR";
+                    GoodPresenterImpl.getGoodPresenter(this).loadData(checkPortUrl, GoodPresenterImpl.GETNEWSTACK_ID);
+                }
+
+            } else {
+                Toast.makeText(this, "请输入入库站口和托盘编号！", Toast.LENGTH_SHORT).show();
+            }
+
+        } else {
+            super.showToast("请先连接数据");
         }
+
     }
-
-
 }

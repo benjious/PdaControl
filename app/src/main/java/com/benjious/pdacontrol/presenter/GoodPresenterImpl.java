@@ -12,9 +12,17 @@ import com.benjious.pdacontrol.view.CommonView;
 public class GoodPresenterImpl implements GoodPresenter ,OnLoadGoodLisenter{
     public static final int CHECK_PALLET_ID =1 ;
     public static final int CHECK_PORT =2 ;
+    public static final int GETNEWSTACK_ID =3 ;
     private CommonView mCommonView;
     private GoodModel mGoodModel;
+    private  static GoodPresenterImpl instance;
 
+    public static GoodPresenter getGoodPresenter(CommonView commonView){
+        if (instance==null) {
+            instance = new GoodPresenterImpl(commonView);
+        }
+        return instance;
+    }
 
 
     public GoodPresenterImpl(CommonView commonView) {
@@ -40,10 +48,13 @@ public class GoodPresenterImpl implements GoodPresenter ,OnLoadGoodLisenter{
 
     @Override
     public void loadData(String url, int style) {
-        if (style==CHECK_PALLET_ID){
-            mGoodModel.loadData(url, this,style);
-        } else if (style==CHECK_PORT) {
+//        if (style==CHECK_PALLET_ID){
+//            mGoodModel.loadData(url, this,style);
+//        } else if (style==CHECK_PORT) {
+//            mGoodModel.loadData(url,this,style);
+//        } else if (style==GETNEWSTACK_ID) {
+//        }
             mGoodModel.loadData(url,this,style);
-        }
+
     }
 }

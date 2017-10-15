@@ -121,7 +121,7 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
     }
 
     //检查网络
-    private boolean checkNetwork() {
+    public  boolean checkNetwork() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager.getActiveNetworkInfo() != null) {
             return connectivityManager.getActiveNetworkInfo().isAvailable();

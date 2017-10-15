@@ -6,8 +6,6 @@ import com.benjious.pdacontrol.been.UsersALL;
 import com.benjious.pdacontrol.interfazes.OnLoadGoodLisenter;
 import com.benjious.pdacontrol.presenter.GoodPresenterImpl;
 import com.benjious.pdacontrol.util.OkHttpUtils;
-import com.benjious.pdacontrol.view.CommonView;
-import com.google.gson.Gson;
 
 import static com.benjious.pdacontrol.util.OkHttpUtils.SERVER_OFFLINE;
 
@@ -31,9 +29,10 @@ public class GoodModelImpl implements GoodModel {
                         lisenter.onSuccess(response, GoodPresenterImpl.CHECK_PALLET_ID);
                     } else if (style == GoodPresenterImpl.CHECK_PORT) {
                         lisenter.onSuccess(response, GoodPresenterImpl.CHECK_PORT);
+                    }else if (style == GoodPresenterImpl.GETNEWSTACK_ID) {
+                        lisenter.onSuccess(response, GoodPresenterImpl.GETNEWSTACK_ID);
                     }
                 }
-
             }
 
             @Override
