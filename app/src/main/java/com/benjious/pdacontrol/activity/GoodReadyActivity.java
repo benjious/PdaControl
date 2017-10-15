@@ -92,7 +92,7 @@ public class GoodReadyActivity extends AppCompatActivity implements CommonView {
     @Override
     public void addData(String response, int type) {
         if (type==GoodPresenterImpl.CHECK_PALLET_ID) {
-            //
+
         }
     }
 
@@ -133,8 +133,11 @@ public class GoodReadyActivity extends AppCompatActivity implements CommonView {
             Log.d(TAG, "xyz  nextStep: checkUrl"+checkUrl);
             mPresenter.loadData(checkUrl,GoodPresenterImpl.CHECK_PALLET_ID);
             String checkPortUrl =  Url.PATH+"/CheckPort?p_code="+p_code;
-            Log.d(TAG, "xyz  nextStep: checkPortUrl"+checkPortUrl);
-            mPresenter.loadData(checkPortUrl,GoodPresenterImpl.CHECK_PORT);
+//            Log.d(TAG, "xyz  nextStep: checkPortUrl"+checkPortUrl);
+//            mPresenter.loadData(checkPortUrl,GoodPresenterImpl.CHECK_PORT);
+
+
+
         }
     }
 

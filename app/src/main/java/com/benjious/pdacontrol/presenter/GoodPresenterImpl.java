@@ -5,8 +5,6 @@ import com.benjious.pdacontrol.model.GoodModel;
 import com.benjious.pdacontrol.model.GoodModelImpl;
 import com.benjious.pdacontrol.view.CommonView;
 
-import static android.R.attr.type;
-
 /**
  * Created by Benjious on 2017/10/13.
  */
