@@ -64,11 +64,12 @@ public class GoodReadyActivity extends AppCompatActivity implements CommonView {
     @Bind(R.id.progressBar2)
     ProgressBar mProgressBar2;
 
-    public static final String TAG="GoodReadyActivity xyz =";
+    public static final String TAG = "GoodReadyActivity xyz =";
     private GoodPresenter mPresenter;
+    private GoodPresenter mGoodCheckPortpre;
 
-    private  boolean checkPort =false;
-    private  int checkPallet =-2;
+    private boolean checkPort = false;
+    private int checkPallet = -2;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,7 +82,7 @@ public class GoodReadyActivity extends AppCompatActivity implements CommonView {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         mStyleSpin.setAdapter(adapter);
-        mProgressBar2.setVisibility(View.INVISIBLE);
+        hideProgress();
     }
 
     @Override
@@ -96,39 +97,41 @@ public class GoodReadyActivity extends AppCompatActivity implements CommonView {
 
     @Override
     public void addData(String response, int type) {
-        try{
+        hideProgress();
+        try {
             Gson gson = new Gson();
             UsersALL usersALL = gson.fromJson(response, UsersALL.class);
-            if (usersALL==null) {
+            if (usersALL == null) {
                 showLoadFail(OkHttpUtils.NO_REAL_DATA);
-            }else {
-                if (type==GoodPresenterImpl.CHECK_PALLET_ID) {
+            } else {
+                if (type == GoodPresenterImpl.CHECK_PALLET_ID) {
                     checkPallet = usersALL.getNumber();
                     Toast.makeText(this, "请求成功这一次", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "xyz  addData: 显示一下数据 "+ checkPallet);
-                } else if (type==GoodPresenterImpl.CHECK_PORT) {
-                    checkPort=usersALL.isYesNo();
+                    Log.d(TAG, "xyz  addData: 显示一下数据 " + checkPallet);
+                } else if (type == GoodPresenterImpl.CHECK_PORT) {
+                    checkPort = usersALL.isYesNo();
+                    Log.d(TAG, "xyz  addData: 显示二下数据："+checkPort);
                 }
             }
-           }catch(Exception e){
+        } catch (Exception e) {
             Toast.makeText(this, "解析数据出现错误", Toast.LENGTH_SHORT).show();
-           }
+        }
 
 
     }
 
     @Override
     public void loadExecption(Exception e) {
-        mProgressBar2.setVisibility(View.INVISIBLE);
+        hideProgress();
         Toast.makeText(this, "请求服务器出现错误！！" + e.toString(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showLoadFail(int failNum) {
+        hideProgress();
         if (failNum == OkHttpUtils.SERVER_OFFLINE) {
-            mProgressBar2.setVisibility(View.INVISIBLE);
             Toast.makeText(this, "请求服务器出现错误！！", Toast.LENGTH_SHORT).show();
-        } else if (failNum==OkHttpUtils.NO_REAL_DATA) {
+        } else if (failNum == OkHttpUtils.NO_REAL_DATA) {
             mProgressBar2.setVisibility(View.INVISIBLE);
             Toast.makeText(this, "获取数据成功，但数据为空！！", Toast.LENGTH_SHORT).show();
         }
@@ -147,21 +150,20 @@ public class GoodReadyActivity extends AppCompatActivity implements CommonView {
     }
 
     private void nextStep() {
-        if ((!(mInStorePointEdit.getText().toString().equals("")))&&(!(mStockIdEdit.getText().toString().equals("")))&&(!((mStyleSpin.getSelectedItem()).equals("")))) {
+        showProgress();
+        if ((!(mInStorePointEdit.getText().toString().equals(""))) && (!(mStockIdEdit.getText().toString().equals(""))) && (!((mStyleSpin.getSelectedItem()).equals("")))) {
             String pallet_id = mStockIdEdit.getText().toString();
             String p_code = mInStorePointEdit.getText().toString();
 
             //进行数据库查询
             mPresenter = new GoodPresenterImpl(this);
-            String checkUrl= Url.PATH+"/CheckPallet?pallet_id="+pallet_id+"&status="+1;
-            Log.d(TAG, "xyz  nextStep: checkUrl "+checkUrl);
-            mPresenter.loadData(checkUrl,GoodPresenterImpl.CHECK_PALLET_ID);
-
-
-            String checkPortUrl = Url.PATH+"/CheckPort?p_code="+p_code;
-            Log.d(TAG, "xyz  nextStep: checkPortUrl"+checkPortUrl);
-//            mPresenter.loadData(checkPortUrl,GoodPresenterImpl.CHECK_PORT);
-
+            String checkUrl = Url.PATH + "/CheckPallet?pallet_id=" + pallet_id + "&status=" + 1;
+            Log.d(TAG, "xyz  nextStep: checkUrl " + checkUrl);
+            mPresenter.loadData(checkUrl, GoodPresenterImpl.CHECK_PALLET_ID);
+            String checkPortUrl = Url.PATH + "/CheckPort?p_code=" + p_code;
+            Log.d(TAG, "xyz  nextStep: checkPortUrl " + checkPortUrl);
+            mGoodCheckPortpre = new GoodPresenterImpl(this);
+            mGoodCheckPortpre.loadData(checkPortUrl, GoodPresenterImpl.CHECK_PORT);
         }
     }
 

@@ -91,6 +91,7 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
                     return;
                 }
                 mLoginButton.setEnabled(false);
+                showProgress();
                 WLoginService.executeHttpGet(username, password, LoginActivity.this);
 
             }
@@ -100,7 +101,6 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
             @Override
             public void onClick(View v) {
                 LoginActivity.this.finish();
-                System.out.println("sss");
 
             }
         });
@@ -111,9 +111,6 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
 
     }
 
-
-
-
     private void noCount() {
         Toast toast = Toast.makeText(LoginActivity.this, "没有此账号用户", Toast.LENGTH_LONG);
         toast.show();
@@ -122,10 +119,6 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
         mPasswordText.setText("");
 
     }
-
-
-
-
 
     //检查网络
     private boolean checkNetwork() {
@@ -156,7 +149,8 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
     }
 
     @Override
-    public void addData(final String response,int type) {
+    public void addData(final String response, int type) {
+        hideProgress();
         holdMsg = response;
         mProgressBar.setVisibility(View.INVISIBLE);
         Log.d(TAG, "xyz  onPostExecute: 返回的数据是什么： " + response);
@@ -171,14 +165,14 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
 
     @Override
     public void loadExecption(Exception e) {
-        mProgressBar.setVisibility(View.INVISIBLE);
+        hideProgress();
         Toast.makeText(this, "请求服务器出现错误！！" + e.toString(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showLoadFail(int failNum) {
+        hideProgress();
         if (failNum == OkHttpUtils.SERVER_OFFLINE) {
-            mProgressBar.setVisibility(View.INVISIBLE);
             Toast.makeText(this, "请求服务器出现错误！！", Toast.LENGTH_SHORT).show();
         } else if (failNum == OkHttpUtils.NO_REAL_DATA) {
             noCount();

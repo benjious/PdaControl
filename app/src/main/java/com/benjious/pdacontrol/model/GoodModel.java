@@ -7,5 +7,5 @@ import com.benjious.pdacontrol.interfazes.OnLoadGoodLisenter;
  */
 
 public interface GoodModel {
-    void  loadData(String url, OnLoadGoodLisenter dataListener);
+    void  loadData(String url, OnLoadGoodLisenter dataListener,int type);
 }

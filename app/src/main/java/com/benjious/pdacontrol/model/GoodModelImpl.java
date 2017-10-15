@@ -20,36 +20,25 @@ public class GoodModelImpl implements GoodModel {
     public static final String TAG = "GoodModelImpl xyz =";
 
     @Override
-    public void loadData(String url,final OnLoadGoodLisenter lisenter) {
+    public void loadData(String url, final OnLoadGoodLisenter lisenter, final int style) {
         OkHttpUtils.ResultCallback<String> resultCallback = new OkHttpUtils.ResultCallback<String>() {
             @Override
             public void onSuccess(String response) {
-//                if (response == null) {
-//                    return;
-//                }
-//                Gson gson = new Gson();
-//                UsersALL usersALL = gson.fromJson(response, UsersALL.class);
-//                if (usersALL == null) {
-//                    lisenter.onFailure(SERVER_OFFLINE);
-//                } else {
-//                    if (usersALL.getUsers().size() != 0) {
-//                        Log.d(TAG, "xyz  onSuccess: ----" + usersALL.getUsers().get(0).getUsername());
-//
-//                    } else {
-//                        lisenter.onFailure(NO_REAL_DATA);
-//                    }
-//                }
                 if (response == null) {
                     lisenter.onFailure(SERVER_OFFLINE);
-                }else {
-                    lisenter.onSuccess(response, GoodPresenterImpl.CHECK_PALLET_ID);
+                } else {
+                    if (style == GoodPresenterImpl.CHECK_PALLET_ID) {
+                        lisenter.onSuccess(response, GoodPresenterImpl.CHECK_PALLET_ID);
+                    } else if (style == GoodPresenterImpl.CHECK_PORT) {
+                        lisenter.onSuccess(response, GoodPresenterImpl.CHECK_PORT);
+                    }
                 }
 
             }
 
             @Override
             public void onFailure(Exception e) {
-                lisenter.onFailure("请求出现错误",e);
+                lisenter.onFailure("请求出现错误", e);
             }
         };
         OkHttpUtils.get(url, resultCallback);
