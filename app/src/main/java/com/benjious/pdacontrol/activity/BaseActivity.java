@@ -1,9 +1,7 @@
 package com.benjious.pdacontrol.activity;
 
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.Gravity;

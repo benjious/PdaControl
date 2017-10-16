@@ -48,12 +48,6 @@ public class GoodPresenterImpl implements GoodPresenter ,OnLoadGoodLisenter{
 
     @Override
     public void loadData(String url, int style) {
-//        if (style==CHECK_PALLET_ID){
-//            mGoodModel.loadData(url, this,style);
-//        } else if (style==CHECK_PORT) {
-//            mGoodModel.loadData(url,this,style);
-//        } else if (style==GETNEWSTACK_ID) {
-//        }
             mGoodModel.loadData(url,this,style);
 
     }
