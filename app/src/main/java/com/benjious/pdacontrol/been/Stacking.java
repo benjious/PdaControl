@@ -1,5 +1,6 @@
 package com.benjious.pdacontrol.been;
 
+import java.io.Serializable;
 import java.util.Date;
 
 
@@ -7,8 +8,9 @@ import java.util.Date;
  * Created by Benjious on 2017/10/16.
  */
 
-public class Stacking
-{
+public class Stacking implements Serializable {
+    private static final long serialVersionUID =484965361683265145L;
+
     private String _sTACK_ID;
 
 

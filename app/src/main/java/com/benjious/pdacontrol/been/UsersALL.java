@@ -7,7 +7,7 @@ import java.util.List;
  */
 
 public class UsersALL {
-    private List<User> Users;
+    private List<TestUser> mTestUsers;
 
     private int number;
     private String data;
@@ -21,12 +21,12 @@ public class UsersALL {
         this.yesNo = yesNo;
     }
 
-    public List<User> getUsers() {
-        return Users;
+    public List<TestUser> getTestUsers() {
+        return mTestUsers;
     }
 
-    public void setUsers(List<User> users) {
-        Users = users;
+    public void setTestUsers(List<TestUser> testUsers) {
+        mTestUsers = testUsers;
     }
 
     public int getNumber() {
@@ -48,7 +48,7 @@ public class UsersALL {
     @Override
     public String toString() {
         return "UsersALL{" +
-                "Users=" + Users +
+                "mTestUsers=" + mTestUsers +
                 '}';
     }
 }

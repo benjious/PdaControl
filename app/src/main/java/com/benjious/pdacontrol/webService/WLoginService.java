@@ -44,9 +44,9 @@ public class WLoginService {
                     if (usersALL==null) {
                         view.showLoadFail(OkHttpUtils.SERVER_OFFLINE);
                     }else {
-                        if (usersALL.getUsers().size() != 0) {
-                            Log.d(TAG, "xyz  onSuccess: ----" + usersALL.getUsers().get(0).getUsername());
-                            view.addData(usersALL.getUsers().get(0).getUsername(),LOGIN);
+                        if (usersALL.getTestUsers().size() != 0) {
+                            Log.d(TAG, "xyz  onSuccess: ----" + usersALL.getTestUsers().get(0).getUsername());
+                            view.addData(usersALL.getTestUsers().get(0).getUsername(),LOGIN);
                         } else {
                             view.showLoadFail(OkHttpUtils.NO_REAL_DATA);
                         }

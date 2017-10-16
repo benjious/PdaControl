@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.benjious.pdacontrol.R;
+import com.benjious.pdacontrol.been.Picking;
 import com.benjious.pdacontrol.been.Stacking;
 import com.benjious.pdacontrol.been.UsersALL;
 import com.benjious.pdacontrol.presenter.GoodPresenter;
@@ -23,6 +24,8 @@ import com.benjious.pdacontrol.view.CommonView;
 import com.google.gson.Gson;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -165,6 +168,10 @@ public class GoodReadyActivity extends BaseActivity implements CommonView {
                     mStacking.set_bIN_NO(comboBIN);
                     mStacking.set_sTATUS(0);
                     IS_FINISHED.set(0);
+                    List<Picking> picking = new ArrayList<>();
+
+
+
                     Log.d(TAG, "xyz  addData: 这应该是最后执行的: "+mStacking.toString());
 
                 }

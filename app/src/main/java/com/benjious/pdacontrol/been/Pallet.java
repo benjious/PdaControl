@@ -1,7 +1,6 @@
 package com.benjious.pdacontrol.been;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Benjious on 2017/10/13.
@@ -111,7 +110,7 @@ public class Pallet {
     }
 
     //返回 List<Pallet>
-    public static  String GetPallets(User user)
+    public static  String GetPallets(TestUser testUser)
     {
         String  commString = "select PALLET_ID,BARCODE_TOP,BARCODE_BOTTOM,LOCK_FLAG from WMS_BA_PALLET_MAPPING where LOCK_FLAG = 1";
         //  string commString = "select PALLET_ID,BARCODE_TOP,BARCODE_BOTTOM,LOCK_FLAG from WMS_BA_PALLET_MAPPING where LOCK_FLAG = 0";

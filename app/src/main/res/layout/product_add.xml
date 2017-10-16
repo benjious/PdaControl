@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/goodId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="100dp"
+        android:text="@string/goodId"/>
+
+    <EditText
+        android:id="@+id/textBoxPro_No"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/goodId"
+        android:layout_marginStart="30dp"
+        android:layout_toEndOf="@+id/goodId"
+        android:ems="10"
+        android:inputType="date"/>
+
+    <TextView
+        android:id="@+id/InstoreNumText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/goodId"
+        android:layout_below="@+id/goodId"
+        android:layout_marginTop="60dp"
+        android:text="@string/inStoreNum"/>
+
+    <EditText
+        android:id="@+id/textBoxQty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/InstoreNumText"
+        android:layout_marginStart="30dp"
+        android:layout_toEndOf="@+id/InstoreNumText"
+        android:ems="10"
+        android:inputType="number"/>
+
+    <TextView
+        android:id="@+id/DateNow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/goodId"
+        android:layout_below="@+id/InstoreNumText"
+        android:layout_marginTop="60dp"
+        android:text="@string/productDate"/>
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/DateNow"
+        android:layout_marginStart="30dp"
+        android:layout_toEndOf="@+id/DateNow"
+        android:text="日期"/>
+
+    <Button
+        android:id="@+id/AddBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="添加"
+        android:layout_marginTop="46dp"
+        android:layout_below="@+id/button4"
+        android:layout_alignStart="@+id/DateNow"/>
+
+    <Button
+        android:id="@+id/NextBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="下一步"
+        android:layout_alignBaseline="@+id/AddBtn"
+        android:layout_alignBottom="@+id/AddBtn"
+        android:layout_toEndOf="@+id/button4"
+        android:layout_marginStart="13dp"/>
+
+    <Button
+        android:id="@+id/BackBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/NextBtn"
+        android:layout_alignLeft="@+id/NextBtn"
+        android:layout_marginTop="30dp"
+        android:text="返回"/>
+
+</RelativeLayout>
