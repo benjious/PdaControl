@@ -10,9 +10,12 @@ import com.benjious.pdacontrol.view.CommonView;
  */
 
 public class GoodPresenterImpl implements GoodPresenter ,OnLoadGoodLisenter{
+    //GoodReady
     public static final int CHECK_PALLET_ID =1 ;
     public static final int CHECK_PORT =2 ;
     public static final int GETNEWSTACK_ID =3 ;
+    //ProductAdd
+    public static final int GET_STOCK_DETAIL =4 ;
     private CommonView mCommonView;
     private GoodModel mGoodModel;
     private  static GoodPresenterImpl instance;

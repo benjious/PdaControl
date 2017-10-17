@@ -2,8 +2,6 @@ package com.benjious.pdacontrol.been;
 
 import java.io.Serializable;
 
-import static android.R.attr.value;
-
 /**
  * Created by Benjious on 2017/10/16.
  */

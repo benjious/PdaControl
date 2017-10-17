@@ -20,7 +20,8 @@
         android:layout_marginStart="30dp"
         android:layout_toEndOf="@+id/goodId"
         android:ems="10"
-        android:inputType="date"/>
+        android:singleLine="true"
+        android:maxLines="1"/>
 
     <TextView
         android:id="@+id/InstoreNumText"
@@ -39,6 +40,8 @@
         android:layout_marginStart="30dp"
         android:layout_toEndOf="@+id/InstoreNumText"
         android:ems="10"
+        android:singleLine="true"
+        android:maxLines="1"
         android:inputType="number"/>
 
     <TextView
@@ -64,9 +67,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="添加"
-        android:layout_marginTop="46dp"
-        android:layout_below="@+id/button4"
-        android:layout_alignStart="@+id/DateNow"/>
+        android:layout_marginTop="30dp"
+        android:layout_below="@+id/DateNow"
+        android:layout_alignStart="@+id/goodId"/>
 
     <Button
         android:id="@+id/NextBtn"
@@ -86,5 +89,14 @@
         android:layout_alignLeft="@+id/NextBtn"
         android:layout_marginTop="30dp"
         android:text="返回"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar3"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textBoxPro_No"
+        android:layout_alignEnd="@+id/NextBtn"
+        android:layout_marginEnd="66dp"/>
 
 </RelativeLayout>

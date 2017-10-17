@@ -8,6 +8,15 @@ import java.util.List;
 
 public class UsersALL {
     private List<TestUser> mTestUsers;
+    private List<StockDetail> mStockDetails;
+
+    public List<StockDetail> getStockDetails() {
+        return mStockDetails;
+    }
+
+    public void setStockDetails(List<StockDetail> stockDetails) {
+        mStockDetails = stockDetails;
+    }
 
     private int number;
     private String data;
@@ -49,6 +58,10 @@ public class UsersALL {
     public String toString() {
         return "UsersALL{" +
                 "mTestUsers=" + mTestUsers +
+                ", mStockDetails=" + mStockDetails +
+                ", number=" + number +
+                ", data='" + data + '\'' +
+                ", yesNo=" + yesNo +
                 '}';
     }
 }
