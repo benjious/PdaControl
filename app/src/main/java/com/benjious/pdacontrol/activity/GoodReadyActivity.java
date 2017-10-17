@@ -28,10 +28,8 @@ import com.google.gson.Gson;
 
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.Bind;
@@ -159,7 +157,7 @@ public class GoodReadyActivity extends BaseActivity implements CommonView {
                     IS_FINISHED.addAndGet(1);
                     Log.d(TAG, "xyz  addData: 显示二下数据：" + checkPort + " 标识 ：" + IS_FINISHED);
 
-                } else if (type == GoodPresenterImpl.GETNEWSTACK_ID) {
+                } else if (type == GoodPresenterImpl.GET_NEWSTACK_ID) {
                     mStacking.set_sTACK_ID(usersALL.getData());
                     IS_FINISHED.addAndGet(1);
                     Log.d(TAG, "xyz  addData: 显示三下数据：" + usersALL.getData());
@@ -170,7 +168,8 @@ public class GoodReadyActivity extends BaseActivity implements CommonView {
                     if (checkPallet == 1 && checkPort) {
                         String newStack_url = Url.PATH + "/GetNewStackId?strKind=" + "SIR";
                         Log.d(TAG, "xyz  nextStep: newStack_id " + newStack_url);
-                        GoodPresenterImpl.getGoodPresenter(this).loadData(newStack_url, GoodPresenterImpl.GETNEWSTACK_ID);
+                        mGoodNextStackId = new GoodPresenterImpl(this);
+                        mGoodNextStackId.loadData(newStack_url,GoodPresenterImpl.GET_NEWSTACK_ID);
                     } else {
                         IS_FINISHED.set(0);
                         if (!checkPort) {
@@ -275,16 +274,20 @@ public class GoodReadyActivity extends BaseActivity implements CommonView {
             if ((!(mInStorePointEdit.getText().toString().equals(""))) && (!(mStockIdEdit.getText().toString().equals(""))) && (!((mStyleSpin.getSelectedItem()).equals("")))) {
 
                 //进行数据库查询
-//                String checkUrl = Url.PATH + "/CheckPallet?pallet_id=" + pallet_id + "&status=" + 1;
-                String checkUrl = Url.PATH + "/CheckPallet?pallet_id=" + "P0001" + "&status=" + 1;
-                Log.d(TAG, "xyz  nextStep: checkUrl " + checkUrl);
-                GoodPresenterImpl.getGoodPresenter(this).loadData(checkUrl, GoodPresenterImpl.CHECK_PALLET_ID);
+//                String checkPalletUrl = Url.PATH + "/CheckPallet?pallet_id=" + pallet_id + "&status=" + 1;
+                String checkPalletUrl = Url.PATH + "/CheckPallet?pallet_id=" + "P0001" + "&status=" + 1;
+                Log.d(TAG, "xyz  nextStep: checkPalletUrl " + checkPalletUrl);
+                mPresenter =new GoodPresenterImpl(this);
+                mPresenter.loadData(checkPalletUrl, GoodPresenterImpl.CHECK_PALLET_ID);
+
+
 
 //                String checkPortUrl = Url.PATH + "/CheckPort?p_code=" + p_code;
                 String checkPortUrl = Url.PATH + "/CheckPort?p_code=" + "0001";
-
                 Log.d(TAG, "xyz  nextStep: checkPortUrl " + checkPortUrl);
-                GoodPresenterImpl.getGoodPresenter(this).loadData(checkPortUrl, GoodPresenterImpl.CHECK_PORT);
+                mGoodCheckPortpre = new GoodPresenterImpl(this);
+                mGoodCheckPortpre.loadData(checkPortUrl,GoodPresenterImpl.CHECK_PORT);
+
 
                 mNext.setEnabled(false);
                 showProgress();

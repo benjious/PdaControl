@@ -54,6 +54,8 @@ public class OkHttpUtils {
         return mInstance;
     }
 
+
+
     private void getRequest(String url, final ResultCallback callback) {
         final Request request = new Request.Builder().url(url).build();
         deliveryResult(callback, request);

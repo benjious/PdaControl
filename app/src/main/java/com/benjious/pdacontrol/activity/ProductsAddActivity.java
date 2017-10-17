@@ -86,9 +86,10 @@ public class ProductsAddActivity extends BaseActivity implements CommonView {
             mPickings = (List<Picking>) mBundle.getSerializable(GoodReadyActivity.PICKING_SEND);
 //            String getSDetail = Url.PATH + "/GetStockDetail/?stock_oid=" + mPickings.get(0).get_sTOCK_OID();
             showProgress();
-            String getSDetail = Url.PATH + "/GetStockDetail?stock_oid=" + "6198";
-            Log.d(TAG, "xyz  onCreate: URL " + getSDetail);
-            GoodPresenterImpl.getGoodPresenter(ProductsAddActivity.this).loadData(getSDetail, GoodPresenterImpl.GET_STOCK_DETAIL);
+            String getSDetailUrl = Url.PATH + "/GetStockDetail?stock_oid=" + "6198";
+            Log.d(TAG, "xyz  onCreate: URL " + getSDetailUrl);
+            GoodPresenterImpl goodPresenter = new GoodPresenterImpl(this);
+            goodPresenter.loadData(getSDetailUrl,GoodPresenterImpl.GET_STOCK_DETAIL);
         }
         user = (User) mBundle.getSerializable(GoodReadyActivity.USER_SEND);
 

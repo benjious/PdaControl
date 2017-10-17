@@ -1,7 +1,5 @@
 package com.benjious.pdacontrol.model;
 
-import android.util.Log;
-
 import com.benjious.pdacontrol.interfazes.OnLoadGoodLisenter;
 import com.benjious.pdacontrol.presenter.GoodPresenterImpl;
 import com.benjious.pdacontrol.util.OkHttpUtils;
@@ -32,9 +30,9 @@ public class GoodModelImpl implements GoodModel {
 
                         lisenter.onSuccess(response, GoodPresenterImpl.CHECK_PORT);
 
-                    } else if (style == GoodPresenterImpl.GETNEWSTACK_ID) {
+                    } else if (style == GoodPresenterImpl.GET_NEWSTACK_ID) {
 
-                        lisenter.onSuccess(response, GoodPresenterImpl.GETNEWSTACK_ID);
+                        lisenter.onSuccess(response, GoodPresenterImpl.GET_NEWSTACK_ID);
 
                     } else if (style == GoodPresenterImpl.GET_STOCK_DETAIL) {
                         lisenter.onSuccess(response, GoodPresenterImpl.GET_STOCK_DETAIL);
