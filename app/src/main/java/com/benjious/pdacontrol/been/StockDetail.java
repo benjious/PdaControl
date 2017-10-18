@@ -1,8 +1,7 @@
 package com.benjious.pdacontrol.been;
 
-import java.sql.Date;
+import java.util.Date;
 
-import static android.R.attr.value;
 
 /**
  * Created by Benjious on 2017/10/17.

@@ -196,8 +196,8 @@ public class GoodReadyActivity extends BaseActivity implements CommonView {
                     bundle.putSerializable(STACKING_SEND, mStacking);
                     bundle.putSerializable(STACKING_ITEM_SEND, new ArrayList<StackingItem>());
                     bundle.putSerializable(PICKING_SEND, new ArrayList<Picking>());
-                    bundle.putInt(KIND_SEND, 0);
-//                    mIntent.putExtra(BUNDLE_SEND,bundle);
+                    bundle.putInt(KIND_SEND, 1);
+//                    bundle.putInt(KIND_SEND, 0);
                     mIntent.putExtras(bundle);
                     startActivity(mIntent);
                     Log.d(TAG, "xyz  addData: 这应该是最后执行的: " + mStacking.toString());

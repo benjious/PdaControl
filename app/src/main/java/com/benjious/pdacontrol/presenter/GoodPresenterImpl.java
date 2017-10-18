@@ -16,17 +16,9 @@ public class GoodPresenterImpl implements GoodPresenter ,OnLoadGoodLisenter{
     public static final int GET_NEWSTACK_ID =3 ;
     //ProductAdd
     public static final int GET_STOCK_DETAIL =4 ;
+    public static final int CHECK_PRO_NO =5 ;
     private CommonView mCommonView;
     private GoodModel mGoodModel;
-    private  static GoodPresenterImpl instance;
-
-    public static GoodPresenter getGoodPresenter(CommonView commonView){
-        if (instance==null) {
-            instance = new GoodPresenterImpl(commonView);
-        }
-        return instance;
-    }
-
 
     public GoodPresenterImpl(CommonView commonView) {
         mCommonView = commonView;

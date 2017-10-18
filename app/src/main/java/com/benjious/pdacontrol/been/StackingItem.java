@@ -1,7 +1,7 @@
 package com.benjious.pdacontrol.been;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 
 /**
  * Created by Benjious on 2017/10/17.

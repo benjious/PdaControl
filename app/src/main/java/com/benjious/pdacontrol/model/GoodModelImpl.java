@@ -37,6 +37,9 @@ public class GoodModelImpl implements GoodModel {
                     } else if (style == GoodPresenterImpl.GET_STOCK_DETAIL) {
                         lisenter.onSuccess(response, GoodPresenterImpl.GET_STOCK_DETAIL);
 
+                    } else if (style == GoodPresenterImpl.CHECK_PRO_NO) {
+                        lisenter.onSuccess(response, GoodPresenterImpl.CHECK_PRO_NO);
+
                     }
                 }
             }
