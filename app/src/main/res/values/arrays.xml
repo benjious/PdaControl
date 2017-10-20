@@ -4,4 +4,15 @@
         <item>原材料入库</item>
         <item>半成品入库</item>
     </string-array>
+
+    <string-array name="product_choice">
+        <item>删除该项</item>
+        <item>返回修改</item>
+        <item>提交</item>
+        <item>取消</item>
+    </string-array>
+
+    <string-array name="product_full">
+        <item>满托标志</item>
+    </string-array>
 </resources>

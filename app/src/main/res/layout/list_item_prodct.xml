@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+    >
+
+    <ImageView
+        android:src="@mipmap/aa"
+        android:id="@+id/good_image"
+        android:layout_width="130dp"
+        android:layout_height="165dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"/>
+
+    <CheckBox
+        android:id="@+id/full_checkBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/good_image"
+        android:layout_below="@+id/good_image"
+        android:layout_marginTop="15dp"/>
+
+    <TextView
+        android:id="@+id/good_checkText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/full_checkBtn"
+        android:layout_marginStart="15dp"
+        android:layout_toEndOf="@id/full_checkBtn"
+        android:text="@string/full_check"/>
+
+
+    <TextView
+        android:id="@+id/good_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/good_image"
+        android:layout_marginStart="30dp"
+        android:layout_toEndOf="@+id/good_image"
+        android:text="@string/good_id"/>
+
+    <TextView
+        android:id="@+id/good_id_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/good_id"
+        android:layout_marginStart="15dp"
+        android:layout_toEndOf="@+id/good_id"
+        android:text="fhaoguha"/>
+
+    <TextView
+        android:id="@+id/good_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/good_id"
+        android:layout_below="@+id/good_id"
+        android:layout_marginTop="30dp"
+        android:text="@string/good_name"/>
+
+    <TextView
+        android:id="@+id/good_name_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/good_name"
+        android:layout_marginStart="15dp"
+        android:layout_toEndOf="@+id/good_name"
+        android:text="fhaoguha"/>
+
+
+    <TextView
+        android:id="@+id/good_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/good_id"
+        android:layout_below="@+id/good_name"
+        android:layout_marginTop="30dp"
+        android:text="@string/good_number"/>
+
+    <TextView
+        android:id="@+id/good_number_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/good_number"
+        android:layout_marginStart="15dp"
+        android:layout_toEndOf="@+id/good_number"
+        android:text="fhaoguha"/>
+
+
+    <TextView
+        android:id="@+id/good_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/good_id"
+        android:layout_below="@+id/good_number"
+        android:layout_marginTop="30dp"
+        android:text="@string/good_date"/>
+
+    <TextView
+        android:id="@+id/good_date_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/good_date"
+        android:layout_marginStart="15dp"
+        android:layout_toEndOf="@+id/good_date"
+        android:text="fhaoguha"/>
+
+</RelativeLayout>

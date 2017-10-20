@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.benjious.pdacontrol">
+
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
@@ -14,15 +15,20 @@
         <activity android:name=".activity.LoginActivity">
         </activity>
         <activity android:name=".activity.MainActivity">
+
+        </activity>
+        <activity android:name=".activity.ProductReadyActivity">
+        </activity>
+
+        <activity android:name=".activity.ProductsAddActivity">
+
+        </activity>
+        <activity
+            android:name=".activity.ProductsInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
-        <activity android:name=".activity.GoodReadyActivity">
-        </activity>
-
-        <activity android:name=".activity.ProductsAddActivity">
 
         </activity>
     </application>

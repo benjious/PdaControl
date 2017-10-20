@@ -59,6 +59,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/DateNow"
         android:layout_marginStart="30dp"
+        android:onClick="showDatePickerDialog"
         android:layout_toEndOf="@+id/DateNow"
         android:text="日期"/>
 

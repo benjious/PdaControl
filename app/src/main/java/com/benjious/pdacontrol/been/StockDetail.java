@@ -8,6 +8,16 @@ import java.util.Date;
  */
 
 public class StockDetail {
+    public String get_product_name() {
+        return _product_name;
+    }
+
+    public void set_product_name(String _product_name) {
+        this._product_name = _product_name;
+    }
+
+    private String _product_name;
+
     public int get_oID() {
         return _oID;
     }
@@ -72,13 +82,7 @@ public class StockDetail {
         this._lIST_NO = _lIST_NO;
     }
 
-    public double get_qTY() {
-        return _qTY;
-    }
 
-    public void set_qTY(double _qTY) {
-        this._qTY = _qTY;
-    }
 
     public String get_oUT_LIST_NO() {
         return _oUT_LIST_NO;
@@ -164,11 +168,18 @@ public class StockDetail {
 
     private String _bATCH_NO;
 
+    public int get_qTY() {
+        return _qTY;
+    }
+
+    public void set_qTY(int _qTY) {
+        this._qTY = _qTY;
+    }
 
     private String _lIST_NO;
 
 
-    private double _qTY;
+    private int _qTY;
 
 
     private String _oUT_LIST_NO;

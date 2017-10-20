@@ -46,7 +46,7 @@ import butterknife.OnClick;
  * Created by Benjious on 2017/10/12.
  */
 
-public class GoodReadyActivity extends BaseActivity implements CommonView {
+public class ProductReadyActivity extends BaseActivity implements CommonView {
     @Bind(R.id.inStoreSite)
     TextView mInStoreSite;
     @Bind(R.id.inStorePointEdit)
@@ -77,12 +77,13 @@ public class GoodReadyActivity extends BaseActivity implements CommonView {
     @Bind(R.id.progressBar2)
     ProgressBar mProgressBar2;
 
-    public static final String TAG = "GoodReadyActivity xyz =";
+    public static final String TAG = "ProductReadyActivity xyz =";
     public static AtomicInteger IS_FINISHED = new AtomicInteger();
 
     public static final String USER_SEND = "USER_SEND";
     public static final String STACKING_SEND = "STACKING_SEND";
-    public static final String STACKING_ITEM_SEND = "STACKING_ITEM_SEND";
+    public static final String STACKING_ITEM_LIST = "STACKING_ITEM_LIST";
+    public static final String STOCKING_DETAIL_LIST ="STOCJING_ITEM_LIST";
     public static final String PICKING_SEND = "PICKING_SEND";
     public static final String KIND_SEND = "KING_SEND";
     public static final String BUNDLE_SEND = "BUNDLE_SEND";
@@ -194,7 +195,7 @@ public class GoodReadyActivity extends BaseActivity implements CommonView {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable(USER_SEND, new User());
                     bundle.putSerializable(STACKING_SEND, mStacking);
-                    bundle.putSerializable(STACKING_ITEM_SEND, new ArrayList<StackingItem>());
+                    bundle.putSerializable(STACKING_ITEM_LIST, new ArrayList<StackingItem>());
                     bundle.putSerializable(PICKING_SEND, new ArrayList<Picking>());
                     bundle.putInt(KIND_SEND, 1);
 //                    bundle.putInt(KIND_SEND, 0);

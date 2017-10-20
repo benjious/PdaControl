@@ -1,10 +1,14 @@
 package com.benjious.pdacontrol.activity;
 
+import android.app.DatePickerDialog;
+import android.app.DialogFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -12,22 +16,24 @@ import android.widget.Toast;
 
 import com.benjious.pdacontrol.R;
 import com.benjious.pdacontrol.been.Picking;
-import com.benjious.pdacontrol.been.StockDetail;
 import com.benjious.pdacontrol.been.Stacking;
 import com.benjious.pdacontrol.been.StackingItem;
+import com.benjious.pdacontrol.been.StockDetail;
 import com.benjious.pdacontrol.been.User;
 import com.benjious.pdacontrol.been.UsersALL;
+import com.benjious.pdacontrol.fragment.DatePickerFragment;
 import com.benjious.pdacontrol.presenter.GoodPresenterImpl;
 import com.benjious.pdacontrol.url.Url;
 import com.benjious.pdacontrol.util.OkHttpUtils;
 import com.benjious.pdacontrol.view.CommonView;
 import com.google.gson.Gson;
 
-import java.sql.Date;
-import java.text.DateFormat;
-import java.text.ParseException;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -36,14 +42,19 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.benjious.pdacontrol.activity.GoodReadyActivity.IS_FINISHED;
-import static com.squareup.okhttp.internal.http.HttpDate.format;
+import static com.benjious.pdacontrol.activity.ProductReadyActivity.IS_FINISHED;
+import static com.benjious.pdacontrol.activity.ProductReadyActivity.KIND_SEND;
+import static com.benjious.pdacontrol.activity.ProductReadyActivity.PICKING_SEND;
+import static com.benjious.pdacontrol.activity.ProductReadyActivity.STACKING_ITEM_LIST;
+import static com.benjious.pdacontrol.activity.ProductReadyActivity.STACKING_SEND;
+import static com.benjious.pdacontrol.activity.ProductReadyActivity.STOCKING_DETAIL_LIST;
+import static com.benjious.pdacontrol.activity.ProductReadyActivity.USER_SEND;
 
 /**
  * Created by Benjious on 2017/10/16.
  */
 
-public class ProductsAddActivity extends BaseActivity implements CommonView {
+public class ProductsAddActivity extends BaseActivity implements CommonView, DatePickerDialog.OnDateSetListener {
     @Bind(R.id.goodId)
     TextView mGoodId;
     @Bind(R.id.textBoxPro_No)
@@ -54,8 +65,6 @@ public class ProductsAddActivity extends BaseActivity implements CommonView {
     EditText mTextBoxQty;
     @Bind(R.id.DateNow)
     TextView mDateNow;
-    @Bind(R.id.button4)
-    Button mButton4;
     @Bind(R.id.AddBtn)
     Button mAddBtn;
     @Bind(R.id.NextBtn)
@@ -64,6 +73,8 @@ public class ProductsAddActivity extends BaseActivity implements CommonView {
     Button mBackBtn;
     @Bind(R.id.progressBar3)
     ProgressBar mProgressBar3;
+    @Bind(R.id.button4)
+    Button mButton4;
 
     private User user;
     private Stacking stacking;
@@ -73,6 +84,7 @@ public class ProductsAddActivity extends BaseActivity implements CommonView {
     private List<StockDetail> mStockDetails = new ArrayList<>();
     public static final String TAG = "ProductsAddActivity";
     private AtomicInteger IS_PRODUCT_FINISH = new AtomicInteger();
+    private Date date = new Date();
 
     @Override
 
@@ -82,13 +94,13 @@ public class ProductsAddActivity extends BaseActivity implements CommonView {
         ButterKnife.bind(this);
 
         Bundle mBundle = this.getIntent().getExtras();
-        kind = (int) mBundle.getSerializable(GoodReadyActivity.KIND_SEND);
+        kind = (int) mBundle.getSerializable(KIND_SEND);
         if (kind == 1) {
-            stacking = (Stacking) mBundle.getSerializable(GoodReadyActivity.STACKING_SEND);
-            mStackingItems = (List<StackingItem>) mBundle.getSerializable(GoodReadyActivity.STACKING_ITEM_SEND);
+            stacking = (Stacking) mBundle.getSerializable(STACKING_SEND);
+            mStackingItems = (List<StackingItem>) mBundle.getSerializable(STACKING_ITEM_LIST);
 
         } else {
-            mPickings = (List<Picking>) mBundle.getSerializable(GoodReadyActivity.PICKING_SEND);
+            mPickings = (List<Picking>) mBundle.getSerializable(PICKING_SEND);
 //            String getSDetail = Url.PATH + "/GetStockDetail/?stock_oid=" + mPickings.get(0).get_sTOCK_OID();
             showProgress();
             String getSDetailUrl = Url.PATH + "/GetStockDetail?stock_oid=" + "6198";
@@ -96,8 +108,9 @@ public class ProductsAddActivity extends BaseActivity implements CommonView {
             GoodPresenterImpl goodPresenter = new GoodPresenterImpl(this);
             goodPresenter.loadData(getSDetailUrl, GoodPresenterImpl.GET_STOCK_DETAIL);
         }
-        user = (User) mBundle.getSerializable(GoodReadyActivity.USER_SEND);
+        user = (User) mBundle.getSerializable(USER_SEND);
         hideProgress();
+        mNextBtn.setEnabled(false);
     }
 
     @OnClick({R.id.AddBtn, R.id.NextBtn, R.id.BackBtn})
@@ -107,9 +120,26 @@ public class ProductsAddActivity extends BaseActivity implements CommonView {
                 addProduct();
                 break;
             case R.id.NextBtn:
+                gotoProductAdd();
                 break;
             case R.id.BackBtn:
                 break;
+        }
+    }
+
+    private void gotoProductAdd() {
+        if (mStockDetails.size() == 0 && mStackingItems.size() == 0) {
+            super.showToast("请先添加物料!!!!");
+        } else {
+            Intent mIntent = new Intent(this, ProductsInActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(USER_SEND, user);
+            bundle.putSerializable(STACKING_SEND, stacking);
+            bundle.putSerializable(STACKING_ITEM_LIST, (Serializable) mStackingItems);
+            bundle.putSerializable(STOCKING_DETAIL_LIST, (Serializable) mStockDetails);
+            bundle.putInt(KIND_SEND, kind);
+            mIntent.putExtras(bundle);
+            startActivity(mIntent);
         }
     }
 
@@ -123,6 +153,7 @@ public class ProductsAddActivity extends BaseActivity implements CommonView {
             showProgress();
             mAddBtn.setEnabled(false);
             checkProNoImpl.loadData(proNo_url, GoodPresenterImpl.CHECK_PRO_NO);
+            mNextBtn.setEnabled(true);
         }
     }
 
@@ -169,7 +200,9 @@ public class ProductsAddActivity extends BaseActivity implements CommonView {
             super.showToast("解析数据出现错误");
             Log.d(TAG, "xyz  addData: " + e);
         } finally {
-
+            IS_FINISHED.set(0);
+            mAddBtn.setEnabled(true);
+            mNextBtn.setEnabled(true);
         }
     }
 
@@ -177,22 +210,26 @@ public class ProductsAddActivity extends BaseActivity implements CommonView {
         if (str_name.equals("")) {
             super.showToast("物料编号不存在，请重新输入");
         } else {
-            double qty = Double.parseDouble(mTextBoxQty.getText().toString());
+            int qty = Integer.decode(mTextBoxQty.getText().toString());
+//            double qty = Double.parseDouble(mTextBoxQty.getText().toString());
             if (qty <= 0) {
                 super.showToast("请输入正确的实际数量");
             } else {
                 boolean result = false;
-                Log.d(TAG, "xyz  afterCheckPro: king "+ kind);
+                Log.d(TAG, "xyz  afterCheckPro: king " + kind);
                 if (kind == 1) {
                     StackingItem stackingItem = new StackingItem();
+                    stackingItem.set_product_name(str_name);
                     stackingItem.set_iTEM_ID(mTextBoxProNo.getText().toString());
                     stackingItem.set_sTACK_ID(stacking.get_sTACK_ID());
                     stackingItem.set_lIST_NO("");
                     stackingItem.set_qTY(qty);
+                    stackingItem.set_pROD_DATE(date);
                     //这里要补上，这里有个日期
                     stackingItem.set_cREATED_BY(user.get_userID());
-                    stackingItem.set_lAST_UPDATE_DATE(new java.util.Date());
+                    stackingItem.set_lAST_UPDATE_DATE(new Date());
                     stackingItem.set_lAST_UPDATED_BY(user.get_userID());
+                    mStackingItems.add(stackingItem);
                 } else {
                     for (StockDetail stockDetail :
                             mStockDetails) {
@@ -202,13 +239,13 @@ public class ProductsAddActivity extends BaseActivity implements CommonView {
                         }
                     }
                     if (!result) {
-                        Log.d(TAG, "xyz  afterCheckPro: 这里");
                         StockDetail stockDetail = new StockDetail();
+                        stockDetail.set_product_name(str_name);
                         stockDetail.set_sTOCK_OID(mPickings.get(0).get_sTOCK_OID());
                         stockDetail.set_iTEM_ID(mTextBoxProNo.getText().toString());
                         stockDetail.set_bARCODE_NO("");
-                        //  stockDetail.set_pROD_DATE();
-//                        stockDetail.set_eXPIRE_DATE();
+                        stockDetail.set_pROD_DATE(date);
+                        stockDetail.set_eXPIRE_DATE(date);
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd", Locale.US);
                         stockDetail.set_bATCH_NO(simpleDateFormat.format(stockDetail.get_pROD_DATE()));
                         stockDetail.set_lIST_NO("");
@@ -216,19 +253,19 @@ public class ProductsAddActivity extends BaseActivity implements CommonView {
                         stockDetail.set_oUT_LIST_NO("");
                         stockDetail.set_oUT_QTY(0);
                         stockDetail.set_sTOCK_OID(0);
-                        stockDetail.set_cREATION_DATE(new java.util.Date());
-                        stockDetail.set_lAST_UPDATE_DATE(new java.util.Date());
+                        stockDetail.set_cREATION_DATE(new Date());
+                        stockDetail.set_lAST_UPDATE_DATE(new Date());
                         stockDetail.set_gRADE("");
-                    }else {
+                        mStockDetails.add(stockDetail);
+                    } else {
                         super.showToast("添加失败！物料已存在该托盘上，若要补充该物料数量请返回上一个界面！");
                     }
 
-                } if (!result) {
+                }
+                if (!result) {
                     super.showToast("添加物料成功，查看或提交任务请按下一步");
-
                     mTextBoxProNo.setText("");
                     mTextBoxQty.setText("");
-
                 }
 
             }
@@ -259,4 +296,20 @@ public class ProductsAddActivity extends BaseActivity implements CommonView {
             Toast.makeText(this, "获取数据成功，但数据为空！！", Toast.LENGTH_SHORT).show();
         }
     }
+
+    public void showDatePickerDialog(View v) {
+        DialogFragment newFragment = new DatePickerFragment();
+        newFragment.show(getFragmentManager(), "datePicker");
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        Calendar calendar = new GregorianCalendar();
+        calendar.set(year, month, dayOfMonth);
+        date = calendar.getTime();
+        super.showToast("时间: " + date);
+
+    }
+
+
 }

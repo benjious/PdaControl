@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.goodInStore:
                 Intent intent = new Intent();
-                intent.setClass(MainActivity.this, GoodReadyActivity.class);
+                intent.setClass(MainActivity.this, ProductReadyActivity.class);
                 startActivity(intent);
                 break;
             case R.id.numAck:

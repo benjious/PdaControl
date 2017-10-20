@@ -19,7 +19,7 @@ public class StackingItem implements Serializable {
     private String _lIST_NO;
 
 
-    private double _qTY;
+    private int _qTY;
 
 
     private Date _pROD_DATE;
@@ -35,6 +35,16 @@ public class StackingItem implements Serializable {
 
 
     private int _lAST_UPDATED_BY;
+
+    public String get_product_name() {
+        return _product_name;
+    }
+
+    public void set_product_name(String _product_name) {
+        this._product_name = _product_name;
+    }
+
+    private String _product_name;
 
     public String get_iTEM_ID() {
         return _iTEM_ID;
@@ -60,11 +70,12 @@ public class StackingItem implements Serializable {
         this._lIST_NO = _lIST_NO;
     }
 
-    public double get_qTY() {
+
+    public int get_qTY() {
         return _qTY;
     }
 
-    public void set_qTY(double _qTY) {
+    public void set_qTY(int _qTY) {
         this._qTY = _qTY;
     }
 
