@@ -22,25 +22,28 @@ public class GoodModelImpl implements GoodModel {
                 if (response == null) {
                     lisenter.onFailure(SERVER_OFFLINE);
                 } else {
-                    if (style == GoodPresenterImpl.CHECK_PALLET_ID) {
-
-                        lisenter.onSuccess(response, GoodPresenterImpl.CHECK_PALLET_ID);
-
-                    } else if (style == GoodPresenterImpl.CHECK_PORT) {
-
-                        lisenter.onSuccess(response, GoodPresenterImpl.CHECK_PORT);
-
-                    } else if (style == GoodPresenterImpl.GET_NEWSTACK_ID) {
-
-                        lisenter.onSuccess(response, GoodPresenterImpl.GET_NEWSTACK_ID);
-
-                    } else if (style == GoodPresenterImpl.GET_STOCK_DETAIL) {
-                        lisenter.onSuccess(response, GoodPresenterImpl.GET_STOCK_DETAIL);
-
-                    } else if (style == GoodPresenterImpl.CHECK_PRO_NO) {
-                        lisenter.onSuccess(response, GoodPresenterImpl.CHECK_PRO_NO);
-
-                    }
+//                    if (style == GoodPresenterImpl.CHECK_PALLET_ID) {
+//
+//                        lisenter.onSuccess(response, GoodPresenterImpl.CHECK_PALLET_ID);
+//
+//                    } else if (style == GoodPresenterImpl.CHECK_PORT) {
+//
+//                        lisenter.onSuccess(response, GoodPresenterImpl.CHECK_PORT);
+//
+//                    } else if (style == GoodPresenterImpl.GET_NEWSTACK_ID) {
+//
+//                        lisenter.onSuccess(response, GoodPresenterImpl.GET_NEWSTACK_ID);
+//
+//                    } else if (style == GoodPresenterImpl.GET_STOCK_DETAIL) {
+//                        lisenter.onSuccess(response, GoodPresenterImpl.GET_STOCK_DETAIL);
+//
+//                    } else if (style == GoodPresenterImpl.CHECK_PRO_NO) {
+//                        lisenter.onSuccess(response, GoodPresenterImpl.CHECK_PRO_NO);
+//
+//                    }  else if (style == GoodPresenterImpl.INSERT_STACKING) {
+//                        lisenter.onSuccess(response, GoodPresenterImpl.INSERT_STACKING);
+//                    }
+                    lisenter.onSuccess(response,style);
                 }
             }
 

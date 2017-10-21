@@ -7,4 +7,6 @@ package com.benjious.pdacontrol.interfazes;
 public interface OnUpdateProductLisenter {
     void goToFullCheck();
     void updateProduct(Boolean checkNot);
+    void deleteRowindex();
+    void goBackProductAdd();
 }

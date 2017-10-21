@@ -77,7 +77,7 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
     @Bind(R.id.progressBar2)
     ProgressBar mProgressBar2;
 
-    public static final String TAG = "ProductReadyActivity xyz =";
+    public static final String TAG = " xyz =";
     public static AtomicInteger IS_FINISHED = new AtomicInteger();
 
     public static final String USER_SEND = "USER_SEND";
@@ -140,7 +140,7 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
 
     @Override
     public void addData(String response, int type) {
-        Log.d(TAG, "xyz  addData: 标识的值" + IS_FINISHED);
+        Log.d(TAG, "addData: 标识的值" + IS_FINISHED);
         try {
             Gson gson = new Gson();
             UsersALL usersALL = gson.fromJson(response, UsersALL.class);
@@ -276,7 +276,7 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
 
                 //进行数据库查询
 //                String checkPalletUrl = Url.PATH + "/CheckPallet?pallet_id=" + pallet_id + "&status=" + 1;
-                String checkPalletUrl = Url.PATH + "/CheckPallet?pallet_id=" + "P0001" + "&status=" + 1;
+                               String checkPalletUrl = Url.PATH + "/CheckPallet?pallet_id=" + "P0001" + "&status=" + 1;
                 Log.d(TAG, "xyz  nextStep: checkPalletUrl " + checkPalletUrl);
                 mPresenter =new GoodPresenterImpl(this);
                 mPresenter.loadData(checkPalletUrl, GoodPresenterImpl.CHECK_PALLET_ID);

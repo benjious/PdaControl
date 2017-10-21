@@ -57,12 +57,17 @@ import static com.benjious.pdacontrol.activity.ProductReadyActivity.USER_SEND;
 public class ProductsAddActivity extends BaseActivity implements CommonView, DatePickerDialog.OnDateSetListener {
     @Bind(R.id.goodId)
     TextView mGoodId;
+
     @Bind(R.id.textBoxPro_No)
     EditText mTextBoxProNo;
+
     @Bind(R.id.InstoreNumText)
     TextView mInstoreNumText;
+
     @Bind(R.id.textBoxQty)
     EditText mTextBoxQty;
+
+
     @Bind(R.id.DateNow)
     TextView mDateNow;
     @Bind(R.id.AddBtn)
@@ -85,6 +90,7 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
     public static final String TAG = "ProductsAddActivity";
     private AtomicInteger IS_PRODUCT_FINISH = new AtomicInteger();
     private Date date = new Date();
+    private Date dateFromIn ;
 
     @Override
 
@@ -111,6 +117,17 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
         user = (User) mBundle.getSerializable(USER_SEND);
         hideProgress();
         mNextBtn.setEnabled(false);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        String productId = intent.getStringExtra(ProductsInActivity.PRODUCT_ID);
+        int productNum = intent.getIntExtra(ProductsInActivity.PRODUCT_NUMBER,0);
+        dateFromIn = (Date) intent.getSerializableExtra(ProductsInActivity.PRODUCT_DATE);
+
+        mTextBoxQty.setText(productNum);
+        mTextBoxProNo.setText(productId);
+
     }
 
     @OnClick({R.id.AddBtn, R.id.NextBtn, R.id.BackBtn})
@@ -280,7 +297,7 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
         hideProgress();
         mNextBtn.setEnabled(true);
         mAddBtn.setEnabled(true);
-        super.showToast("请求过程中出现异常！！");
+        super.showToast("请求过程中出现异常！！"+e);
     }
 
     @Override
@@ -299,6 +316,9 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
 
     public void showDatePickerDialog(View v) {
         DialogFragment newFragment = new DatePickerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("DATE",dateFromIn);
+        newFragment.setArguments(bundle);
         newFragment.show(getFragmentManager(), "datePicker");
     }
 

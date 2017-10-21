@@ -14,22 +14,27 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activity.LoginActivity">
         </activity>
-        <activity android:name=".activity.MainActivity">
-
-        </activity>
-        <activity android:name=".activity.ProductReadyActivity">
-        </activity>
-
-        <activity android:name=".activity.ProductsAddActivity">
-
-        </activity>
         <activity
-            android:name=".activity.ProductsInActivity">
+            android:name=".activity.MainActivity"
+            android:launchMode="singleTask">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
 
+        <activity android:name=".activity.ProductReadyActivity">
+        </activity>
+
+        <activity android:name=".activity.ProductsAddActivity"
+                  android:launchMode="singleTask"
+            >
+
+        </activity>
+        <activity
+            android:name=".activity.ProductsInActivity"
+            >
         </activity>
     </application>
 

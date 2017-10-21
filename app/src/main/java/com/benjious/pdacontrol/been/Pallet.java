@@ -1,6 +1,7 @@
 package com.benjious.pdacontrol.been;
 
-import java.util.Date;
+
+import java.sql.Timestamp;
 
 /**
  * Created by Benjious on 2017/10/13.
@@ -12,9 +13,9 @@ public class Pallet {
 
     private String _bARCODE_TOP;
     private String _bARCODE_BOTTOM;
-    private Date _cREATION_DATE;
+    private Timestamp _cREATION_DATE;
     private int _cREATED_BY;
-    private Date _lAST_UPDATE_DATE;
+    private Timestamp _lAST_UPDATE_DATE;
     private int _lAST_UPDATED_BY;
     private String _pALLET_TYPE;
     private int _sTACK_PLATE_QTY;
@@ -45,11 +46,11 @@ public class Pallet {
         this._bARCODE_BOTTOM = _bARCODE_BOTTOM;
     }
 
-    public Date get_cREATION_DATE() {
+    public Timestamp get_cREATION_DATE() {
         return _cREATION_DATE;
     }
 
-    public void set_cREATION_DATE(Date _cREATION_DATE) {
+    public void set_cREATION_DATE(Timestamp _cREATION_DATE) {
         this._cREATION_DATE = _cREATION_DATE;
     }
 
@@ -61,11 +62,11 @@ public class Pallet {
         this._cREATED_BY = _cREATED_BY;
     }
 
-    public Date get_lAST_UPDATE_DATE() {
+    public Timestamp get_lAST_UPDATE_DATE() {
         return _lAST_UPDATE_DATE;
     }
 
-    public void set_lAST_UPDATE_DATE(Date _lAST_UPDATE_DATE) {
+    public void set_lAST_UPDATE_DATE(Timestamp _lAST_UPDATE_DATE) {
         this._lAST_UPDATE_DATE = _lAST_UPDATE_DATE;
     }
 
@@ -151,11 +152,11 @@ public class Pallet {
     }
 
     //返回boolean
-//    public static String UpdatePallet(String pallet_id,Date last_update_date,int lase_updated_by)
+//    public static String UpdatePallet(String pallet_id,Timestamp last_update_date,int lase_updated_by)
 //    {
 //        String sqlcommand = "update WMS_BA_PALLET_MAPPING set LOCK_FLAG = 1,LAST_UPDATE_DATE = @last_update_date, LAST_UPDATED_BY = @last_updated_by where PALLET_ID = @pallet_id";
 //        SqlParameter[] parameters = {
-//                new SqlParameter("@last_update_date",SqlDbType.DateTime ,8),
+//                new SqlParameter("@last_update_date",SqlDbType.TimestampTime ,8),
 //                new SqlParameter ("@last_updated_by",SqlDbType.Int ,4),
 //                new SqlParameter ("@pallet_id",SqlDbType.NVarChar ,30)};
 //        parameters[0].Value = last_update_date;

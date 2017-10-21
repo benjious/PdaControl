@@ -19,7 +19,6 @@ public abstract class BaseActivity extends AppCompatActivity  {
 
     public void showToast(String text) {
         Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }
     /**
