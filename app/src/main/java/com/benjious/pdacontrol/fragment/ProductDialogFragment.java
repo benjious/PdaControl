@@ -23,7 +23,7 @@ public class ProductDialogFragment extends DialogFragment {
     private OnUpdateProductLisenter updateProductLisenter;
     public static final String[] STRING = {"AA", "TTT", "EEE"};
     public static final String TAG = "xyz =";
-    private Handler mHandler=new Handler(Looper.getMainLooper());;
+    private Handler mHandler=new Handler(Looper.getMainLooper());
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

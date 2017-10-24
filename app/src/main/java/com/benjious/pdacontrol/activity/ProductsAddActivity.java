@@ -58,14 +58,9 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
     @Bind(R.id.goodId)
     TextView mGoodId;
 
-    @Bind(R.id.textBoxPro_No)
-    EditText mTextBoxProNo;
 
     @Bind(R.id.InstoreNumText)
     TextView mInstoreNumText;
-
-    @Bind(R.id.textBoxQty)
-    EditText mTextBoxQty;
 
 
     @Bind(R.id.DateNow)
@@ -80,6 +75,10 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
     ProgressBar mProgressBar3;
     @Bind(R.id.button4)
     Button mButton4;
+    @Bind(R.id.textBoxPro_No)
+    EditText mTextBoxProNo;
+    @Bind(R.id.textBoxQty)
+    EditText mTextBoxQty;
 
     private User user;
     private Stacking stacking;
@@ -90,7 +89,7 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
     public static final String TAG = "ProductsAddActivity";
     private AtomicInteger IS_PRODUCT_FINISH = new AtomicInteger();
     private Date date = new Date();
-    private Date dateFromIn ;
+    private Date dateFromIn;
 
     @Override
 
@@ -103,16 +102,19 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
         kind = (int) mBundle.getSerializable(KIND_SEND);
         if (kind == 1) {
             stacking = (Stacking) mBundle.getSerializable(STACKING_SEND);
+            //这个是空的
             mStackingItems = (List<StackingItem>) mBundle.getSerializable(STACKING_ITEM_LIST);
+            Log.d(TAG, "xyz  onCreate: 从ProductReady来的数据: "+mStackingItems);
 
         } else {
+            //这个是空的
             mPickings = (List<Picking>) mBundle.getSerializable(PICKING_SEND);
-//            String getSDetail = Url.PATH + "/GetStockDetail/?stock_oid=" + mPickings.get(0).get_sTOCK_OID();
+            String getSDetail = Url.PATH + "/GetStockDetail/?stock_oid=" + mPickings.get(0).get_sTOCK_OID();
             showProgress();
-            String getSDetailUrl = Url.PATH + "/GetStockDetail?stock_oid=" + "6198";
-            Log.d(TAG, "xyz  onCreate: URL " + getSDetailUrl);
+//            String getSDetailUrl = Url.PATH + "/GetStockDetail?stock_oid=" + "6198";
+//            Log.d(TAG, "xyz  onCreate: URL " + getSDetailUrl);
             GoodPresenterImpl goodPresenter = new GoodPresenterImpl(this);
-            goodPresenter.loadData(getSDetailUrl, GoodPresenterImpl.GET_STOCK_DETAIL);
+            goodPresenter.loadData(getSDetail, GoodPresenterImpl.GET_STOCK_DETAIL);
         }
         user = (User) mBundle.getSerializable(USER_SEND);
         hideProgress();
@@ -121,12 +123,14 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
 
     @Override
     protected void onNewIntent(Intent intent) {
-        String productId = intent.getStringExtra(ProductsInActivity.PRODUCT_ID);
-        int productNum = intent.getIntExtra(ProductsInActivity.PRODUCT_NUMBER,0);
-        dateFromIn = (Date) intent.getSerializableExtra(ProductsInActivity.PRODUCT_DATE);
-
-        mTextBoxQty.setText(productNum);
-        mTextBoxProNo.setText(productId);
+//        final String productId = intent.getStringExtra(ProductsInActivity.PRODUCT_ID);
+//        final int productNum = intent.getIntExtra(ProductsInActivity.PRODUCT_NUMBER, 0);
+//        dateFromIn = (Date) intent.getSerializableExtra(ProductsInActivity.PRODUCT_DATE);
+//
+//        mTextBoxQty.setText(String.valueOf(productNum));
+//        mTextBoxProNo.setText(productId);
+        mStackingItems.clear();
+        mStockDetails.clear();
 
     }
 
@@ -137,14 +141,14 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
                 addProduct();
                 break;
             case R.id.NextBtn:
-                gotoProductAdd();
+                gotoProductIn();
                 break;
             case R.id.BackBtn:
                 break;
         }
     }
 
-    private void gotoProductAdd() {
+    private void gotoProductIn() {
         if (mStockDetails.size() == 0 && mStackingItems.size() == 0) {
             super.showToast("请先添加物料!!!!");
         } else {
@@ -164,8 +168,9 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
         if (mTextBoxProNo.getText().toString().equals("") || mTextBoxQty.getText().toString().equals("")) {
             super.showToast("物料编号或数量不能为空");
         } else {
-//            String proNo_url = Url.PATH + "/CheckPro_No?pro_no=" + mTextBoxProNo.getText().toString();
-            String proNo_url = Url.PATH + "/CheckPro_No?pro_no=" + "01.01.03.0008";
+            String proNo_url = Url.PATH + "/CheckPro_No?pro_no=" + mTextBoxProNo.getText().toString();
+
+//            String proNo_url = Url.PATH + "/CheckPro_No?pro_no=" + "01.01.03.0008";
             GoodPresenterImpl checkProNoImpl = new GoodPresenterImpl(this);
             showProgress();
             mAddBtn.setEnabled(false);
@@ -188,7 +193,6 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
 
     @Override
     public void addData(String response, int type) {
-        Log.d(TAG, "xyz  addData: 这里这里");
         hideProgress();
         mNextBtn.setEnabled(false);
         try {
@@ -200,11 +204,15 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
                 if (type == GoodPresenterImpl.GET_STOCK_DETAIL) {
                     mStockDetails = usersALL.getStockDetails();
                     Log.d(TAG, "xyz  addData: 显示四下数据 " + mStockDetails.toString() + " 标识 ：" + IS_PRODUCT_FINISH);
+                    Log.d(TAG, "xyz  addData: ------------------------------------------------------");
+
                 }
                 if (type == GoodPresenterImpl.CHECK_PRO_NO) {
                     String str_name = usersALL.getData();
                     IS_FINISHED.addAndGet(1);
                     Log.d(TAG, "xyz  addData: 显示五下数据 " + str_name + " 标识 ：" + IS_PRODUCT_FINISH);
+                    Log.d(TAG, "xyz  addData: ------------------------------------------------------");
+
                     afterCheckPro(str_name);
                 }
             }
@@ -243,6 +251,7 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
                     stackingItem.set_qTY(qty);
                     stackingItem.set_pROD_DATE(date);
                     //这里要补上，这里有个日期
+                    stackingItem.set_cREATION_DATE(new Date());
                     stackingItem.set_cREATED_BY(user.get_userID());
                     stackingItem.set_lAST_UPDATE_DATE(new Date());
                     stackingItem.set_lAST_UPDATED_BY(user.get_userID());
@@ -297,7 +306,7 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
         hideProgress();
         mNextBtn.setEnabled(true);
         mAddBtn.setEnabled(true);
-        super.showToast("请求过程中出现异常！！"+e);
+        super.showToast("请求过程中出现异常！！" + e);
     }
 
     @Override
@@ -317,7 +326,7 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
     public void showDatePickerDialog(View v) {
         DialogFragment newFragment = new DatePickerFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("DATE",dateFromIn);
+        bundle.putSerializable("DATE", dateFromIn);
         newFragment.setArguments(bundle);
         newFragment.show(getFragmentManager(), "datePicker");
     }
@@ -327,7 +336,6 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
         Calendar calendar = new GregorianCalendar();
         calendar.set(year, month, dayOfMonth);
         date = calendar.getTime();
-        super.showToast("时间: " + date);
 
     }
 

@@ -10,6 +10,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.benjious.pdacontrol.R;
+import com.benjious.pdacontrol.util.DateUtil;
+
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -47,9 +53,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         Intent intent = getIntent();
-        String userName = "欢迎您： "+ intent.getStringExtra(LoginActivity.USERNAME);
+        String userName = "欢迎您： " + intent.getStringExtra(LoginActivity.USERNAME);
         mWelcome.setText(userName);
-        Log.d(TAG, "xyz  onCreate: 启动了几次");
+
     }
 
 

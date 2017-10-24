@@ -22,7 +22,7 @@ public class UsersALL {
     private String data;
     private boolean yesNo;
 
-    public boolean isYesNo() {
+    public boolean getYesNo() {
         return yesNo;
     }
 

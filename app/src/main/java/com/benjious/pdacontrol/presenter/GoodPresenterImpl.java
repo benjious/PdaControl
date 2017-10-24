@@ -11,17 +11,29 @@ import com.benjious.pdacontrol.view.CommonView;
 
 public class GoodPresenterImpl implements GoodPresenter, OnLoadGoodLisenter {
     //GoodReady
+    //检查是否有这个托盘
     public static final int CHECK_PALLET_ID = 1;
+    //检查是否有这个端口
     public static final int CHECK_PORT = 2;
+    //获取最新的 stack
     public static final int GET_NEWSTACK_ID = 3;
+
+
     //ProductAdd
+    //
     public static final int GET_STOCK_DETAIL = 4;
+    //获取物料的名字
     public static final int CHECK_PRO_NO = 5;
+
+
     //ProductIn
+    //插入原材料
     public static final int INSERT_STACKING = 6;
+
     public static final int INSERT_STACKINGITEM = 7;
-    public static final int UPDATE_PALLETID =8 ;
+    public static final int UPDATE_PALLET =8 ;
     public static final int UPDATE_STOCK =9 ;
+    public static final int INSERT_STOCK_DETAIL =10 ;
 
     private CommonView mCommonView;
     private GoodModel mGoodModel;

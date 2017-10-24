@@ -92,9 +92,6 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
     private GoodPresenter mGoodCheckPortpre;
     private GoodPresenter mGoodNextStackId;
 
-    private CountDownLatch mCountDownLatch;
-    private ExecutorService mExecutorService;
-
     private String comboKind;
     private Stacking mStacking = new Stacking();
     private String pallet_id;
@@ -150,18 +147,22 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
                 if (type == GoodPresenterImpl.CHECK_PALLET_ID) {
                     checkPallet = usersALL.getNumber();
                     IS_FINISHED.addAndGet(1);
-
                     Log.d(TAG, "xyz  addData: 显示一下数据 " + checkPallet + " 标识 ：" + IS_FINISHED);
+                    Log.d(TAG, "xyz  addData: ------------------------------------------------------");
+
 
                 } else if (type == GoodPresenterImpl.CHECK_PORT) {
-                    checkPort = usersALL.isYesNo();
+                    checkPort = usersALL.getYesNo();
                     IS_FINISHED.addAndGet(1);
                     Log.d(TAG, "xyz  addData: 显示二下数据：" + checkPort + " 标识 ：" + IS_FINISHED);
+                    Log.d(TAG, "xyz  addData: ------------------------------------------------------");
+
 
                 } else if (type == GoodPresenterImpl.GET_NEWSTACK_ID) {
                     mStacking.set_sTACK_ID(usersALL.getData());
                     IS_FINISHED.addAndGet(1);
                     Log.d(TAG, "xyz  addData: 显示三下数据：" + usersALL.getData());
+                    Log.d(TAG, "xyz  addData: ------------------------------------------------------");
                 }
 
                 if (IS_FINISHED.get() == 2) {
@@ -198,7 +199,6 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
                     bundle.putSerializable(STACKING_ITEM_LIST, new ArrayList<StackingItem>());
                     bundle.putSerializable(PICKING_SEND, new ArrayList<Picking>());
                     bundle.putInt(KIND_SEND, 1);
-//                    bundle.putInt(KIND_SEND, 0);
                     mIntent.putExtras(bundle);
                     startActivity(mIntent);
                     Log.d(TAG, "xyz  addData: 这应该是最后执行的: " + mStacking.toString());
@@ -275,16 +275,16 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
             if ((!(mInStorePointEdit.getText().toString().equals(""))) && (!(mStockIdEdit.getText().toString().equals(""))) && (!((mStyleSpin.getSelectedItem()).equals("")))) {
 
                 //进行数据库查询
-//                String checkPalletUrl = Url.PATH + "/CheckPallet?pallet_id=" + pallet_id + "&status=" + 1;
-                               String checkPalletUrl = Url.PATH + "/CheckPallet?pallet_id=" + "P0001" + "&status=" + 1;
+                String checkPalletUrl = Url.PATH + "/CheckPallet?pallet_id=" + pallet_id + "&status=" + 1;
+//                               String checkPalletUrl = Url.PATH + "/CheckPallet?pallet_id=" + "P0001" + "&status=" + 1;
                 Log.d(TAG, "xyz  nextStep: checkPalletUrl " + checkPalletUrl);
                 mPresenter =new GoodPresenterImpl(this);
                 mPresenter.loadData(checkPalletUrl, GoodPresenterImpl.CHECK_PALLET_ID);
 
 
 
-//                String checkPortUrl = Url.PATH + "/CheckPort?p_code=" + p_code;
-                String checkPortUrl = Url.PATH + "/CheckPort?p_code=" + "0001";
+                String checkPortUrl = Url.PATH + "/CheckPort?p_code=" + p_code;
+//                String checkPortUrl = Url.PATH + "/CheckPort?p_code=" + "0001";
                 Log.d(TAG, "xyz  nextStep: checkPortUrl " + checkPortUrl);
                 mGoodCheckPortpre = new GoodPresenterImpl(this);
                 mGoodCheckPortpre.loadData(checkPortUrl,GoodPresenterImpl.CHECK_PORT);

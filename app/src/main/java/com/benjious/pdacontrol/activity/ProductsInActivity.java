@@ -27,11 +27,13 @@ import com.benjious.pdacontrol.fragment.ProductDialogFragment;
 import com.benjious.pdacontrol.fragment.Product_FullFragment;
 import com.benjious.pdacontrol.interfazes.OnUpdateProductLisenter;
 import com.benjious.pdacontrol.presenter.GoodPresenterImpl;
+import com.benjious.pdacontrol.util.DateUtil;
 import com.benjious.pdacontrol.url.Url;
 import com.benjious.pdacontrol.util.OkHttpUtils;
 import com.benjious.pdacontrol.view.CommonView;
 import com.google.gson.Gson;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,24 +51,20 @@ import de.codecrafters.tableview.toolkit.SimpleTableHeaderAdapter;
  */
 
 public class ProductsInActivity extends BaseActivity implements OnUpdateProductLisenter, CommonView {
-    public static final String TAG = " xyz =";
-    public static AtomicInteger UP_FINISHED = new AtomicInteger();
+    public static final String TAG = "productIn xyz =";
+    public static AtomicInteger INSERT_STOCK_DETAIL = new AtomicInteger();
     public static final String[] HEAD_DATA = {"编号", "名称", "数量", "日期",};
-    public static final String PRODUCT_ID = "PRODUCT_ID";
-    public static final String PRODUCT_NUMBER = "PRODUCT_NUMBER";
-    public static final String PRODUCT_DATE = "PRODUCT_DATE";
-
     private User user;
     private Stacking mStacking;
     private List<StackingItem> mStackingItems;
     private int kind;
     private int rowNowIndex;
     private List<StockDetail> mStockDetails = new ArrayList<>();
-    private FragmentTransaction mTransaction;
 
     private int insertStacking;
     private int insertStackingItem;
-    private int updatePalletid;
+    private int updatePallet;
+    private int updateStock;
 
 
     private ViewGroup tvViewGroup;
@@ -75,22 +73,25 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
     private ProductBeenAdapter adapter;
 
     private List<ProductBeen> mBeens = new ArrayList<>();
+    private Boolean checkNot;
+
+//    prvivate AtomicInteger IS_INSERT_STOCK_DETAIL =;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.text);
 
-//        Intent intent = getIntent();
-//       kind =  intent.getIntExtra(ProductReadyActivity.KIND_SEND, 0);
-//        if (kind == 1) {
-//            mStacking = (Stacking) intent.getSerializableExtra(ProductReadyActivity.STACKING_SEND);
-//            mStackingItems = (List<StackingItem>) intent.getSerializableExtra(ProductReadyActivity.STACKING_ITEM_LIST);
-//
-//        } else {
-//            mStockDetails = (List<StockDetail>) intent.getSerializableExtra(ProductReadyActivity.STOCKING_DETAIL_LIST);
-//        }
+        Intent intent = getIntent();
+        kind = intent.getIntExtra(ProductReadyActivity.KIND_SEND, 0);
+        user = (User) intent.getSerializableExtra(ProductReadyActivity.USER_SEND);
+        if (kind == 1) {
+            mStacking = (Stacking) intent.getSerializableExtra(ProductReadyActivity.STACKING_SEND);
+            mStackingItems = (List<StackingItem>) intent.getSerializableExtra(ProductReadyActivity.STACKING_ITEM_LIST);
 
+        } else {
+            mStockDetails = (List<StockDetail>) intent.getSerializableExtra(ProductReadyActivity.STOCKING_DETAIL_LIST);
+        }
         setProductBeen();
         setTableView();
     }
@@ -104,49 +105,25 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
 
     @Override
     public void updateProduct(Boolean checkNot) {
-        if (mStackingItems.size() == 0 && mStockDetails.size() == 0) {
-            super.showToast("没有物料信息,无法提交任务!!");
+        this.checkNot = checkNot;
+        if (mStackingItems == null && mStockDetails == null) {
+            super.showToast("请先返回添加物料,提交无法操作");
         } else {
             if (kind == 1) {
-
+                super.showToast("正在提交物料");
                 String checkPalletUrl = Url.PATH + "/CheckPallet?pallet_id=" + mStacking.get_pALLET_ID() + "&status=" + 0;
-                Log.d(TAG, "xyz  nextStep: checkPalletUrl " + checkPalletUrl);
+                Log.d(TAG, "xyz  upProduct: checkPalletUrl " + checkPalletUrl);
                 GoodPresenterImpl mPresenter = new GoodPresenterImpl(this);
                 mPresenter.loadData(checkPalletUrl, GoodPresenterImpl.CHECK_PALLET_ID);
 
             } else {
-                String url = String.format(Url.PATH + "/UpdatePallet?Last_update_by=%s&Stock_oid=%s&Full_Flag=%s", new Date().toString(), user.get_userID(), checkNot);
+                super.showToast("正在向该托盘添加物料");
+                String url = String.format(Url.PATH + "/UpdateStock?Last_update_by=%s&Stock_oid=%s&Full_Flag=%s", user.get_userID(), mStockDetails.get(1).get_sTOCK_OID(), checkNot);
                 Log.d(TAG, "xyz  updateProduct: updateStockUrl" + url);
                 GoodPresenterImpl mPresenter = new GoodPresenterImpl(this);
                 mPresenter.loadData(url, GoodPresenterImpl.UPDATE_STOCK);
             }
         }
-        super.showToast(String.valueOf(checkNot));
-    }
-
-    @Override
-    public void deleteRowindex() {
-        mBeens.remove(rowNowIndex);
-        tableviewFresh();
-    }
-
-    @Override
-    public void goBackProductAdd() {
-        Intent intent = new Intent(this, ProductsAddActivity.class);
-        intent.putExtra(PRODUCT_ID, mBeens.get(rowNowIndex).getProductId());
-        intent.putExtra(PRODUCT_NUMBER, mBeens.get(rowNowIndex).getProductNum());
-        intent.putExtra(PRODUCT_DATE, mBeens.get(rowNowIndex).getProductDate());
-        startActivity(intent);
-    }
-
-    @Override
-    public void showProgress() {
-
-    }
-
-    @Override
-    public void hideProgress() {
-
     }
 
     @Override
@@ -162,13 +139,23 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
                 if (type == GoodPresenterImpl.CHECK_PALLET_ID) {
                     int havanot = -1;
                     havanot = usersALL.getNumber();
+                    Log.d(TAG, "xyz  addData: check_pallet_id " + havanot);
                     if (havanot == 0) {
+                        mStacking.set_fULL_FLAG(this.checkNot);
                         mStacking.set_cREATION_DATE(new Date());
                         mStacking.set_cREATED_BY(user.get_userID());
                         mStacking.set_lAST_UPDATE_DATE(new Date());
                         mStacking.set_lAST_UPDATED_BY(user.get_userID());
+                        String checkNotString = null;
+                        if (this.checkNot) {
+                            checkNotString = "1";
+                        } else {
+                            checkNotString = "0";
+                        }
+//                        String url = Url.PATH + "/InsertStacking?STACK_ID='" + mStacking.get_sTACK_ID() + "'" + "&WH_NO='" + mStacking.get_wH_NO() + "'" + "&PALLET_ID='" + mStacking.get_pALLET_ID() + "'" + "&P_CODE=" + mStacking.get_p_CODE() + "&KIND=" + mStacking.get_kIND() + "&BIN_NO=" + mStacking.get_bIN_NO() + "&FULL_FLAG=" + mStacking.get_fULL_FLAG() + "&STATUS=" + mStacking.get_sTATUS() + "&CREATION_DATE='" + DateUtil.converToString(mStacking.get_cREATION_DATE()) + "'" + "&CREATED_BY=" + mStacking.get_cREATED_BY() + "&LAST_UPDATE_DATE='" + DateUtil.converToString( mStacking.get_lAST_UPDATE_DATE()) + "'" + "&LAST_UPDATED_BY='" + mStacking.get_lAST_UPDATED_BY() + "'";
+                        String url = Url.PATH + "/InsertStacking?STACK_ID=" + mStacking.get_sTACK_ID() + "&WH_NO=" + mStacking.get_wH_NO() + "&PALLET_ID=" + mStacking.get_pALLET_ID() + "&P_CODE=" + mStacking.get_p_CODE() + "&KIND=" + mStacking.get_kIND() + "&BIN_NO=" + mStacking.get_bIN_NO() + "&FULL_FLAG=" + checkNotString + "&STATUS=" + mStacking.get_sTATUS() + "&CREATION_DATE=" + DateUtil.converToString(mStacking.get_cREATION_DATE()) + "&CREATED_BY=" + mStacking.get_cREATED_BY() + "&LAST_UPDATE_DATE=" + DateUtil.converToString(mStacking.get_lAST_UPDATE_DATE()) + "&LAST_UPDATED_BY=" + mStacking.get_lAST_UPDATED_BY();
 
-                        String url = Url.PATH + "/InsertStacking?STACK_ID='" + mStacking.get_sTACK_ID() + "'" + "&WH_NO=" + mStacking.get_wH_NO() + "'" + "&PALLET_ID='" + mStacking.get_pALLET_ID() + "'" + "&P_CODE=" + mStacking.get_p_CODE() + "&KIND=" + mStacking.get_kIND() + "&BIN_NO=" + mStacking.get_bIN_NO() + "&FULL_FLAG=" + mStacking.get_fULL_FLAG() + "&STATUS=" + mStacking.get_sTATUS() + "&CREATION_DATE='" + mStacking.get_cREATION_DATE() + "'" + "&CREATED_BY=" + mStacking.get_cREATED_BY() + "&LAST_UPDATE_DATE='" + mStacking.get_lAST_UPDATE_DATE() + "'" + "&LAST_UPDATED_BY='" + mStacking.get_lAST_UPDATED_BY() + "'";
+                        Log.d(TAG, "xyz  addData: insertStacking url " + url);
                         GoodPresenterImpl presentImp = new GoodPresenterImpl(this);
                         presentImp.loadData(url, GoodPresenterImpl.INSERT_STACKING);
                     } else {
@@ -180,51 +167,112 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
 
                 if (type == GoodPresenterImpl.INSERT_STACKING) {
                     insertStacking = usersALL.getNumber();
-                    UP_FINISHED.addAndGet(1);
                     Log.d(TAG, "xyz  addData: 显示六下数据 " + insertStacking);
+                    Log.d(TAG, "xyz  addData: ------------------------------------------------------");
                     if (insertStacking > 0) {
-                        String url = Url.PATH + "/InsertStackingItem?ITEM_ID='" + mStackingItems.get(rowNowIndex - 1).get_iTEM_ID() + "'&" + "STACK_ID='" + mStackingItems.get(rowNowIndex - 1).get_sTACK_ID() + "'&" + "LIST_NO='" + mStackingItems.get(rowNowIndex - 1).get_lIST_NO()
-                                + "'&" + "QTY='" + mStackingItems.get(rowNowIndex - 1).get_qTY() + "'&" + "PROD_DATE='" + mStackingItems.get(rowNowIndex - 1).get_pROD_DATE()
-                                + "'&" + "CREATION_DATE='" + mStackingItems.get(rowNowIndex - 1).get_cREATION_DATE() + "'&" + "CREATED_BY='" + mStackingItems.get(rowNowIndex - 1).get_cREATED_BY() +
-                                "'&" + "LAST_UPDATE_DATE='" + mStackingItems.get(rowNowIndex - 1).get_lAST_UPDATE_DATE() + "'&" + "LAST_UPDATED_BY='" + mStackingItems.get(rowNowIndex - 1).get_lAST_UPDATED_BY() + "'";
+                        String url = Url.PATH + "/InsertStackingItem?ITEM_ID=" + mStackingItems.get(rowNowIndex).get_iTEM_ID() + "&" + "STACK_ID=" + mStackingItems.get(rowNowIndex).get_sTACK_ID() + "&" + "LIST_NO=" + mStackingItems.get(rowNowIndex).get_lIST_NO()
+                                + "&" + "QTY=" + mStackingItems.get(rowNowIndex).get_qTY() + "&" + "PROD_DATE=" + DateUtil.converToString(mStackingItems.get(rowNowIndex).get_pROD_DATE())
+                                + "&" + "CREATION_DATE=" + DateUtil.converToString(mStackingItems.get(rowNowIndex).get_cREATION_DATE()) + "&" + "CREATED_BY=" + mStackingItems.get(rowNowIndex).get_cREATED_BY() +
+                                "&" + "LAST_UPDATE_DATE=" + DateUtil.converToString(mStackingItems.get(rowNowIndex).get_lAST_UPDATE_DATE()) + "&" + "LAST_UPDATED_BY=" + mStackingItems.get(rowNowIndex).get_lAST_UPDATED_BY();
+                        Log.d(TAG, "xyz  addData: 显示六下数据的url " + url);
                         GoodPresenterImpl presenter = new GoodPresenterImpl(this);
                         presenter.loadData(url, GoodPresenterImpl.INSERT_STACKINGITEM);
                     }
                 }
                 if (type == GoodPresenterImpl.INSERT_STACKINGITEM) {
                     insertStackingItem = usersALL.getNumber();
-                    UP_FINISHED.addAndGet(1);
                     Log.d(TAG, "xyz  addData: 显示七下数据 " + insertStacking);
+                    Log.d(TAG, "xyz  addData: ------------------------------------------------------");
                     if (insertStackingItem > 0) {
-                        String url = Url.PATH + "/UpdatePallet?LAST_UPDATE_DATE='" + mStacking.get_lAST_UPDATE_DATE() + "'&" + "LAST_UPDATED_BY='" + mStacking.get_lAST_UPDATED_BY() + "'&" + "PALLET_ID='" + mStacking.get_pALLET_ID();
+                        String url = Url.PATH + "/UpdatePallet?LAST_UPDATE_DATE=" + DateUtil.converToString(mStacking.get_lAST_UPDATE_DATE()) + "&" + "LAST_UPDATED_BY=" + mStacking.get_lAST_UPDATED_BY() + "&" + "PALLET_ID=" + mStacking.get_pALLET_ID();
+                        Log.d(TAG, "xyz  addData: 显示七下数据的url " + url);
                         GoodPresenterImpl presenter = new GoodPresenterImpl(this);
-                        presenter.loadData(url, GoodPresenterImpl.INSERT_STACKINGITEM);
+                        presenter.loadData(url, GoodPresenterImpl.UPDATE_PALLET);
                     }
                 }
-                if (type == GoodPresenterImpl.UPDATE_PALLETID) {
-                    updatePalletid = usersALL.getNumber();
-                    UP_FINISHED.addAndGet(1);
-                    Log.d(TAG, "xyz  addData: 显示八下数据 " + insertStacking);
-                    if (updatePalletid > 0) {
+
+                if (type == GoodPresenterImpl.UPDATE_PALLET) {
+                    updatePallet = usersALL.getNumber();
+                    Log.d(TAG, "xyz  addData: 显示八下数据 " + updatePallet);
+                    Log.d(TAG, "xyz  addData: ------------------------------------------------------");
+                    if (updatePallet > 0) {
                         super.showToast("提交成功!");
-                        mStackingItems.remove(rowNowIndex - 1);
+                        mStackingItems.remove(rowNowIndex);
                         tableviewFresh();
+                    } else {
+                        super.showToast("提交失败");
                     }
                 }
 
-                if (type== GoodPresenterImpl.UPDATE_STOCK) {
+                if (type == GoodPresenterImpl.UPDATE_STOCK) {
+                    updateStock = usersALL.getNumber();
+                    Log.d(TAG, "xyz  addData: 显示九下数据 " + updateStock);
+                    Log.d(TAG, "xyz  addData: ------------------------------------------------------");
 
+                    if (updateStock > 0) {
+                        //insertStockDetail();
+                        for (StockDetail stockDetail : mStockDetails) {
+                            String url = String.format(Url.PATH + "/InsertStockDetail?STOCK_OID=%s&ITEM_ID=%s&PROD_DATE=%s&EXPIRE_DATE=%s&BATCH_NO=%s&QTY=%s&OUT_QTY=%s&STOCK_QTY=%s&CREATION_DATE=%s&CREATED_BY=%s&LAST_UPDATE_DATE=%s&LAST_UPDATED_BY=%s", stockDetail.get_sTOCK_OID(),
+                                    stockDetail.get_iTEM_ID(), DateUtil.converToString(stockDetail.get_pROD_DATE()),
+                                    DateUtil.converToString(stockDetail.get_eXPIRE_DATE()), stockDetail.get_bATCH_NO(), stockDetail.get_qTY(), stockDetail.get_oUT_QTY(), stockDetail.get_sTOCK_QTY(), DateUtil.converToString(stockDetail.get_cREATION_DATE()),
+                                    stockDetail.get_cREATED_BY(), DateUtil.converToString(stockDetail.get_lAST_UPDATE_DATE()), stockDetail.get_cREATED_BY());
+                            GoodPresenterImpl insertpre = new GoodPresenterImpl(this);
+                            insertpre.loadData(url, GoodPresenterImpl.INSERT_STOCK_DETAIL);
+                        }
+                    }
+                }
+
+                if (type == GoodPresenterImpl.INSERT_STOCK_DETAIL) {
+                    INSERT_STOCK_DETAIL.addAndGet(usersALL.getNumber());
+                    if (INSERT_STOCK_DETAIL.get() == mStackingItems.size()) {
+                        mStockDetails.clear();
+                        mBeens.clear();
+                        tableviewFresh();
+                        super.showToast("添加物料成功");
+                    }
                 }
             }
 
         } catch (Exception e) {
-            super.showToast("解析数据出现错误");
+            e.printStackTrace();
+            super.showToast("解析数据出现错误" + e);
             Log.d(TAG, "xyz  addData: " + e);
-        } finally {
-
         }
 
     }
+
+    @Override
+    public void deleteRowindex() {
+        mBeens.remove(rowNowIndex);
+        if (kind == 1) {
+            mStackingItems.remove(rowNowIndex);
+        } else {
+            mStockDetails.remove(rowNowIndex);
+        }
+        if (mBeens.size() == 0) {
+            goBackProductAdd();
+        }
+        tableviewFresh();
+    }
+
+    @Override
+    public void goBackProductAdd() {
+        mBeens.clear();
+        this.finish();
+        Intent intent = new Intent(this, ProductsAddActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void showProgress() {
+
+    }
+
+    @Override
+    public void hideProgress() {
+
+    }
+
 
     @Override
     public void loadExecption(Exception e) {
@@ -248,30 +296,13 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
             ProductDialogFragment newFragment = new ProductDialogFragment();
             newFragment.show(getFragmentManager(), "对话框");
 
-//            String Tag ="对话框";
-//            FragmentManager fragmentManager = getSupportFragmentManager() ;
-//            mTransaction= fragmentManager.beginTransaction();
-//            mTransaction.add(newFragment,Tag);
-//            mTransaction.commit();
-//            for (int i = 0; i < 10; i++) {
-//                ProductBeen been = new ProductBeen(12, "SJ_JDI-34", "HGOEJDD", new Date());
-//                mBeens.add(been);
-//            }
-//
-//            if (mBeens.size()>10) {
-////                tvViewGroup.setClickable(false);
-////                tableView.setClickable(false);
-////                tableView.setEnabled(false);
-//            }
-
-            // tableviewFresh();
         }
     }
 
 
     private void tableviewFresh() {
         adapter.notifyDataSetChanged();
-        tableView.notify();
+//        tableView.notify();
     }
 
 
@@ -298,7 +329,7 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
                     renderedView = renderString(String.valueOf(been.getProductNum()));
                     break;
                 case 3:
-                    renderedView = renderString(been.getProductDate().toString());
+                    renderedView = renderString(DateUtil.converToString(been.getProductDate()));
                     break;
                 case 4:
 //                    renderedView =renderCheck();
@@ -315,13 +346,6 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
         textView.setTextSize(10);
         return textView;
     }
-
-    private View renderCheck() {
-        final CheckBox checkBox = new CheckBox(this);
-        checkBox.setPadding(20, 10, 5, 10);
-        return checkBox;
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -344,21 +368,16 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
     }
 
     private void setProductBeen() {
-//        if (kind==1) {
-//            for (StackingItem item : mStackingItems) {
-//                ProductBeen been = new ProductBeen(item.get_qTY(), item.get_product_name(), item.get_iTEM_ID(), item.get_pROD_DATE());
-//                mBeens.add(been);
-//            }
-//        }else {
-//            for (StockDetail  item : mStockDetails) {
-//                ProductBeen been = new ProductBeen(item.get_qTY(), item.get_product_name(), item.get_iTEM_ID(), item.get_pROD_DATE());
-//                mBeens.add(been);
-//            }
-//        }
-
-        for (int i = 0; i < 2; i++) {
-            ProductBeen been = new ProductBeen(12, "SJ_JDI-34", "HGOEJDD", new Date());
-            mBeens.add(been);
+        if (kind == 1) {
+            for (StackingItem item : mStackingItems) {
+                ProductBeen been = new ProductBeen(item.get_qTY(), item.get_product_name(), item.get_iTEM_ID(), item.get_pROD_DATE());
+                mBeens.add(been);
+            }
+        } else {
+            for (StockDetail item : mStockDetails) {
+                ProductBeen been = new ProductBeen(item.get_qTY(), item.get_product_name(), item.get_iTEM_ID(), item.get_pROD_DATE());
+                mBeens.add(been);
+            }
         }
     }
 
