@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -54,8 +55,6 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
     TextView mPalletId;
     @Bind(R.id.pallet_id_edit)
     EditText mPalletIdEdit;
-    @Bind(R.id.product_tableView)
-    TableView mProductTableView;
     @Bind(R.id.find_product_btn)
     Button mFindProductBtn;
     @Bind(R.id.BackBtn)
@@ -64,11 +63,12 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
     private int rowNowIndex;
     private User mUser;
     private ProductInventAdapter adapter;
-    private List<InventoryBeen> mInventoryBeens=new ArrayList<>();
+    private List<InventoryBeen> mInventoryBeens = new ArrayList<>();
     private List<Inventory> mInventories;
     public static final String[] HEAD_DATA = {"物料名称", "物料编号", "托盘编号", "库存数量"};
     public static final String TAG = "InventoryActivity xyz =";
 
+    private TableView<InventoryBeen> mProductTableView;
     private String check_list_no;
     private int oid = -1;
     private int updateStoreNum;
@@ -79,14 +79,20 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
         setContentView(R.layout.inverntory);
         ButterKnife.bind(this);
 
-        Intent intent =getIntent();
+        Intent intent = getIntent();
         mUser = (User) intent.getSerializableExtra(LoginActivity.USER);
         setTableView();
     }
 
     private void setContent() {
 
-        if (mFindProductBtn.getText().equals("")) {
+//        for (int i = 0; i < 10; i++) {
+//            InventoryBeen been = new InventoryBeen("a", "b", "c", 33);
+//            mInventoryBeens.add(been);
+//        }
+//        tableviewFresh();
+
+        if (mPalletIdEdit.getText().toString().equals("")) {
             super.showToast("请输入托盘编号!");
         } else {
             mFindProductBtn.setEnabled(false);
@@ -99,12 +105,7 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
     }
 
     private void setTableView() {
-        mProductTableView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
+        mProductTableView = (TableView<InventoryBeen>) findViewById(R.id.product_tableView);
         adapter = new ProductInventAdapter(this, mInventoryBeens);
         mProductTableView.addDataClickListener(new ProductDatalistener());
         mProductTableView.setDataAdapter(adapter);
@@ -121,16 +122,17 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
 
     @Override
     public void showProgress() {
-
+        // ((ViewStub)findViewById(R.id.viewStub)).setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-
+//        ((ViewStub)findViewById(R.id.viewStub)).setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void addData(String response, int type) {
+        hideProgress();
         mFindProductBtn.setEnabled(true);
         try {
             Gson gson = new Gson();
@@ -153,21 +155,22 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
                         tableviewFresh();
                     }
                 }
-                if (type== GoodPresenterImpl.UPDATE_INVENTORYS) {
-                    boolean result =usersALL.getYesNo();
+                if (type == GoodPresenterImpl.UPDATE_INVENTORYS) {
+                    boolean result = usersALL.getYesNo();
                     if (result) {
                         mInventories.get(rowNowIndex).set_oLD_STOCK_QTY(updateStoreNum);
                         mInventoryBeens.get(rowNowIndex).setStoreNum(updateStoreNum);
                         tableviewFresh();
                         super.showToast("成功修改了库存数量!! ");
 
-                    }else {
+                    } else {
                         super.showToast("修改出现错误!!! ");
                     }
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
+            hideProgress();
             super.showToast("解析数据出现错误" + e);
             Log.d(TAG, "xyz  addData: " + e);
         }
@@ -175,11 +178,15 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
 
     @Override
     public void loadExecption(Exception e) {
+        mFindProductBtn.setEnabled(true);
+        hideProgress();
         super.showToast("请求过程中出现异常！！" + e);
     }
 
     @Override
     public void showLoadFail(int failNum) {
+        mFindProductBtn.setEnabled(true);
+        hideProgress();
         if (failNum == OkHttpUtils.SERVER_OFFLINE) {
             Toast.makeText(this, "请求服务器出现错误！！", Toast.LENGTH_SHORT).show();
         } else if (failNum == OkHttpUtils.NO_REAL_DATA) {
@@ -194,17 +201,21 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
                 setContent();
                 break;
             case R.id.BackBtn:
-                this.finish();
+//                this.finish();
+
                 break;
         }
     }
 
     @Override
     public void upInventoryStore(int num) {
-        updateStoreNum=num;
-        String url = Url.PATH + "/UpdateInventorys?last_updated_by=" + mUser.get_userID() + "&check_list_no=" +check_list_no+"&oid="+oid+"&qty="+num;
+        updateStoreNum = num;
+        check_list_no = mInventories.get(rowNowIndex).get_cHECK_LIST_NO();
+        oid = mInventories.get(rowNowIndex).get_oID();
+        String url = Url.PATH + "/UpdateInventorys?last_updated_by=" + mUser.get_userID() + "&check_list_no=" + check_list_no + "&oid=" + oid + "&qty=" + num;
         GoodPresenterImpl upStoreImpl = new GoodPresenterImpl(this);
-        upStoreImpl.loadData(url,GoodPresenterImpl.UPDATE_INVENTORYS);
+        showProgress();
+        upStoreImpl.loadData(url, GoodPresenterImpl.UPDATE_INVENTORYS);
 
     }
 
@@ -245,14 +256,15 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
         adapter.notifyDataSetChanged();
     }
 
-    private class ProductDatalistener implements TableDataClickListener<ProductBeen> {
+    private class ProductDatalistener implements TableDataClickListener<InventoryBeen> {
+
         @Override
-        public void onDataClicked(int rowIndex, ProductBeen clickedData) {
+        public void onDataClicked(int rowIndex, InventoryBeen clickedData) {
+            Log.d(TAG, "xyz  onDataClicked: 这是没有执行吗??????");
             rowNowIndex = rowIndex;
-            check_list_no = mInventories.get(rowNowIndex).get_cHECK_LIST_NO();
-            oid =mInventories.get(rowNowIndex).get_oID();
             InventoryFragment newFragment = new InventoryFragment();
             newFragment.show(getFragmentManager(), "对话框");
+
         }
     }
 

@@ -5,6 +5,7 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -18,10 +19,12 @@ import com.benjious.pdacontrol.interfazes.OnUpdateInventoryStore;
  */
 
 public class InventoryFragment extends DialogFragment {
+    public static final String TAG="InventoryFragment xyz =";
     private OnUpdateInventoryStore mOnUpdateInventoryStore;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Log.d(TAG, "xyz  onCreateDialog: 这里执行了吗??");
         mOnUpdateInventoryStore = (OnUpdateInventoryStore) getActivity();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -37,9 +40,8 @@ public class InventoryFragment extends DialogFragment {
                 }
             }
         })
-                .setTitle("实际库存数量");
+                ;
         return builder.create();
-
 
     }
 }

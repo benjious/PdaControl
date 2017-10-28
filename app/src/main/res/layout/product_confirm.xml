@@ -6,7 +6,7 @@
                 android:orientation="vertical">
 
     <TextView
-        android:id="@+id/pallet_id"
+        android:id="@+id/port_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -14,10 +14,33 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
         android:layout_marginStart="44dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="48dp"
+        android:text="@string/port"/>
+
+    <EditText
+        android:id="@+id/port_id_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/port_id"
+        android:layout_centerHorizontal="true"
+        android:layout_toEndOf="@+id/port_id"
+        android:ems="10"
+        android:maxLines="1"
+        android:singleLine="true"/>
+
+    <TextView
+        android:id="@+id/pallet_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/port_id"
+        android:layout_alignStart="@+id/port_id"
+        android:layout_marginBottom="15dp"
         android:text="@string/pallet_id"/>
 
     <EditText
+        android:layout_marginBottom="15dp"
         android:id="@+id/pallet_id_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,29 +70,36 @@
 
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:background="@color/gray"
         android:layout_alignParentBottom="true"
-        android:layout_below="@+id/product_tableView"
-        android:background="@color/gray">
+        android:layout_alignParentStart="true">
 
         <Button
             android:id="@+id/find_product_btn"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
+            android:layout_marginStart="28dp"
+            android:text="@string/find_product"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="91dp"
-            android:text="@string/find_product"/>
+            android:layout_alignParentStart="true"/>
 
         <Button
             android:id="@+id/BackBtn"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignBottom="@+id/find_product_btn"
+            android:text="@string/back"
+            android:layout_marginEnd="29dp"
             android:layout_alignTop="@+id/find_product_btn"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="30dp"
-            android:layout_toEndOf="@+id/find_product_btn"
-            android:text="@string/back"/>
+            android:layout_alignParentEnd="true"/>
+
+        <Button
+            android:id="@+id/add_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_product"
+            android:layout_alignBaseline="@+id/find_product_btn"
+            android:layout_alignTop="@+id/find_product_btn"
+            android:layout_centerHorizontal="true"/>
 
     </RelativeLayout>
 

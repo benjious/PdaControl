@@ -18,7 +18,6 @@
             android:label="主界面"
             android:name=".activity.MainActivity"
             android:launchMode="singleTask">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -45,6 +44,10 @@
             android:label="盘点确认界面">
         </activity>
 
+        <activity android:name=".activity.TestActivity">
+
+
+        </activity>
     </application>
 
 </manifest>

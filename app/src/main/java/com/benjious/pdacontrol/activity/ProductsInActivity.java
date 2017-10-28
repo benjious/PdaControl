@@ -383,12 +383,6 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
 
     private void setTableView() {
         tableView = (TableView<ProductBeen>) findViewById(R.id.tableView11);
-        tableView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
         adapter = new ProductBeenAdapter(this, mBeens);
         tableView.addDataClickListener(new ProductDatalistener());
         tableView.setDataAdapter(adapter);
