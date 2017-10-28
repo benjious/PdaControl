@@ -25,13 +25,8 @@ import com.benjious.pdacontrol.url.Url;
 import com.benjious.pdacontrol.util.OkHttpUtils;
 import com.benjious.pdacontrol.view.CommonView;
 import com.google.gson.Gson;
-
-
 import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -110,7 +105,7 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.goodready);
+        setContentView(R.layout.product_ready);
         ButterKnife.bind(this);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.good_style, android.R.layout.simple_spinner_item);

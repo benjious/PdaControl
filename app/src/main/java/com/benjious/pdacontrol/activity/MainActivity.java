@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.benjious.pdacontrol.R;
+import com.benjious.pdacontrol.been.User;
 import com.benjious.pdacontrol.util.DateUtil;
 
 import java.sql.Timestamp;
@@ -46,13 +47,14 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.welcome)
     TextView mWelcome;
 
-
+private User mUser;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         Intent intent = getIntent();
+        mUser = (User) intent.getSerializableExtra(LoginActivity.USER);
         String userName = "欢迎您： " + intent.getStringExtra(LoginActivity.USERNAME);
         mWelcome.setText(userName);
 
@@ -61,15 +63,18 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick({R.id.MaduoInstore, R.id.goodInStore, R.id.numAck, R.id.emptyAck, R.id.someAck, R.id.repairAck, R.id.quitLogin, R.id.welcome})
     public void onViewClicked(View view) {
+        Intent intent = new Intent();
         switch (view.getId()) {
             case R.id.MaduoInstore:
                 break;
             case R.id.goodInStore:
-                Intent intent = new Intent();
                 intent.setClass(MainActivity.this, ProductReadyActivity.class);
                 startActivity(intent);
                 break;
             case R.id.numAck:
+                intent.putExtra(LoginActivity.USER, mUser);
+                intent.setClass(MainActivity.this, InventoryActivity.class);
+                startActivity(intent);
                 break;
             case R.id.emptyAck:
                 break;

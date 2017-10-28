@@ -276,7 +276,7 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
 
     @Override
     public void loadExecption(Exception e) {
-        super.showToast("请求过程中出现异常！！" + e);
+        super.showToast("请求过    程中出现异常！！" + e);
     }
 
     @Override

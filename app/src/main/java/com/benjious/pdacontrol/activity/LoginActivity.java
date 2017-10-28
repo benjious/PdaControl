@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.benjious.pdacontrol.R;
 import com.benjious.pdacontrol.been.Binsta;
+import com.benjious.pdacontrol.been.User;
 import com.benjious.pdacontrol.interfazes.OnLoadGoodLisenter;
 import com.benjious.pdacontrol.util.OkHttpUtils;
 import com.benjious.pdacontrol.view.CommonView;
@@ -50,6 +51,7 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
     TextView mComeBackMsg;
     public static final String TAG = "LoginActivity xyz =";
     public static final String USERNAME = "USERNAME";
+    public static final String USER ="USER";
 
     @Bind(R.id.progressBar)
     ProgressBar mProgressBar;
@@ -133,6 +135,8 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
     private void goToMain() {
         Intent intent = new Intent();
         intent.putExtra(USERNAME, holdMsg);
+        //这里记得改回来
+        intent.putExtra( USER,new User());
         intent.setClass(LoginActivity.this, MainActivity.class);
         startActivity(intent);
     }

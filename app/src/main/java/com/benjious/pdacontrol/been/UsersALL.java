@@ -9,7 +9,7 @@ import java.util.List;
 public class UsersALL {
     private List<TestUser> mTestUsers;
     private List<StockDetail> mStockDetails;
-
+    private List<Inventory>  mInventories;
     public List<StockDetail> getStockDetails() {
         return mStockDetails;
     }
@@ -54,11 +54,20 @@ public class UsersALL {
         this.data = data;
     }
 
+    public List<Inventory> getInventories() {
+        return mInventories;
+    }
+
+    public void setInventories(List<Inventory> inventories) {
+        mInventories = inventories;
+    }
+
     @Override
     public String toString() {
         return "UsersALL{" +
                 "mTestUsers=" + mTestUsers +
                 ", mStockDetails=" + mStockDetails +
+                ", mInventories=" + mInventories +
                 ", number=" + number +
                 ", data='" + data + '\'' +
                 ", yesNo=" + yesNo +

@@ -21,7 +21,6 @@ public class ProductDialogFragment extends DialogFragment {
     // Use the Builder class for convenient dialog construction
 
     private OnUpdateProductLisenter updateProductLisenter;
-    public static final String[] STRING = {"AA", "TTT", "EEE"};
     public static final String TAG = "xyz =";
     private Handler mHandler=new Handler(Looper.getMainLooper());
 

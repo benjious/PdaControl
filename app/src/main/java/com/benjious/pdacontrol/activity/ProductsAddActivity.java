@@ -249,7 +249,7 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
                     stackingItem.set_sTACK_ID(stacking.get_sTACK_ID());
                     stackingItem.set_lIST_NO("");
                     stackingItem.set_qTY(qty);
-                    stackingItem.set_pROD_DATE(date);
+                   stackingItem.set_pROD_DATE(date);
                     //这里要补上，这里有个日期
                     stackingItem.set_cREATION_DATE(new Date());
                     stackingItem.set_cREATED_BY(user.get_userID());
