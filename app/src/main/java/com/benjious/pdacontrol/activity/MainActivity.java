@@ -79,6 +79,10 @@ private User mUser;
             case R.id.emptyAck:
                 break;
             case R.id.someAck:
+                intent.putExtra(LoginActivity.USER, mUser);
+                intent.putExtra(LoginActivity.KIND, 1);
+                intent.setClass(MainActivity.this, ProductConfigActivity.class);
+                startActivity(intent);
                 break;
             case R.id.repairAck:
                 break;
