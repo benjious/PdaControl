@@ -17,10 +17,12 @@ import android.widget.Toast;
 import com.benjious.pdacontrol.R;
 import com.benjious.pdacontrol.been.Binsta;
 import com.benjious.pdacontrol.been.User;
+import com.benjious.pdacontrol.been.UsersALL;
 import com.benjious.pdacontrol.interfazes.OnLoadGoodLisenter;
 import com.benjious.pdacontrol.util.OkHttpUtils;
 import com.benjious.pdacontrol.view.CommonView;
 import com.benjious.pdacontrol.webService.WLoginService;
+import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -50,9 +52,8 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
     @Bind(R.id.comeBackMsg)
     TextView mComeBackMsg;
     public static final String TAG = "LoginActivity xyz =";
-    public static final String USERNAME = "USERNAME";
-    public static final String USER ="USER";
-    public static final String KIND ="KIND";
+    public static final String USER = "USER";
+    public static final String KIND = "KIND";
 
     @Bind(R.id.progressBar)
     ProgressBar mProgressBar;
@@ -61,7 +62,7 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
 
     private String username = "";
     private String password = "";
-    private String holdMsg;
+    private User mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +125,7 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
     }
 
     //检查网络
-    public  boolean checkNetwork() {
+    public boolean checkNetwork() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager.getActiveNetworkInfo() != null) {
             return connectivityManager.getActiveNetworkInfo().isAvailable();
@@ -135,9 +136,8 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
 
     private void goToMain() {
         Intent intent = new Intent();
-        intent.putExtra(USERNAME, holdMsg);
         //这里记得改回来
-        intent.putExtra( USER,new User());
+        intent.putExtra(USER,mUser);
         intent.setClass(LoginActivity.this, MainActivity.class);
         startActivity(intent);
     }
@@ -156,27 +156,34 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
     @Override
     public void addData(final String response, int type) {
         hideProgress();
-        holdMsg = response;
-        mProgressBar.setVisibility(View.INVISIBLE);
-        Log.d(TAG, "xyz  onPostExecute: 返回的数据是什么： " + response);
-        if (response == null || response.equals("")) {
-            noCount();
-        } else {
-            Log.d(TAG, "xyz  run: respone: " + response);
-            mComeBackMsg.setText(response);
-            goToMain();
+        Log.d(TAG, "xyz  addData: 执行到这里了吗????");
+        try {
+            Gson gson = new Gson();
+            UsersALL usersALL = gson.fromJson(response, UsersALL.class);
+            Log.d(TAG, "xyz  addData: 打印一下 USER "+usersALL.toString());
+            if (usersALL == null) {
+                showLoadFail(OkHttpUtils.NO_REAL_DATA);
+            }else {
+                mUser = usersALL.getUsers().get(1);
+                goToMain();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     public void loadExecption(Exception e) {
         hideProgress();
+        mLoginButton.setEnabled(true);
         Toast.makeText(this, "请求服务器出现错误！！" + e.toString(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showLoadFail(int failNum) {
         hideProgress();
+        mLoginButton.setEnabled(true);
         if (failNum == OkHttpUtils.SERVER_OFFLINE) {
             Toast.makeText(this, "请求服务器出现错误！！", Toast.LENGTH_SHORT).show();
         } else if (failNum == OkHttpUtils.NO_REAL_DATA) {

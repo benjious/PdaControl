@@ -55,7 +55,8 @@ private User mUser;
         ButterKnife.bind(this);
         Intent intent = getIntent();
         mUser = (User) intent.getSerializableExtra(LoginActivity.USER);
-        String userName = "欢迎您： " + intent.getStringExtra(LoginActivity.USERNAME);
+//        String userName = "欢迎您： " + intent.getStringExtra(LoginActivity.USERNAME);
+        String userName = mUser.get_userName();
         mWelcome.setText(userName);
 
     }

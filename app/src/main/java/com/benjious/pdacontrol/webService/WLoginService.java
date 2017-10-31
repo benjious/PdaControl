@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
+import static com.benjious.pdacontrol.util.OkHttpUtils.SERVER_OFFLINE;
 
 
 /**
@@ -23,8 +24,7 @@ public class WLoginService {
 
 
     //通过GET方式获取HTTP服务器数据
-    public static String executeHttpGet(String username, String password, final CommonView view) {
-        final String[] holdMsg = {""};
+    public static void executeHttpGet(String username, String password, final CommonView view) {
 
         try {
             String path = Url.PATH+"/LogLet";
@@ -37,22 +37,11 @@ public class WLoginService {
                 @Override
                 public void onSuccess(String response) {
                     if (response == null) {
-                        return;
-                    }
-                    Gson gson = new Gson();
-                    UsersALL usersALL = gson.fromJson(response, UsersALL.class);
-                    if (usersALL==null) {
-                        view.showLoadFail(OkHttpUtils.SERVER_OFFLINE);
-                    }else {
-                        if (usersALL.getTestUsers().size() != 0) {
-                            Log.d(TAG, "xyz  onSuccess: ----" + usersALL.getTestUsers().get(0).getUsername());
-                            view.addData(usersALL.getTestUsers().get(0).getUsername(),LOGIN);
-                        } else {
-                            view.showLoadFail(OkHttpUtils.NO_REAL_DATA);
-                        }
+                        view.showLoadFail(SERVER_OFFLINE);
+                    } else {
+                      view.addData(response,LOGIN);
                     }
                 }
-
 
                 @Override
                 public void onFailure(Exception e) {
@@ -64,8 +53,6 @@ public class WLoginService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.d(TAG, "xyz  executeHttpGet: " + holdMsg[0]);
-        return holdMsg[0];
     }
 
     //将输入流转化成string 型

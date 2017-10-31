@@ -7,7 +7,7 @@ import java.util.List;
  */
 
 public class UsersALL {
-    private List<TestUser> mTestUsers;
+    private List<User> mUsers;
     private List<StockDetail> mStockDetails;
     private List<Inventory> mInventories;
     private List<Picking> mPickings;
@@ -40,12 +40,12 @@ public class UsersALL {
         this.yesNo = yesNo;
     }
 
-    public List<TestUser> getTestUsers() {
-        return mTestUsers;
+    public List<User> getUsers() {
+        return mUsers;
     }
 
-    public void setTestUsers(List<TestUser> testUsers) {
-        mTestUsers = testUsers;
+    public void setUsers(List<User> users) {
+        mUsers = users;
     }
 
     public int getNumber() {
@@ -75,7 +75,7 @@ public class UsersALL {
     @Override
     public String toString() {
         return "UsersALL{" +
-                "mTestUsers=" + mTestUsers +
+                "mTestUsers=" + mUsers +
                 ", mStockDetails=" + mStockDetails +
                 ", mInventories=" + mInventories +
                 ", number=" + number +
