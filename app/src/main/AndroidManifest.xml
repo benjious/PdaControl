@@ -48,6 +48,15 @@
 
 
         </activity>
+        <activity android:name=".activity.ProductConfigActivity"
+            android:label="捡料确认界面"
+            >
+
+
+
+
+
+        </activity>
     </application>
 
 </manifest>

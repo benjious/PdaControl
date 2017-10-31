@@ -260,7 +260,6 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
 
         @Override
         public void onDataClicked(int rowIndex, InventoryBeen clickedData) {
-            Log.d(TAG, "xyz  onDataClicked: 这是没有执行吗??????");
             rowNowIndex = rowIndex;
             InventoryFragment newFragment = new InventoryFragment();
             newFragment.show(getFragmentManager(), "对话框");

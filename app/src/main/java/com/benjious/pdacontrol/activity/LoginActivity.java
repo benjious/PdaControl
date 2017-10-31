@@ -52,6 +52,7 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
     public static final String TAG = "LoginActivity xyz =";
     public static final String USERNAME = "USERNAME";
     public static final String USER ="USER";
+    public static final String KIND ="KIND";
 
     @Bind(R.id.progressBar)
     ProgressBar mProgressBar;

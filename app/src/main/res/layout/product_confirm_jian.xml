@@ -5,7 +5,7 @@
               android:layout_height="match_parent">
 
     <TextView
-        android:text="实际的库存数量为 : "
+        android:text="更改出库数量为 : "
         android:textSize="24sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -19,5 +19,5 @@
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
-         />
+        />
 </LinearLayout>

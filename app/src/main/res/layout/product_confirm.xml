@@ -58,13 +58,6 @@
         android:layout_height="360dp"
         android:layout_below="@+id/pallet_id"/>
 
-    <ViewStub
-        android:id="@+id/viewStub"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:inflatedId="@id/product_tableView"
-        android:layout="@layout/viewpro"/>
-
 
     <RelativeLayout
 
@@ -93,6 +86,7 @@
             android:layout_alignParentEnd="true"/>
 
         <Button
+            android:visibility="gone"
             android:id="@+id/add_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

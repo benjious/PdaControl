@@ -9,7 +9,17 @@ import java.util.List;
 public class UsersALL {
     private List<TestUser> mTestUsers;
     private List<StockDetail> mStockDetails;
-    private List<Inventory>  mInventories;
+    private List<Inventory> mInventories;
+    private List<Picking> mPickings;
+
+    public List<Picking> getPickings() {
+        return mPickings;
+    }
+
+    public void setPickings(List<Picking> pickings) {
+        mPickings = pickings;
+    }
+
     public List<StockDetail> getStockDetails() {
         return mStockDetails;
     }

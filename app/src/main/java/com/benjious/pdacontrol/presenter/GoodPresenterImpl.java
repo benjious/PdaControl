@@ -38,6 +38,10 @@ public class GoodPresenterImpl implements GoodPresenter, OnLoadGoodLisenter {
     public static final int GET_INVENTORYS =11 ;
     public static final int UPDATE_INVENTORYS =12 ;
 
+    //ProductConfirm
+    public static final int GET_PICKING =13 ;
+    public static final int UPDATE_STOCK_DETAIL =14 ;
+
 
     private CommonView mCommonView;
     private GoodModel mGoodModel;

@@ -89,7 +89,7 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
             mStacking = (Stacking) intent.getSerializableExtra(ProductReadyActivity.STACKING_SEND);
             mStackingItems = (List<StackingItem>) intent.getSerializableExtra(ProductReadyActivity.STACKING_ITEM_LIST);
 
-        } else {
+        } else if (kind == 2) {
             mStockDetails = (List<StockDetail>) intent.getSerializableExtra(ProductReadyActivity.STOCKING_DETAIL_LIST);
         }
         setProductBeen();
@@ -394,7 +394,6 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
         columnWeightModel.setColumnWeight(4, 1);
         tableView.setColumnModel(columnWeightModel);
         tableView.setHeaderAdapter(new SimpleTableHeaderAdapter(this, HEAD_DATA));
-
     }
 
 

@@ -43,8 +43,6 @@ public class Product_FullFragment extends DialogFragment {
 
                     }
                 })
-
-
                 .setPositiveButton(R.string.fire, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

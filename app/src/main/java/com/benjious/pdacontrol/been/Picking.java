@@ -75,5 +75,15 @@ public class Picking implements Serializable{
 
     private String _uOM;
 
-
+    @Override
+    public String toString() {
+        return "Picking{" +
+                "_oID=" + _oID +
+                ", _sTOCK_OID=" + _sTOCK_OID +
+                ", _pRODUCT_ID='" + _pRODUCT_ID + '\'' +
+                ", _pRODUCT_NAME='" + _pRODUCT_NAME + '\'' +
+                ", _oUT_QTY=" + _oUT_QTY +
+                ", _uOM='" + _uOM + '\'' +
+                '}';
+    }
 }
