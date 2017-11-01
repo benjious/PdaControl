@@ -16,10 +16,14 @@ import android.widget.Toast;
 import com.benjious.pdacontrol.R;
 import com.benjious.pdacontrol.been.InventoryBeen;
 import com.benjious.pdacontrol.been.Picking;
+import com.benjious.pdacontrol.been.Product;
 import com.benjious.pdacontrol.been.ProductBeen;
 import com.benjious.pdacontrol.been.ProductConfirmBeen;
+import com.benjious.pdacontrol.been.Stacking;
+import com.benjious.pdacontrol.been.StackingItem;
 import com.benjious.pdacontrol.been.User;
 import com.benjious.pdacontrol.been.UsersALL;
+import com.benjious.pdacontrol.fragment.ProductConfirmBuFrament;
 import com.benjious.pdacontrol.fragment.ProductConfirmJianFragment;
 import com.benjious.pdacontrol.fragment.ProductDialogFragment;
 import com.benjious.pdacontrol.interfazes.OnUpdateInventoryStore;
@@ -27,7 +31,7 @@ import com.benjious.pdacontrol.interfazes.OnUpdateProductConfirm;
 import com.benjious.pdacontrol.interfazes.OnUpdateProductLisenter;
 import com.benjious.pdacontrol.presenter.GoodPresenterImpl;
 import com.benjious.pdacontrol.url.Url;
-import com.benjious.pdacontrol.util.DateUtil;
+import com.benjious.pdacontrol.util.FullFlagUtil;
 import com.benjious.pdacontrol.util.OkHttpUtils;
 import com.benjious.pdacontrol.view.CommonView;
 import com.google.gson.Gson;
@@ -45,13 +49,18 @@ import de.codecrafters.tableview.listeners.TableDataClickListener;
 import de.codecrafters.tableview.model.TableColumnWeightModel;
 import de.codecrafters.tableview.toolkit.SimpleTableHeaderAdapter;
 
+import static com.benjious.pdacontrol.activity.ProductReadyActivity.KIND_SEND;
+import static com.benjious.pdacontrol.activity.ProductReadyActivity.PICKING_SEND;
+import static com.benjious.pdacontrol.activity.ProductReadyActivity.STACKING_ITEM_LIST;
+import static com.benjious.pdacontrol.activity.ProductReadyActivity.USER_SEND;
+
 
 /**
  * Created by Benjious on 2017/10/28.
  * k==1 时 ,为捡料确认
- *    测试用例:
- *       入库站口: 0012
- *       托盘编号: P0305
+ * 测试用例:
+ * 入库站口: 0012
+ * 托盘编号: P0305
  * k==2时,为补料确认
  */
 
@@ -75,7 +84,7 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
     private List<Picking> mPickings;
     private Picking mPicking = new Picking();
     int kind;
-    public static final String TAG = "ProConfigActivity xyz =";
+    public static final String TAG = "ProConfigActivity";
     public static AtomicInteger CHECK_FINISHED = new AtomicInteger();
     public static final String[] JIAN_HEAD = {"物料编号", "物料名称", "出库数量", "单位",};
     public static final String[] BU_HEAD = {"物料编号", "物料名称", "已添加的数量", "单位",};
@@ -89,6 +98,7 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
     private int rowNowIndex;
     private User mUser;
     private TableView<ProductConfirmBeen> mProductTableView;
+    private int out_store_num;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,12 +109,11 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
         Intent intent = getIntent();
         mUser = (User) intent.getSerializableExtra(LoginActivity.USER);
         kind = intent.getIntExtra(LoginActivity.KIND, 0);
-        if (kind == 2) {
-            mAddProduct.setVisibility(View.VISIBLE);
-        }
-        setTableView();
+        mAddProduct.setEnabled(false);
 
-
+//        if (kind == 2) {
+//            mAddProduct.setVisibility(View.VISIBLE);
+//        }
     }
 
 
@@ -134,17 +143,14 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
 
 
                 } else if (type == GoodPresenterImpl.CHECK_PORT) {
-                    checkPort = usersALL.getYesNo();
+                    checkPort = usersALL.isYesNo();
                     CHECK_FINISHED.addAndGet(1);
                     Log.d(TAG, "xyz  addData: 显示二下数据：" + checkPort + "  " + CHECK_FINISHED);
                     Log.d(TAG, "xyz  addData: ------------------------------------------------------");
 
 
                 } else if (type == GoodPresenterImpl.GET_PICKING) {
-                    Log.d(TAG, "xyz  addData: 是不是这里就没了");
                     mPickings = usersALL.getPickings();
-                    Log.d(TAG, "xyz  addData: 显示三下数据 " + mPickings);
-                    Log.d(TAG, "xyz  addData: ------------------------------------------------------");
                     if (mPicking != null) {
                         //将数据装进tableview中
                         setTableViewContent(mPickings);
@@ -157,6 +163,7 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
                     int finished = usersALL.getNumber();
                     if (finished == 1) {
                         String url = Url.PATH + "/UpdateStockDetail?Last_update_by=" + mUser.get_userID() + "&oid=" + mPicking.get_oID() + "&qty=" + mPicking.get_oUT_QTY();
+                        Log.d(TAG, "xyz  addData: 显示 UpdateStockDetail 的 url : "+url);
                         GoodPresenterImpl updateImpl = new GoodPresenterImpl(this);
                         updateImpl.loadData(url, GoodPresenterImpl.UPDATE_STOCK_DETAIL);
                     } else {
@@ -165,8 +172,11 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
 
 
                 } else if (type == GoodPresenterImpl.UPDATE_STOCK_DETAIL) {
-                    boolean isfinished = usersALL.getYesNo();
+                    boolean isfinished = usersALL.isYesNo();
                     if (isfinished) {
+                        //出库数量发生变化
+                        mProductConfirmBeens.get(rowNowIndex).setOut_storeNum(out_store_num);
+                        tableviewFresh();
                         super.showToast("更新完成!!!");
                     } else {
                         super.showToast("更新失败!!!");
@@ -179,7 +189,6 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
                         String pickingUrl = Url.PATH + "/GetPickings?p_code=" + p_code + "&pallet_id=" + pallet_id;
                         GoodPresenterImpl pickingImpl = new GoodPresenterImpl(this);
                         pickingImpl.loadData(pickingUrl, GoodPresenterImpl.GET_PICKING);
-                        Log.d(TAG, "xyz  addData: 三下URL " + pickingUrl);
                     } else if (!checkPort) {
                         super.showToast("站口号不存在,请重新输入!!!");
                         mPortIdEdit.getText().clear();
@@ -193,6 +202,8 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
         } catch (Exception e) {
             mFindProductBtn.setEnabled(true);
             e.printStackTrace();
+            Log.d(TAG, "xyz  addData: 出现的错误 " + e);
+            super.showToast("解析出现错误!!" + e);
         }
 
     }
@@ -217,15 +228,32 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
 
     @OnClick({R.id.find_product_btn, R.id.BackBtn, R.id.add_product})
     public void onViewClicked(View view) {
+        Intent intent;
         switch (view.getId()) {
             case R.id.find_product_btn:
                 showDetail();
                 break;
             case R.id.BackBtn:
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
+                if (mPickings != null || (mPickings.size()==0)){
+                    mPickings.clear();
+                    mProductConfirmBeens.clear();
+                    mPortIdEdit.setText("");
+                    mPalletIdEdit.setText("");
+                    mFindProductBtn.setEnabled(true);
+                    tableviewFresh();
+                } else {
+                    intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
+                }
                 break;
             case R.id.add_product:
+                intent = new Intent(this, ProductsAddActivity.class);
+                intent.putExtra(KIND_SEND, kind);
+                ArrayList<StackingItem> stackingItems = new ArrayList<>();
+                intent.putExtra(STACKING_ITEM_LIST, stackingItems);
+                intent.putExtra(PICKING_SEND, (ArrayList) mPickings);
+                intent.putExtra(USER_SEND, mUser);
+                startActivity(intent);
                 break;
         }
     }
@@ -234,7 +262,7 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
         p_code = mPortIdEdit.getText().toString();
         pallet_id = mPalletIdEdit.getText().toString();
         if ((!p_code.equals("")) && (!pallet_id.equals(""))) {
-            //进行数据库查询
+//            进行数据库查询
             mFindProductBtn.setEnabled(false);
             String checkPalletUrl = Url.PATH + "/CheckPallet?pallet_id=" + pallet_id + "&status=" + 1;
             Log.d(TAG, "xyz url " + checkPalletUrl);
@@ -270,6 +298,9 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
         }
         setTableView();
         tableviewFresh();
+        mFindProductBtn.setEnabled(false);
+        mAddProduct.setVisibility(View.VISIBLE);
+        mAddProduct.setEnabled(true);
     }
 
     private void setTableView() {
@@ -294,17 +325,18 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
 
     private void tableviewFresh() {
         adapter.notifyDataSetChanged();
-//        tableView.notify();
     }
 
     @Override
     public void updateProductConfirm(int num, boolean isChecked) {
+        out_store_num =num;
         if (kind == 1) {
             mPicking.set_oUT_QTY(num);
         } else if (kind == 2) {
             mPicking.set_oUT_QTY(mPicking.get_oUT_QTY() - num);
         }
-        String url = String.format(Url.PATH + "/UpdateStock?Last_update_by=%s&Stock_oid=%s&Full_Flag=%s", mUser.get_userID(), mPicking.get_sTOCK_OID(), isChecked);
+        String url = String.format(Url.PATH + "/UpdateStock?Last_update_by=%s&Stock_oid=%s&Full_Flag=%s", mUser.get_userID(), mPicking.get_sTOCK_OID(), FullFlagUtil.convert(isChecked));
+        Log.d(TAG, "xyz  updateProductConfirm: upateStock_url : " + url);
         GoodPresenterImpl updateConfirm = new GoodPresenterImpl(this);
         updateConfirm.loadData(url, GoodPresenterImpl.UPDATE_STOCK);
     }
@@ -364,10 +396,9 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
                 if (mPickings.get(rowNowIndex).get_oUT_QTY() >= 0) {
                     mPicking.set_oUT_QTY(0);
                 }
-                ProductConfirmJianFragment fragment = new ProductConfirmJianFragment();
+                ProductConfirmBuFrament fragment = new ProductConfirmBuFrament();
                 fragment.show(getFragmentManager(), "对话框");
             }
-
         }
     }
 }

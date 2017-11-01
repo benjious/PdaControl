@@ -37,8 +37,14 @@ public class ProductConfirmJianFragment extends DialogFragment {
                     Toast.makeText(getActivity(), "请输入正确的货存数量!", Toast.LENGTH_SHORT).show();
                 }
             }
-        })
-        ;
+        })         .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+
+            }
+        });
+
+
         return builder.create();
 
     }

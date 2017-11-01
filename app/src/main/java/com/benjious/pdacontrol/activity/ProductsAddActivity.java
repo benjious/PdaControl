@@ -88,8 +88,8 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
     private List<StockDetail> mStockDetails = new ArrayList<>();
     public static final String TAG = "ProductsAddActivity";
     private AtomicInteger IS_PRODUCT_FINISH = new AtomicInteger();
+    //这个日期是入库的时间
     private Date date = new Date();
-    private Date dateFromIn;
 
     @Override
 
@@ -123,12 +123,7 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
 
     @Override
     protected void onNewIntent(Intent intent) {
-//        final String productId = intent.getStringExtra(ProductsInActivity.PRODUCT_ID);
-//        final int productNum = intent.getIntExtra(ProductsInActivity.PRODUCT_NUMBER, 0);
-//        dateFromIn = (Date) intent.getSerializableExtra(ProductsInActivity.PRODUCT_DATE);
-//
-//        mTextBoxQty.setText(String.valueOf(productNum));
-//        mTextBoxProNo.setText(productId);
+
         mStackingItems.clear();
         mStockDetails.clear();
 
@@ -266,7 +261,7 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
                     }
                     if (!result) {
                         StockDetail stockDetail = new StockDetail();
-                        stockDetail.set_product_name(str_name);
+//                        stockDetail.set_product_name(str_name);
                         stockDetail.set_sTOCK_OID(mPickings.get(0).get_sTOCK_OID());
                         stockDetail.set_iTEM_ID(mTextBoxProNo.getText().toString());
                         stockDetail.set_bARCODE_NO("");
@@ -325,9 +320,6 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
 
     public void showDatePickerDialog(View v) {
         DialogFragment newFragment = new DatePickerFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("DATE", dateFromIn);
-        newFragment.setArguments(bundle);
         newFragment.show(getFragmentManager(), "datePicker");
     }
 
@@ -336,7 +328,6 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
         Calendar calendar = new GregorianCalendar();
         calendar.set(year, month, dayOfMonth);
         date = calendar.getTime();
-
     }
 
 

@@ -4,19 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.benjious.pdacontrol.R;
 import com.benjious.pdacontrol.been.User;
-import com.benjious.pdacontrol.util.DateUtil;
-
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -55,9 +48,8 @@ private User mUser;
         ButterKnife.bind(this);
         Intent intent = getIntent();
         mUser = (User) intent.getSerializableExtra(LoginActivity.USER);
-//        String userName = "欢迎您： " + intent.getStringExtra(LoginActivity.USERNAME);
-        String userName = mUser.get_userName();
-        mWelcome.setText(userName);
+        String userName = mUser.get_userCnName();
+        mWelcome.setText("欢迎你 : "+userName);
 
     }
 
@@ -69,6 +61,7 @@ private User mUser;
             case R.id.MaduoInstore:
                 break;
             case R.id.goodInStore:
+                intent.putExtra(LoginActivity.USER, mUser);
                 intent.setClass(MainActivity.this, ProductReadyActivity.class);
                 startActivity(intent);
                 break;
@@ -86,11 +79,15 @@ private User mUser;
                 startActivity(intent);
                 break;
             case R.id.repairAck:
+                intent.putExtra(LoginActivity.USER, mUser);
+                intent.putExtra(LoginActivity.KIND, 2);
+                intent.setClass(MainActivity.this, ProductConfigActivity.class);
+                startActivity(intent);
                 break;
             case R.id.quitLogin:
+                this.finish();
                 break;
-            case R.id.welcome:
-                break;
+
         }
     }
 }

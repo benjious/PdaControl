@@ -1,5 +1,6 @@
 package com.benjious.pdacontrol.been;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,8 +10,11 @@ import java.util.List;
 public class UsersALL {
     private List<User> mUsers;
     private List<StockDetail> mStockDetails;
-    private List<Inventory> mInventories;
+    private List<Inventory>  mInventories;
     private List<Picking> mPickings;
+    private int number;
+    private String data="";
+    private boolean yesNo;
 
     public List<Picking> getPickings() {
         return mPickings;
@@ -18,6 +22,22 @@ public class UsersALL {
 
     public void setPickings(List<Picking> pickings) {
         mPickings = pickings;
+    }
+
+
+    public List<Inventory> getInventories() {
+        return mInventories;
+    }
+
+    public void setInventories(List<Inventory> inventories) {
+        mInventories = inventories;
+    }
+
+    public UsersALL() {
+        mUsers = new ArrayList<>();
+        mStockDetails = new ArrayList<>();
+        mInventories = new ArrayList<>();
+        mPickings = new ArrayList<>();
     }
 
     public List<StockDetail> getStockDetails() {
@@ -28,17 +48,14 @@ public class UsersALL {
         mStockDetails = stockDetails;
     }
 
-    private int number;
-    private String data;
-    private boolean yesNo;
-
-    public boolean getYesNo() {
+    public boolean isYesNo() {
         return yesNo;
     }
 
     public void setYesNo(boolean yesNo) {
         this.yesNo = yesNo;
     }
+
 
     public List<User> getUsers() {
         return mUsers;
@@ -64,20 +81,13 @@ public class UsersALL {
         this.data = data;
     }
 
-    public List<Inventory> getInventories() {
-        return mInventories;
-    }
-
-    public void setInventories(List<Inventory> inventories) {
-        mInventories = inventories;
-    }
-
     @Override
     public String toString() {
         return "UsersALL{" +
-                "mTestUsers=" + mUsers +
+                "mUsers=" + mUsers +
                 ", mStockDetails=" + mStockDetails +
                 ", mInventories=" + mInventories +
+                ", mPickings=" + mPickings +
                 ", number=" + number +
                 ", data='" + data + '\'' +
                 ", yesNo=" + yesNo +

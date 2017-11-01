@@ -29,6 +29,7 @@ import com.benjious.pdacontrol.interfazes.OnUpdateProductLisenter;
 import com.benjious.pdacontrol.presenter.GoodPresenterImpl;
 import com.benjious.pdacontrol.util.DateUtil;
 import com.benjious.pdacontrol.url.Url;
+import com.benjious.pdacontrol.util.FullFlagUtil;
 import com.benjious.pdacontrol.util.OkHttpUtils;
 import com.benjious.pdacontrol.view.CommonView;
 import com.google.gson.Gson;
@@ -146,14 +147,9 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
                         mStacking.set_cREATED_BY(user.get_userID());
                         mStacking.set_lAST_UPDATE_DATE(new Date());
                         mStacking.set_lAST_UPDATED_BY(user.get_userID());
-                        String checkNotString = null;
-                        if (this.checkNot) {
-                            checkNotString = "1";
-                        } else {
-                            checkNotString = "0";
-                        }
+
 //                        String url = Url.PATH + "/InsertStacking?STACK_ID='" + mStacking.get_sTACK_ID() + "'" + "&WH_NO='" + mStacking.get_wH_NO() + "'" + "&PALLET_ID='" + mStacking.get_pALLET_ID() + "'" + "&P_CODE=" + mStacking.get_p_CODE() + "&KIND=" + mStacking.get_kIND() + "&BIN_NO=" + mStacking.get_bIN_NO() + "&FULL_FLAG=" + mStacking.get_fULL_FLAG() + "&STATUS=" + mStacking.get_sTATUS() + "&CREATION_DATE='" + DateUtil.converToString(mStacking.get_cREATION_DATE()) + "'" + "&CREATED_BY=" + mStacking.get_cREATED_BY() + "&LAST_UPDATE_DATE='" + DateUtil.converToString( mStacking.get_lAST_UPDATE_DATE()) + "'" + "&LAST_UPDATED_BY='" + mStacking.get_lAST_UPDATED_BY() + "'";
-                        String url = Url.PATH + "/InsertStacking?STACK_ID=" + mStacking.get_sTACK_ID() + "&WH_NO=" + mStacking.get_wH_NO() + "&PALLET_ID=" + mStacking.get_pALLET_ID() + "&P_CODE=" + mStacking.get_p_CODE() + "&KIND=" + mStacking.get_kIND() + "&BIN_NO=" + mStacking.get_bIN_NO() + "&FULL_FLAG=" + checkNotString + "&STATUS=" + mStacking.get_sTATUS() + "&CREATION_DATE=" + DateUtil.converToString(mStacking.get_cREATION_DATE()) + "&CREATED_BY=" + mStacking.get_cREATED_BY() + "&LAST_UPDATE_DATE=" + DateUtil.converToString(mStacking.get_lAST_UPDATE_DATE()) + "&LAST_UPDATED_BY=" + mStacking.get_lAST_UPDATED_BY();
+                        String url = Url.PATH + "/InsertStacking?STACK_ID=" + mStacking.get_sTACK_ID() + "&WH_NO=" + mStacking.get_wH_NO() + "&PALLET_ID=" + mStacking.get_pALLET_ID() + "&P_CODE=" + mStacking.get_p_CODE() + "&KIND=" + mStacking.get_kIND() + "&BIN_NO=" + mStacking.get_bIN_NO() + "&FULL_FLAG=" + FullFlagUtil.convert(checkNot) + "&STATUS=" + mStacking.get_sTATUS() + "&CREATION_DATE=" + DateUtil.converToString(mStacking.get_cREATION_DATE()) + "&CREATED_BY=" + mStacking.get_cREATED_BY() + "&LAST_UPDATE_DATE=" + DateUtil.converToString(mStacking.get_lAST_UPDATE_DATE()) + "&LAST_UPDATED_BY=" + mStacking.get_lAST_UPDATED_BY();
 
                         Log.d(TAG, "xyz  addData: insertStacking url " + url);
                         GoodPresenterImpl presentImp = new GoodPresenterImpl(this);
@@ -332,7 +328,6 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
                     renderedView = renderString(DateUtil.converToString(been.getProductDate()));
                     break;
                 case 4:
-//                    renderedView =renderCheck();
                     break;
             }
             return renderedView;

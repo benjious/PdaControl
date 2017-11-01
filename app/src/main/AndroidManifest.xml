@@ -19,6 +19,8 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+
+
         </activity>
         <activity
             android:label="主界面"
@@ -48,17 +50,12 @@
 
         <activity android:name=".activity.TestActivity">
 
-
         </activity>
         <activity android:name=".activity.ProductConfigActivity"
             android:label="捡料确认界面"
             >
-
-
-
-
-
         </activity>
+
     </application>
 
 </manifest>

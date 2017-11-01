@@ -81,7 +81,6 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
     public static final String STOCKING_DETAIL_LIST ="STOCJING_ITEM_LIST";
     public static final String PICKING_SEND = "PICKING_SEND";
     public static final String KIND_SEND = "KING_SEND";
-    public static final String BUNDLE_SEND = "BUNDLE_SEND";
 
     private GoodPresenter mPresenter;
     private GoodPresenter mGoodCheckPortpre;
@@ -98,8 +97,7 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
     private boolean checkPort = false;
     private int checkPallet = -2;
 
-    private UsersALL fisrtUserA;
-    private UsersALL secondUserA;
+    private User mUser;
 
 
     @Override
@@ -113,9 +111,8 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         mStyleSpin.setAdapter(adapter);
-
-//        mCountDownLatch = new CountDownLatch(2);
-//        mExecutorService = Executors.newCachedThreadPool();
+        Intent intent = getIntent();
+        mUser = (User) intent.getSerializableExtra(LoginActivity.USER);
 
         hideProgress();
     }
@@ -147,7 +144,7 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
 
 
                 } else if (type == GoodPresenterImpl.CHECK_PORT) {
-                    checkPort = usersALL.getYesNo();
+                    checkPort = usersALL.isYesNo();
                     IS_FINISHED.addAndGet(1);
                     Log.d(TAG, "xyz  addData: 显示二下数据：" + checkPort + " 标识 ：" + IS_FINISHED);
                     Log.d(TAG, "xyz  addData: ------------------------------------------------------");
@@ -161,7 +158,6 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
                 }
 
                 if (IS_FINISHED.get() == 2) {
-                    secondUserA = usersALL;
                     if (checkPallet == 1 && checkPort) {
                         String newStack_url = Url.PATH + "/GetNewStackId?strKind=" + "SIR";
                         Log.d(TAG, "xyz  nextStep: newStack_id " + newStack_url);
@@ -189,7 +185,7 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
                     IS_FINISHED.set(0);
                     Intent mIntent = new Intent(this, ProductsAddActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable(USER_SEND, new User());
+                    bundle.putSerializable(USER_SEND,mUser);
                     bundle.putSerializable(STACKING_SEND, mStacking);
                     bundle.putSerializable(STACKING_ITEM_LIST, new ArrayList<StackingItem>());
                     bundle.putSerializable(PICKING_SEND, new ArrayList<Picking>());

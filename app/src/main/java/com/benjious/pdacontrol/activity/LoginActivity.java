@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -15,22 +14,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.benjious.pdacontrol.R;
-import com.benjious.pdacontrol.been.Binsta;
 import com.benjious.pdacontrol.been.User;
 import com.benjious.pdacontrol.been.UsersALL;
-import com.benjious.pdacontrol.interfazes.OnLoadGoodLisenter;
 import com.benjious.pdacontrol.util.OkHttpUtils;
 import com.benjious.pdacontrol.view.CommonView;
 import com.benjious.pdacontrol.webService.WLoginService;
 import com.google.gson.Gson;
 
-import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static android.R.string.ok;
 
 //这是master
 public class LoginActivity extends AppCompatActivity implements CommonView {
@@ -136,10 +130,10 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
 
     private void goToMain() {
         Intent intent = new Intent();
-        //这里记得改回来
         intent.putExtra(USER,mUser);
         intent.setClass(LoginActivity.this, MainActivity.class);
         startActivity(intent);
+
     }
 
 
@@ -156,20 +150,19 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
     @Override
     public void addData(final String response, int type) {
         hideProgress();
-        Log.d(TAG, "xyz  addData: 执行到这里了吗????");
         try {
             Gson gson = new Gson();
             UsersALL usersALL = gson.fromJson(response, UsersALL.class);
-            Log.d(TAG, "xyz  addData: 打印一下 USER "+usersALL.toString());
-            if (usersALL == null) {
+            if (usersALL == null || (usersALL.getUsers().size()==0)) {
                 showLoadFail(OkHttpUtils.NO_REAL_DATA);
             }else {
-                mUser = usersALL.getUsers().get(1);
+                mUser = usersALL.getUsers().get(0);
                 goToMain();
             }
 
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(this, "解析出现错误!!!"+ e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 

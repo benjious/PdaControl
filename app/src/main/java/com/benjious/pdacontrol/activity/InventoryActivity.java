@@ -156,7 +156,7 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
                     }
                 }
                 if (type == GoodPresenterImpl.UPDATE_INVENTORYS) {
-                    boolean result = usersALL.getYesNo();
+                    boolean result = usersALL.isYesNo();
                     if (result) {
                         mInventories.get(rowNowIndex).set_oLD_STOCK_QTY(updateStoreNum);
                         mInventoryBeens.get(rowNowIndex).setStoreNum(updateStoreNum);

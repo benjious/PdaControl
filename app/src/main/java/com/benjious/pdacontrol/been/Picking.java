@@ -2,16 +2,21 @@ package com.benjious.pdacontrol.been;
 
 import java.io.Serializable;
 
-import static android.R.attr.value;
-
 /**
  * Created by Benjious on 2017/10/16.
  */
 
-public class Picking implements Serializable{
+public class Picking  implements Serializable{
     private static final long serialVersionUID =4849653612323265145L;
-
     private int _oID;
+    private int _sTOCK_OID;
+
+    private String _pRODUCT_ID;
+
+    private String _pRODUCT_NAME;
+
+
+    private double _oUT_QTY;
 
     public int get_oID() {
         return _oID;
@@ -61,29 +66,7 @@ public class Picking implements Serializable{
         this._uOM = _uOM;
     }
 
-    private int _sTOCK_OID;
-
-
-    private String _pRODUCT_ID;
-
-
-    private String _pRODUCT_NAME;
-
-
-    private double _oUT_QTY;
-
-
     private String _uOM;
 
-    @Override
-    public String toString() {
-        return "Picking{" +
-                "_oID=" + _oID +
-                ", _sTOCK_OID=" + _sTOCK_OID +
-                ", _pRODUCT_ID='" + _pRODUCT_ID + '\'' +
-                ", _pRODUCT_NAME='" + _pRODUCT_NAME + '\'' +
-                ", _oUT_QTY=" + _oUT_QTY +
-                ", _uOM='" + _uOM + '\'' +
-                '}';
-    }
+
 }

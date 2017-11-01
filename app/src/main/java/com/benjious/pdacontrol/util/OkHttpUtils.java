@@ -40,6 +40,7 @@ public class OkHttpUtils {
         mOkHttpClient.setConnectTimeout(10, TimeUnit.SECONDS);
         mOkHttpClient.setWriteTimeout(10, TimeUnit.SECONDS);
         mOkHttpClient.setReadTimeout(30, TimeUnit.SECONDS);
+
         //cookie enabled
         mOkHttpClient.setCookieHandler(new CookieManager(null, CookiePolicy.ACCEPT_ORIGINAL_SERVER));
 
