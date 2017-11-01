@@ -1,5 +1,6 @@
 package com.benjious.pdacontrol.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -23,12 +25,10 @@ import com.benjious.pdacontrol.been.Stacking;
 import com.benjious.pdacontrol.been.StackingItem;
 import com.benjious.pdacontrol.been.User;
 import com.benjious.pdacontrol.been.UsersALL;
+import com.benjious.pdacontrol.fragment.ProcessDialogFragment;
 import com.benjious.pdacontrol.fragment.ProductConfirmBuFrament;
 import com.benjious.pdacontrol.fragment.ProductConfirmJianFragment;
-import com.benjious.pdacontrol.fragment.ProductDialogFragment;
-import com.benjious.pdacontrol.interfazes.OnUpdateInventoryStore;
 import com.benjious.pdacontrol.interfazes.OnUpdateProductConfirm;
-import com.benjious.pdacontrol.interfazes.OnUpdateProductLisenter;
 import com.benjious.pdacontrol.presenter.GoodPresenterImpl;
 import com.benjious.pdacontrol.url.Url;
 import com.benjious.pdacontrol.util.FullFlagUtil;
@@ -99,6 +99,7 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
     private User mUser;
     private TableView<ProductConfirmBeen> mProductTableView;
     private int out_store_num;
+    private ProcessDialogFragment fragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -110,21 +111,22 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
         mUser = (User) intent.getSerializableExtra(LoginActivity.USER);
         kind = intent.getIntExtra(LoginActivity.KIND, 0);
         mAddProduct.setEnabled(false);
+        fragment = new ProcessDialogFragment();
 
-//        if (kind == 2) {
-//            mAddProduct.setVisibility(View.VISIBLE);
-//        }
+        if (kind==2) {
+            this.setTitle("补料确认界面");
+        }
     }
 
 
     @Override
     public void showProgress() {
-
+        fragment.show(getFragmentManager(), "进度框");
     }
 
     @Override
     public void hideProgress() {
-
+        fragment.dismiss();
     }
 
     @Override
@@ -163,10 +165,11 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
                     int finished = usersALL.getNumber();
                     if (finished == 1) {
                         String url = Url.PATH + "/UpdateStockDetail?Last_update_by=" + mUser.get_userID() + "&oid=" + mPicking.get_oID() + "&qty=" + mPicking.get_oUT_QTY();
-                        Log.d(TAG, "xyz  addData: 显示 UpdateStockDetail 的 url : "+url);
+                        Log.d(TAG, "xyz  addData: 显示 UpdateStockDetail 的 url : " + url);
                         GoodPresenterImpl updateImpl = new GoodPresenterImpl(this);
                         updateImpl.loadData(url, GoodPresenterImpl.UPDATE_STOCK_DETAIL);
                     } else {
+                        hideProgress();
                         super.showToast("更新stock失败!!!");
                     }
 
@@ -181,6 +184,7 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
                     } else {
                         super.showToast("更新失败!!!");
                     }
+                    hideProgress();
                 }
 
                 if (CHECK_FINISHED.get() == 2) {
@@ -197,10 +201,12 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
                         mPalletIdEdit.getText().clear();
                     }
                     CHECK_FINISHED.set(0);
+                    hideProgress();
                 }
             }
         } catch (Exception e) {
             mFindProductBtn.setEnabled(true);
+            hideProgress();
             e.printStackTrace();
             Log.d(TAG, "xyz  addData: 出现的错误 " + e);
             super.showToast("解析出现错误!!" + e);
@@ -210,6 +216,7 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
 
     @Override
     public void loadExecption(Exception e) {
+        hideProgress();
         mFindProductBtn.setEnabled(true);
         super.showToast("请求过程中出现异常！！" + e);
 
@@ -217,6 +224,7 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
 
     @Override
     public void showLoadFail(int failNum) {
+        hideProgress();
         mFindProductBtn.setEnabled(true);
         if (failNum == OkHttpUtils.SERVER_OFFLINE) {
             Toast.makeText(this, "请求服务器出现错误！！", Toast.LENGTH_SHORT).show();
@@ -231,16 +239,23 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
         Intent intent;
         switch (view.getId()) {
             case R.id.find_product_btn:
+                if (mPickings != null ) {
+                    mPickings.clear();
+                    mProductConfirmBeens.clear();
+                    tableviewFresh();
+                }
                 showDetail();
                 break;
             case R.id.BackBtn:
-                if (mPickings != null || (mPickings.size()==0)){
-                    mPickings.clear();
-                    mProductConfirmBeens.clear();
-                    mPortIdEdit.setText("");
-                    mPalletIdEdit.setText("");
-                    mFindProductBtn.setEnabled(true);
-                    tableviewFresh();
+                if (mPickings != null) {
+                    if (mPickings.size() == 0) {
+                        mPickings.clear();
+                        mProductConfirmBeens.clear();
+                        mPortIdEdit.setText("");
+                        mPalletIdEdit.setText("");
+                        mFindProductBtn.setEnabled(true);
+                        tableviewFresh();
+                    }
                 } else {
                     intent = new Intent(this, MainActivity.class);
                     startActivity(intent);
@@ -262,7 +277,8 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
         p_code = mPortIdEdit.getText().toString();
         pallet_id = mPalletIdEdit.getText().toString();
         if ((!p_code.equals("")) && (!pallet_id.equals(""))) {
-//            进行数据库查询
+//          进行数据库查询
+            showProgress();
             mFindProductBtn.setEnabled(false);
             String checkPalletUrl = Url.PATH + "/CheckPallet?pallet_id=" + pallet_id + "&status=" + 1;
             Log.d(TAG, "xyz url " + checkPalletUrl);
@@ -296,9 +312,10 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
             been.setProduct_unit(picking.get_uOM());
             mProductConfirmBeens.add(been);
         }
+        hideProgress();
         setTableView();
         tableviewFresh();
-        mFindProductBtn.setEnabled(false);
+//        mFindProductBtn.setEnabled(false);
         mAddProduct.setVisibility(View.VISIBLE);
         mAddProduct.setEnabled(true);
     }
@@ -329,7 +346,8 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
 
     @Override
     public void updateProductConfirm(int num, boolean isChecked) {
-        out_store_num =num;
+        showProgress();
+        out_store_num = num;
         if (kind == 1) {
             mPicking.set_oUT_QTY(num);
         } else if (kind == 2) {
@@ -384,7 +402,7 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
         @Override
         public void onDataClicked(int rowIndex, ProductConfirmBeen clickedData) {
             rowNowIndex = rowIndex;
-
+            showProgress();
             mPicking.set_oID(mPickings.get(rowNowIndex).get_oID());
             mPicking.set_sTOCK_OID(mPickings.get(rowNowIndex).get_sTOCK_OID());
             mPicking.set_oUT_QTY(mPickings.get(rowNowIndex).get_oUT_QTY());
@@ -401,4 +419,10 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
             }
         }
     }
+
+//    private void hideKeyboard(){
+//        InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//        manager.hideSoftInputFromWindow(, InputMethodManager.HIDE_NOT_ALWAYS);
+//    }
+
 }

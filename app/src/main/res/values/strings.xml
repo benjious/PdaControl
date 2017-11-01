@@ -35,4 +35,5 @@
     <string name="ok">确定</string>
     <string name="port">入库站口 :</string>
     <string name="add_product">添加新物料</string>
+    <string name="instore">入库</string>
 </resources>

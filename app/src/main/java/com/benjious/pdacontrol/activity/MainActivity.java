@@ -40,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.welcome)
     TextView mWelcome;
 
-private User mUser;
+    private User mUser;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,8 +50,8 @@ private User mUser;
         Intent intent = getIntent();
         mUser = (User) intent.getSerializableExtra(LoginActivity.USER);
         String userName = mUser.get_userCnName();
-        mWelcome.setText("欢迎你 : "+userName);
-
+        mWelcome.setText("欢迎你 : " + userName);
+        this.setTitle("登录界面");
     }
 
 
