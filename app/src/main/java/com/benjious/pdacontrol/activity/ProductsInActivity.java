@@ -4,15 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,18 +20,17 @@ import com.benjious.pdacontrol.been.StackingItem;
 import com.benjious.pdacontrol.been.StockDetail;
 import com.benjious.pdacontrol.been.User;
 import com.benjious.pdacontrol.been.UsersALL;
+import com.benjious.pdacontrol.fragment.ProcessDialogFragment;
 import com.benjious.pdacontrol.fragment.ProductDialogFragment;
 import com.benjious.pdacontrol.fragment.Product_FullFragment;
 import com.benjious.pdacontrol.interfazes.OnUpdateProductLisenter;
 import com.benjious.pdacontrol.presenter.GoodPresenterImpl;
 import com.benjious.pdacontrol.util.DateUtil;
 import com.benjious.pdacontrol.url.Url;
-import com.benjious.pdacontrol.util.FullFlagUtil;
 import com.benjious.pdacontrol.util.OkHttpUtils;
 import com.benjious.pdacontrol.view.CommonView;
 import com.google.gson.Gson;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,6 +41,9 @@ import de.codecrafters.tableview.TableView;
 import de.codecrafters.tableview.listeners.TableDataClickListener;
 import de.codecrafters.tableview.model.TableColumnWeightModel;
 import de.codecrafters.tableview.toolkit.SimpleTableHeaderAdapter;
+
+import static com.benjious.pdacontrol.url.Url.getInsertStackUrl;
+import static com.benjious.pdacontrol.url.Url.getStockUrl;
 
 
 /**
@@ -75,14 +74,15 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
 
     private List<ProductBeen> mBeens = new ArrayList<>();
     private Boolean checkNot;
+    private ProcessDialogFragment fragment;
 
 //    prvivate AtomicInteger IS_INSERT_STOCK_DETAIL =;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.text);
-
+        setContentView(R.layout.product_in);
+        fragment = new ProcessDialogFragment();
         Intent intent = getIntent();
         kind = intent.getIntExtra(ProductReadyActivity.KIND_SEND, 0);
         user = (User) intent.getSerializableExtra(ProductReadyActivity.USER_SEND);
@@ -110,6 +110,7 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
         if (mStackingItems == null && mStockDetails == null) {
             super.showToast("请先返回添加物料,提交无法操作");
         } else {
+            showProgress();
             if (kind == 1) {
                 super.showToast("正在提交物料");
                 String checkPalletUrl = Url.PATH + "/CheckPallet?pallet_id=" + mStacking.get_pALLET_ID() + "&status=" + 0;
@@ -149,7 +150,7 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
                         mStacking.set_lAST_UPDATED_BY(user.get_userID());
 
 //                        String url = Url.PATH + "/InsertStacking?STACK_ID='" + mStacking.get_sTACK_ID() + "'" + "&WH_NO='" + mStacking.get_wH_NO() + "'" + "&PALLET_ID='" + mStacking.get_pALLET_ID() + "'" + "&P_CODE=" + mStacking.get_p_CODE() + "&KIND=" + mStacking.get_kIND() + "&BIN_NO=" + mStacking.get_bIN_NO() + "&FULL_FLAG=" + mStacking.get_fULL_FLAG() + "&STATUS=" + mStacking.get_sTATUS() + "&CREATION_DATE='" + DateUtil.converToString(mStacking.get_cREATION_DATE()) + "'" + "&CREATED_BY=" + mStacking.get_cREATED_BY() + "&LAST_UPDATE_DATE='" + DateUtil.converToString( mStacking.get_lAST_UPDATE_DATE()) + "'" + "&LAST_UPDATED_BY='" + mStacking.get_lAST_UPDATED_BY() + "'";
-                        String url = Url.PATH + "/InsertStacking?STACK_ID=" + mStacking.get_sTACK_ID() + "&WH_NO=" + mStacking.get_wH_NO() + "&PALLET_ID=" + mStacking.get_pALLET_ID() + "&P_CODE=" + mStacking.get_p_CODE() + "&KIND=" + mStacking.get_kIND() + "&BIN_NO=" + mStacking.get_bIN_NO() + "&FULL_FLAG=" + FullFlagUtil.convert(checkNot) + "&STATUS=" + mStacking.get_sTATUS() + "&CREATION_DATE=" + DateUtil.converToString(mStacking.get_cREATION_DATE()) + "&CREATED_BY=" + mStacking.get_cREATED_BY() + "&LAST_UPDATE_DATE=" + DateUtil.converToString(mStacking.get_lAST_UPDATE_DATE()) + "&LAST_UPDATED_BY=" + mStacking.get_lAST_UPDATED_BY();
+                        String url = getInsertStackUrl(mStacking, checkNot);
 
                         Log.d(TAG, "xyz  addData: insertStacking url " + url);
                         GoodPresenterImpl presentImp = new GoodPresenterImpl(this);
@@ -158,6 +159,7 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
                         if (havanot == 1) {
                             super.showToast("该任务已经存在,请勿重复插入");
                         }
+                        hideProgress();
                     }
                 }
 
@@ -166,13 +168,13 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
                     Log.d(TAG, "xyz  addData: 显示六下数据 " + insertStacking);
                     Log.d(TAG, "xyz  addData: ------------------------------------------------------");
                     if (insertStacking > 0) {
-                        String url = Url.PATH + "/InsertStackingItem?ITEM_ID=" + mStackingItems.get(rowNowIndex).get_iTEM_ID() + "&" + "STACK_ID=" + mStackingItems.get(rowNowIndex).get_sTACK_ID() + "&" + "LIST_NO=" + mStackingItems.get(rowNowIndex).get_lIST_NO()
-                                + "&" + "QTY=" + mStackingItems.get(rowNowIndex).get_qTY() + "&" + "PROD_DATE=" + DateUtil.converToString(mStackingItems.get(rowNowIndex).get_pROD_DATE())
-                                + "&" + "CREATION_DATE=" + DateUtil.converToString(mStackingItems.get(rowNowIndex).get_cREATION_DATE()) + "&" + "CREATED_BY=" + mStackingItems.get(rowNowIndex).get_cREATED_BY() +
-                                "&" + "LAST_UPDATE_DATE=" + DateUtil.converToString(mStackingItems.get(rowNowIndex).get_lAST_UPDATE_DATE()) + "&" + "LAST_UPDATED_BY=" + mStackingItems.get(rowNowIndex).get_lAST_UPDATED_BY();
+                        String url = Url.getInstackingItem(mStackingItems, rowNowIndex);
                         Log.d(TAG, "xyz  addData: 显示六下数据的url " + url);
                         GoodPresenterImpl presenter = new GoodPresenterImpl(this);
                         presenter.loadData(url, GoodPresenterImpl.INSERT_STACKINGITEM);
+                    }else {
+                        hideProgress();
+                        super.showToast("插入STACK过程出错!");
                     }
                 }
                 if (type == GoodPresenterImpl.INSERT_STACKINGITEM) {
@@ -184,6 +186,9 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
                         Log.d(TAG, "xyz  addData: 显示七下数据的url " + url);
                         GoodPresenterImpl presenter = new GoodPresenterImpl(this);
                         presenter.loadData(url, GoodPresenterImpl.UPDATE_PALLET);
+                    }else {
+                        hideProgress();
+                        super.showToast("插入STACKITEM过程出错!");
                     }
                 }
 
@@ -196,6 +201,7 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
                         mStackingItems.remove(rowNowIndex);
                         tableviewFresh();
                     } else {
+                        hideProgress();
                         super.showToast("提交失败");
                     }
                 }
@@ -208,13 +214,13 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
                     if (updateStock > 0) {
                         //insertStockDetail();
                         for (StockDetail stockDetail : mStockDetails) {
-                            String url = String.format(Url.PATH + "/InsertStockDetail?STOCK_OID=%s&ITEM_ID=%s&PROD_DATE=%s&EXPIRE_DATE=%s&BATCH_NO=%s&QTY=%s&OUT_QTY=%s&STOCK_QTY=%s&CREATION_DATE=%s&CREATED_BY=%s&LAST_UPDATE_DATE=%s&LAST_UPDATED_BY=%s", stockDetail.get_sTOCK_OID(),
-                                    stockDetail.get_iTEM_ID(), DateUtil.converToString(stockDetail.get_pROD_DATE()),
-                                    DateUtil.converToString(stockDetail.get_eXPIRE_DATE()), stockDetail.get_bATCH_NO(), stockDetail.get_qTY(), stockDetail.get_oUT_QTY(), stockDetail.get_sTOCK_QTY(), DateUtil.converToString(stockDetail.get_cREATION_DATE()),
-                                    stockDetail.get_cREATED_BY(), DateUtil.converToString(stockDetail.get_lAST_UPDATE_DATE()), stockDetail.get_cREATED_BY());
+                            String url = getStockUrl(stockDetail);
                             GoodPresenterImpl insertpre = new GoodPresenterImpl(this);
                             insertpre.loadData(url, GoodPresenterImpl.INSERT_STOCK_DETAIL);
                         }
+                    }else {
+                        super.showToast("更新STOCK失败");
+                        hideProgress();
                     }
                 }
 
@@ -230,12 +236,18 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
             }
 
         } catch (Exception e) {
+            hideProgress();
             e.printStackTrace();
             super.showToast("解析数据出现错误" + e);
             Log.d(TAG, "xyz  addData: " + e);
+        }finally {
+            hideProgress();
         }
 
     }
+
+
+
 
     @Override
     public void deleteRowindex() {
@@ -259,14 +271,15 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
         startActivity(intent);
     }
 
+
     @Override
     public void showProgress() {
-
+        fragment.show(getFragmentManager(), "进度框");
     }
 
     @Override
     public void hideProgress() {
-
+        fragment.dismiss();
     }
 
 
@@ -298,7 +311,6 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
 
     private void tableviewFresh() {
         adapter.notifyDataSetChanged();
-//        tableView.notify();
     }
 
 

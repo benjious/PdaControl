@@ -7,12 +7,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.benjious.pdacontrol.R;
@@ -21,11 +17,6 @@ import com.benjious.pdacontrol.been.ProductBeen;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import de.codecrafters.tableview.TableView;
-import de.codecrafters.tableview.toolkit.SimpleTableDataAdapter;
-import de.codecrafters.tableview.toolkit.SimpleTableHeaderAdapter;
-import de.codecrafters.tableview.toolkit.TableDataRowBackgroundProviders;
 
 
 /**
@@ -52,7 +43,7 @@ public class ProductInFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.product_in, container, false);
+        View view = inflater.inflate(R.layout.product_in_test, container, false);
 
 
 

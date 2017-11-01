@@ -1,5 +1,6 @@
 package com.benjious.pdacontrol.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.benjious.pdacontrol.been.ProductBeen;
 import com.benjious.pdacontrol.been.User;
 import com.benjious.pdacontrol.been.UsersALL;
 import com.benjious.pdacontrol.fragment.InventoryFragment;
+import com.benjious.pdacontrol.fragment.ProcessDialogFragment;
 import com.benjious.pdacontrol.fragment.ProductDialogFragment;
 import com.benjious.pdacontrol.interfazes.OnUpdateInventoryStore;
 import com.benjious.pdacontrol.model.GoodModelImpl;
@@ -72,12 +74,14 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
     private String check_list_no;
     private int oid = -1;
     private int updateStoreNum;
+    private ProcessDialogFragment fragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inverntory);
         ButterKnife.bind(this);
+         fragment = new ProcessDialogFragment();
 
         Intent intent = getIntent();
         mUser = (User) intent.getSerializableExtra(LoginActivity.USER);
@@ -86,15 +90,10 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
 
     private void setContent() {
 
-//        for (int i = 0; i < 10; i++) {
-//            InventoryBeen been = new InventoryBeen("a", "b", "c", 33);
-//            mInventoryBeens.add(been);
-//        }
-//        tableviewFresh();
-
         if (mPalletIdEdit.getText().toString().equals("")) {
             super.showToast("请输入托盘编号!");
         } else {
+            showProgress();
             mFindProductBtn.setEnabled(false);
             String invenUrl = Url.PATH + "/GetInventorys?pallet_id=" + mFindProductBtn.getText();
             GoodPresenterImpl invenImp = new GoodPresenterImpl(this);
@@ -122,12 +121,12 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
 
     @Override
     public void showProgress() {
-        // ((ViewStub)findViewById(R.id.viewStub)).setVisibility(View.VISIBLE);
+       fragment.show(getFragmentManager(),"进度框");
     }
 
     @Override
     public void hideProgress() {
-//        ((ViewStub)findViewById(R.id.viewStub)).setVisibility(View.INVISIBLE);
+        fragment.dismiss();
     }
 
     @Override
@@ -154,6 +153,7 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
                         //数据刷新
                         tableviewFresh();
                     }
+                    hideProgress();
                 }
                 if (type == GoodPresenterImpl.UPDATE_INVENTORYS) {
                     boolean result = usersALL.isYesNo();
@@ -166,6 +166,7 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
                     } else {
                         super.showToast("修改出现错误!!! ");
                     }
+                    hideProgress();
                 }
             }
         } catch (Exception e) {
@@ -201,8 +202,7 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
                 setContent();
                 break;
             case R.id.BackBtn:
-//                this.finish();
-
+                this.finish();
                 break;
         }
     }

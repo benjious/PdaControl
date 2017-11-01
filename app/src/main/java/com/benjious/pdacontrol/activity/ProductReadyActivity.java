@@ -193,7 +193,7 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
                     mIntent.putExtras(bundle);
                     startActivity(mIntent);
                     Log.d(TAG, "xyz  addData: 这应该是最后执行的: " + mStacking.toString());
-
+                    IS_FINISHED.set(0);
                 }
 
             }
@@ -202,11 +202,9 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
             Toast.makeText(this, "解析数据出现错误" + e, Toast.LENGTH_SHORT).show();
             Log.d(TAG, "xyz  addData: " + e);
         } finally {
-
             hideProgress();
             mNext.setEnabled(true);
         }
-
     }
 
 

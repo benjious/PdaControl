@@ -205,6 +205,7 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
                 }
             }
         } catch (Exception e) {
+            CHECK_FINISHED.set(0);
             mFindProductBtn.setEnabled(true);
             hideProgress();
             e.printStackTrace();

@@ -72,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.emptyAck:
+                intent.putExtra(LoginActivity.USER, mUser);
+                intent.setClass(MainActivity.this, PalletEmptyInActivity.class);
+                startActivity(intent);
                 break;
             case R.id.someAck:
                 intent.putExtra(LoginActivity.USER, mUser);

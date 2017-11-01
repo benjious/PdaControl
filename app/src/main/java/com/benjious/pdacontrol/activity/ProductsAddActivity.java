@@ -213,14 +213,11 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
             }
 
         } catch (Exception e) {
-            IS_FINISHED.set(0);
             mAddBtn.setEnabled(true);
             mNextBtn.setEnabled(true);
-
             super.showToast("解析数据出现错误");
             Log.d(TAG, "xyz  addData: " + e);
         } finally {
-            IS_FINISHED.set(0);
             mAddBtn.setEnabled(true);
             mNextBtn.setEnabled(true);
         }

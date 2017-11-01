@@ -22,39 +22,46 @@
 
         </activity>
         <activity
-            android:label="主界面"
             android:name=".activity.MainActivity"
+            android:label="主界面"
             android:launchMode="singleTask">
         </activity>
 
         <activity
-            android:label="入库准备界面"
-            android:name=".activity.ProductReadyActivity">
+            android:name=".activity.ProductReadyActivity"
+            android:label="入库准备界面">
         </activity>
 
         <activity
-            android:label="物料入库添加界面"
             android:name=".activity.ProductsAddActivity"
-                  android:launchMode="singleTask">
+            android:label="物料入库添加界面"
+            android:launchMode="singleTask">
         </activity>
 
         <activity
-            android:label="物料入库提交界面"
-            android:name=".activity.ProductsInActivity">
+            android:name=".activity.ProductsInActivity"
+            android:label="物料入库提交界面">
         </activity>
 
-        <activity android:name=".activity.InventoryActivity"
+        <activity
+            android:name=".activity.InventoryActivity"
             android:label="盘点确认界面">
         </activity>
 
         <activity android:name=".activity.TestActivity">
 
         </activity>
-        <activity android:name=".activity.ProductConfigActivity"
+        <activity
+            android:name=".activity.ProductConfigActivity"
             android:label="捡料确认界面"
             >
         </activity>
+        <activity
+            android:name=".activity.PalletEmptyInActivity"
+            android:label="空托入库界面">
 
+
+        </activity>
     </application>
 
 </manifest>
