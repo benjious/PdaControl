@@ -74,12 +74,10 @@ public class PalletEmptyInActivity extends BaseActivity implements CommonView {
     boolean checkPort = false;
     private User mUser;
     private List<StackingItem> stackingItems = new ArrayList<>();
-    private String url = Url.PATH + "/GetBinstas";
 
     private List<Binsta> mBinstas;
 
     private BinstaAdapter mBaseAdapter;
-    private Timer timer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

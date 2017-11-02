@@ -99,14 +99,15 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
             @Override
             public void onClick(View v) {
                 LoginActivity.this.finish();
-
             }
         });
 
         mNetSettingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent();
+                intent.setClass(LoginActivity.this, NetworkActivity.class);
+                startActivity(intent);
 
             }
         });
@@ -114,16 +115,13 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoginActivity.this.finish();
+                mAccountText.setText("");
+                mPasswordText.setText("");
             }
         });
 
     }
 
-    @OnClick(R.id.progressBar)
-    public void onViewClicked() {
-
-    }
 
     private void noCount() {
         Toast toast = Toast.makeText(LoginActivity.this, "没有此账号用户", Toast.LENGTH_LONG);
@@ -175,6 +173,7 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
                 mUser = usersALL.getUsers().get(0);
                 goToMain();
             }
+            mLoginButton.setEnabled(true);
 
         } catch (Exception e) {
             e.printStackTrace();

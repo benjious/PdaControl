@@ -58,8 +58,6 @@ public class ProductDialogFragment extends DialogFragment {
 
                 .setTitle("对以下操作进行选择")
         ;
-        // Create the AlertDialog object and return it
-//        builder.setView(R.layout.product_choice_dialog).create();
         return builder.create();
 
     }

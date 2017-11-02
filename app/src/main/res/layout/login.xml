@@ -64,7 +64,7 @@
         android:layout_above="@+id/button3"
         android:layout_alignEnd="@+id/editText2"
         android:layout_marginEnd="32dp"
-        android:text="@string/cancel"/>
+        />
 
     <Button
         android:id="@+id/button3"

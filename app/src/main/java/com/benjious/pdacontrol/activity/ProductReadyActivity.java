@@ -196,7 +196,7 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
                     mStacking.set_pALLET_ID(pallet_id);
                     mStacking.set_p_CODE(p_code);
                     mStacking.set_kIND(getKind(comboKind));
-                    mStacking.set_bIN_NO(comboBIN);
+                    mStacking.set_bIN_NO(mPointSpin.getSelectedItem().toString());
                     mStacking.set_sTATUS(0);
                     IS_FINISHED.set(0);
                     Intent mIntent = new Intent(this, ProductsAddActivity.class);
@@ -277,6 +277,7 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
                 nextStep();
                 break;
             case R.id.back:
+                this.finish();
                 break;
         }
     }

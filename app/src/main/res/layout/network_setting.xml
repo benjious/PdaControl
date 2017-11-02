@@ -36,7 +36,7 @@
         android:ems="10"
         android:singleLine="true"
         android:maxLines="1"
-        android:inputType="number"/>
+        />
 
     <EditText
         android:singleLine="true"
@@ -51,7 +51,7 @@
         />
 
     <Button
-        android:id="@+id/instoreBtn"
+        android:id="@+id/save_setting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/save_setting"
@@ -64,7 +64,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/back"
-        android:layout_alignTop="@+id/instoreBtn"
-        android:layout_toEndOf="@+id/instoreBtn"
+        android:layout_alignTop="@+id/save_setting"
+        android:layout_toEndOf="@+id/save_setting"
         android:layout_marginStart="60dp"/>
+
+    <Button
+        android:id="@+id/recover"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="41dp"
+        android:text="恢复默认IP地址"
+        android:layout_below="@+id/save_setting"
+        android:layout_centerHorizontal="true"/>
 </RelativeLayout>
