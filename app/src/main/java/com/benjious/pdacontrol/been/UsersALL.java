@@ -12,6 +12,7 @@ public class UsersALL {
     private List<StockDetail> mStockDetails;
     private List<Inventory>  mInventories;
     private List<Picking> mPickings;
+    private List<Binsta> mBinstas;
     private int number;
     private String data="";
     private boolean yesNo;
@@ -34,10 +35,19 @@ public class UsersALL {
     }
 
     public UsersALL() {
+        mBinstas = new ArrayList<>();
         mUsers = new ArrayList<>();
         mStockDetails = new ArrayList<>();
         mInventories = new ArrayList<>();
         mPickings = new ArrayList<>();
+    }
+
+    public List<Binsta> getBinstas() {
+        return mBinstas;
+    }
+
+    public void setBinstas(List<Binsta> binstas) {
+        mBinstas = binstas;
     }
 
     public List<StockDetail> getStockDetails() {
@@ -88,6 +98,7 @@ public class UsersALL {
                 ", mStockDetails=" + mStockDetails +
                 ", mInventories=" + mInventories +
                 ", mPickings=" + mPickings +
+                ", mBinstas=" + mBinstas +
                 ", number=" + number +
                 ", data='" + data + '\'' +
                 ", yesNo=" + yesNo +

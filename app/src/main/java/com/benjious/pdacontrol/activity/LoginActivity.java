@@ -102,6 +102,22 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
 
             }
         });
+
+        mNetSettingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+            }
+        });
+
+        mCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LoginActivity.this.finish();
+            }
+        });
+
     }
 
     @OnClick(R.id.progressBar)
@@ -130,7 +146,7 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
 
     private void goToMain() {
         Intent intent = new Intent();
-        intent.putExtra(USER,mUser);
+        intent.putExtra(USER, mUser);
         intent.setClass(LoginActivity.this, MainActivity.class);
         startActivity(intent);
 
@@ -153,16 +169,16 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
         try {
             Gson gson = new Gson();
             UsersALL usersALL = gson.fromJson(response, UsersALL.class);
-            if (usersALL == null || (usersALL.getUsers().size()==0)) {
+            if (usersALL == null || (usersALL.getUsers().size() == 0)) {
                 showLoadFail(OkHttpUtils.NO_REAL_DATA);
-            }else {
+            } else {
                 mUser = usersALL.getUsers().get(0);
                 goToMain();
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(this, "解析出现错误!!!"+ e.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "解析出现错误!!!" + e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -183,4 +199,6 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
             noCount();
         }
     }
+
+
 }

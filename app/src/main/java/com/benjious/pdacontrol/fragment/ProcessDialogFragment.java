@@ -13,6 +13,8 @@ public class ProcessDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog progressdia = new ProgressDialog(getActivity());
+        setCancelable(false);
+        progressdia.setCanceledOnTouchOutside(false);
         return progressdia;
     }
 }

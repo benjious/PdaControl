@@ -30,19 +30,19 @@ public class GoodPresenterImpl implements GoodPresenter, OnLoadGoodLisenter {
     //插入原材料
     public static final int INSERT_STACKING = 6;
     public static final int INSERT_STACKINGITEM = 7;
-    public static final int UPDATE_PALLET =8 ;
-    public static final int UPDATE_STOCK =9 ;
-    public static final int INSERT_STOCK_DETAIL =10 ;
+    public static final int UPDATE_PALLET = 8;
+    public static final int UPDATE_STOCK = 9;
+    public static final int INSERT_STOCK_DETAIL = 10;
 
     //InventoryActivity
-    public static final int GET_INVENTORYS =11 ;
-    public static final int UPDATE_INVENTORYS =12 ;
+    public static final int GET_INVENTORYS = 11;
+    public static final int UPDATE_INVENTORYS = 12;
 
     //ProductConfirm
-    public static final int GET_PICKING =13 ;
-    public static final int UPDATE_STOCK_DETAIL =14 ;
+    public static final int GET_PICKING = 13;
+    public static final int UPDATE_STOCK_DETAIL = 14;
 
-
+    public static final int GET_BINSTA = 15;
     private CommonView mCommonView;
     private GoodModel mGoodModel;
 

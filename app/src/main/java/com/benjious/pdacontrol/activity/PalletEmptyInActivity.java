@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -12,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.benjious.pdacontrol.R;
+import com.benjious.pdacontrol.adapter.BinstaAdapter;
+import com.benjious.pdacontrol.been.Binsta;
 import com.benjious.pdacontrol.been.Stacking;
 import com.benjious.pdacontrol.been.StackingItem;
 import com.benjious.pdacontrol.been.User;
@@ -27,18 +32,22 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static android.R.attr.fragment;
 import static android.R.attr.type;
-import static com.benjious.pdacontrol.activity.ProductConfigActivity.CHECK_FINISHED;
+import static com.benjious.pdacontrol.util.OkHttpUtils.SERVER_OFFLINE;
 
 /**
  * Created by Benjious on 2017/11/1.
+ * 这里有个bug就是: spinner 在选择的同时,此时有可能空的库位在操作,有可能在进行库位操作时会不一致
+ *
+ *
  */
 
 public class PalletEmptyInActivity extends BaseActivity implements CommonView {
@@ -69,8 +78,13 @@ public class PalletEmptyInActivity extends BaseActivity implements CommonView {
     int checkPallet = -1;
     boolean checkPort = false;
     private User mUser;
-    private List<StackingItem> stackingItems =new ArrayList<>();
+    private List<StackingItem> stackingItems = new ArrayList<>();
+    private String url = Url.PATH + "/GetBinstas";
 
+    private List<Binsta> mBinstas;
+
+    private BinstaAdapter mBaseAdapter;
+    private Timer timer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,7 +95,25 @@ public class PalletEmptyInActivity extends BaseActivity implements CommonView {
 
         Intent intent = getIntent();
         mUser = (User) intent.getSerializableExtra(LoginActivity.USER);
+
+        mBaseAdapter = new BinstaAdapter(mBinstas,this);
+        showProgress();
         //这里还有个定时器获取空位
+        GoodPresenterImpl binstaImpl = new GoodPresenterImpl(this);
+        String url = Url.PATH + "/GetBinstas";
+        binstaImpl.loadData(url, GoodPresenterImpl.GET_BINSTA);
+
+    }
+
+
+
+    private void setSpinnerContent(List<Binsta> binstas) {
+        if (mBaseAdapter.getBinstas() != null) {
+            mBaseAdapter.getBinstas().clear();
+        }
+        mBaseAdapter.setBinstas(binstas);
+        mSpinner.setAdapter(mBaseAdapter);
+        mBaseAdapter.notifyDataSetChanged();
     }
 
 
@@ -94,6 +126,12 @@ public class PalletEmptyInActivity extends BaseActivity implements CommonView {
             if (usersALL == null) {
                 showLoadFail(OkHttpUtils.NO_REAL_DATA);
             } else {
+                if (type==GoodPresenterImpl.GET_BINSTA) {
+                    mBinstas = usersALL.getBinstas();
+                    setSpinnerContent(mBinstas);
+                }
+
+
                 if (type == GoodPresenterImpl.CHECK_PALLET_ID) {
                     checkPallet = usersALL.getNumber();
                     CHECK_FINISHED_PM.addAndGet(1);
@@ -141,7 +179,7 @@ public class PalletEmptyInActivity extends BaseActivity implements CommonView {
                         stacking.set_wH_NO("JL_ASRS_01");
                         stacking.set_pALLET_ID(pallet_id);
                         stacking.set_kIND(0);
-//                        stacking.set_bIN_NO();
+                        stacking.set_bIN_NO(mSpinner.getSelectedItem().toString());
                         stacking.set_fULL_FLAG(false);
                         stacking.set_sTATUS(0);
                         stacking.set_cREATION_DATE(date);
@@ -166,7 +204,7 @@ public class PalletEmptyInActivity extends BaseActivity implements CommonView {
                 }
 
                 if (type == GoodPresenterImpl.INSERT_STACKING) {
-                    String url = Url.getInstackingItem(stackingItems,0);
+                    String url = Url.getInstackingItem(stackingItems, 0);
                     Log.d(TAG, "xyz  addData: 显示六下数据的url " + url);
                     GoodPresenterImpl presenter = new GoodPresenterImpl(this);
                     presenter.loadData(url, GoodPresenterImpl.INSERT_STACKINGITEM);
@@ -190,7 +228,7 @@ public class PalletEmptyInActivity extends BaseActivity implements CommonView {
                         hideProgress();
                         CHECK_FINISHED_PM.set(0);
                     } else {
-                       // super.showToast("怎么会是这里");
+                        // super.showToast("怎么会是这里");
                     }
                 }
 
@@ -217,28 +255,32 @@ public class PalletEmptyInActivity extends BaseActivity implements CommonView {
             e.printStackTrace();
             Log.d(TAG, "xyz  addData: 解析出现错误!!" + e);
             super.showToast("解析出现错误!!");
-        }finally {
+        } finally {
             hideProgress();
         }
     }
 
     private void inTostore() {
-        if ((!mPortIdEdit.getText().toString().equals("")) && (!mPalletIdEdit.getText().toString().equals(""))) {
-            showProgress();
-            port_id = mPortIdEdit.getText().toString();
-            pallet_id = mPalletIdEdit.getText().toString();
+        if (!mSpinner.getSelectedItem().toString().equals("")) {
+            if ((!mPortIdEdit.getText().toString().equals("")) && (!mPalletIdEdit.getText().toString().equals(""))) {
+                showProgress();
+                port_id = mPortIdEdit.getText().toString();
+                pallet_id = mPalletIdEdit.getText().toString();
 
-            String checkPalletUrl = Url.PATH + "/CheckPallet?pallet_id=" + pallet_id + "&status=" + 1;
-            Log.d(TAG, "xyz url " + checkPalletUrl);
-            GoodPresenterImpl mPresenter = new GoodPresenterImpl(this);
-            mPresenter.loadData(checkPalletUrl, GoodPresenterImpl.CHECK_PALLET_ID);
+                String checkPalletUrl = Url.PATH + "/CheckPallet?pallet_id=" + pallet_id + "&status=" + 1;
+                Log.d(TAG, "xyz url " + checkPalletUrl);
+                GoodPresenterImpl mPresenter = new GoodPresenterImpl(this);
+                mPresenter.loadData(checkPalletUrl, GoodPresenterImpl.CHECK_PALLET_ID);
 
-            String checkPortUrl = Url.PATH + "/CheckPort?p_code=" + port_id;
-            Log.d(TAG, "xyz  checkPortUrl " + checkPortUrl);
-            GoodPresenterImpl mGoodCheckPortpre = new GoodPresenterImpl(this);
-            mGoodCheckPortpre.loadData(checkPortUrl, GoodPresenterImpl.CHECK_PORT);
+                String checkPortUrl = Url.PATH + "/CheckPort?p_code=" + port_id;
+                Log.d(TAG, "xyz  checkPortUrl " + checkPortUrl);
+                GoodPresenterImpl mGoodCheckPortpre = new GoodPresenterImpl(this);
+                mGoodCheckPortpre.loadData(checkPortUrl, GoodPresenterImpl.CHECK_PORT);
+            } else {
+                super.showToast("入库站口或托盘编号不能为空!!");
+            }
         } else {
-            super.showToast("入库站口或托盘编号不能为空!!");
+            super.showToast("等待查询入库空位后再进行操作");
         }
     }
 
@@ -252,7 +294,7 @@ public class PalletEmptyInActivity extends BaseActivity implements CommonView {
 
     @Override
     public void showLoadFail(int failNum) {
-        if (failNum == OkHttpUtils.SERVER_OFFLINE) {
+        if (failNum == SERVER_OFFLINE) {
             Toast.makeText(this, "请求服务器出现错误！！", Toast.LENGTH_SHORT).show();
         } else if (failNum == OkHttpUtils.NO_REAL_DATA) {
             Toast.makeText(this, "获取数据成功，但数据为空！！", Toast.LENGTH_SHORT).show();
