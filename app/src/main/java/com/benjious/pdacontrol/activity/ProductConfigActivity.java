@@ -1,27 +1,20 @@
 package com.benjious.pdacontrol.activity;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.BoolRes;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.benjious.pdacontrol.R;
-import com.benjious.pdacontrol.been.InventoryBeen;
 import com.benjious.pdacontrol.been.Picking;
-import com.benjious.pdacontrol.been.Product;
-import com.benjious.pdacontrol.been.ProductBeen;
 import com.benjious.pdacontrol.been.ProductConfirmBeen;
-import com.benjious.pdacontrol.been.Stacking;
 import com.benjious.pdacontrol.been.StackingItem;
 import com.benjious.pdacontrol.been.User;
 import com.benjious.pdacontrol.been.UsersALL;
@@ -65,13 +58,13 @@ import static com.benjious.pdacontrol.activity.ProductReadyActivity.USER_SEND;
  */
 
 public class ProductConfigActivity extends BaseActivity implements CommonView, OnUpdateProductConfirm {
-    @Bind(R.id.port_id)
+    @Bind(R.id.ip_address)
     TextView mPortId;
-    @Bind(R.id.port_id_edit)
+    @Bind(R.id.ip_edit)
     EditText mPortIdEdit;
-    @Bind(R.id.pallet_id)
+    @Bind(R.id.service_name)
     TextView mPalletId;
-    @Bind(R.id.pallet_id_edit)
+    @Bind(R.id.service_name_edit)
     EditText mPalletIdEdit;
     @Bind(R.id.find_product_btn)
     Button mFindProductBtn;

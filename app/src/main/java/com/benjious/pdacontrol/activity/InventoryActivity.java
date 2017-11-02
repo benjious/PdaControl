@@ -1,15 +1,12 @@
 package com.benjious.pdacontrol.activity;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -18,14 +15,11 @@ import android.widget.Toast;
 import com.benjious.pdacontrol.R;
 import com.benjious.pdacontrol.been.Inventory;
 import com.benjious.pdacontrol.been.InventoryBeen;
-import com.benjious.pdacontrol.been.ProductBeen;
 import com.benjious.pdacontrol.been.User;
 import com.benjious.pdacontrol.been.UsersALL;
 import com.benjious.pdacontrol.fragment.InventoryFragment;
 import com.benjious.pdacontrol.fragment.ProcessDialogFragment;
-import com.benjious.pdacontrol.fragment.ProductDialogFragment;
 import com.benjious.pdacontrol.interfazes.OnUpdateInventoryStore;
-import com.benjious.pdacontrol.model.GoodModelImpl;
 import com.benjious.pdacontrol.presenter.GoodPresenterImpl;
 import com.benjious.pdacontrol.url.Url;
 import com.benjious.pdacontrol.util.OkHttpUtils;
@@ -44,18 +38,15 @@ import de.codecrafters.tableview.listeners.TableDataClickListener;
 import de.codecrafters.tableview.model.TableColumnWeightModel;
 import de.codecrafters.tableview.toolkit.SimpleTableHeaderAdapter;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
-import static org.apache.http.HttpHeaders.IF;
-
 /**
  * Created by Benjious on 2017/10/24.
  */
 
 public class InventoryActivity extends BaseActivity implements CommonView, OnUpdateInventoryStore {
 
-    @Bind(R.id.pallet_id)
+    @Bind(R.id.service_name)
     TextView mPalletId;
-    @Bind(R.id.pallet_id_edit)
+    @Bind(R.id.service_name_edit)
     EditText mPalletIdEdit;
     @Bind(R.id.find_product_btn)
     Button mFindProductBtn;

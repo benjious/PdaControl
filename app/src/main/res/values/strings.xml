@@ -36,4 +36,7 @@
     <string name="port">入库站口 :</string>
     <string name="add_product">添加新物料</string>
     <string name="instore">入库</string>
+    <string name="ip">IP地址 :</string>
+    <string name="service_name">服务器 :</string>
+    <string name="save_setting">保存设置</string>
 </resources>

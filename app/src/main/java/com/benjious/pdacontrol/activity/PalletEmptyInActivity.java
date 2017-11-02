@@ -5,9 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -33,14 +30,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static android.R.attr.type;
 import static com.benjious.pdacontrol.util.OkHttpUtils.SERVER_OFFLINE;
 
 /**
@@ -54,15 +49,15 @@ public class PalletEmptyInActivity extends BaseActivity implements CommonView {
 
     private static final AtomicInteger CHECK_FINISHED_PM = new AtomicInteger();
 
-    @Bind(R.id.port_id)
+    @Bind(R.id.ip_address)
     TextView mPortId;
-    @Bind(R.id.pallet_id)
+    @Bind(R.id.service_name)
     TextView mPalletId;
     @Bind(R.id.inStorePoint)
     TextView mInStorePoint;
-    @Bind(R.id.port_id_edit)
+    @Bind(R.id.ip_edit)
     EditText mPortIdEdit;
-    @Bind(R.id.pallet_id_edit)
+    @Bind(R.id.service_name_edit)
     EditText mPalletIdEdit;
     @Bind(R.id.spinner)
     Spinner mSpinner;
@@ -152,6 +147,9 @@ public class PalletEmptyInActivity extends BaseActivity implements CommonView {
                         mPalletIdEdit.setText("");
                         mPortIdEdit.setText("");
                         //刷新spinner中的数据
+                        GoodPresenterImpl binstaImpl = new GoodPresenterImpl(this);
+                        String url = Url.PATH + "/GetBinstas";
+                        binstaImpl.loadData(url, GoodPresenterImpl.GET_BINSTA);
                     }
                     hideProgress();
                 }

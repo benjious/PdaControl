@@ -14,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.benjious.pdacontrol.R;
+import com.benjious.pdacontrol.adapter.BinstaAdapter;
+import com.benjious.pdacontrol.been.Binsta;
 import com.benjious.pdacontrol.been.Picking;
 import com.benjious.pdacontrol.been.Stacking;
 import com.benjious.pdacontrol.been.StackingItem;
@@ -26,6 +28,7 @@ import com.benjious.pdacontrol.util.OkHttpUtils;
 import com.benjious.pdacontrol.view.CommonView;
 import com.google.gson.Gson;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -59,6 +62,7 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
 
     @Bind(R.id.inStorePoint)
     TextView mInStorePoint;
+
     @Bind(R.id.pointSpin)
     Spinner mPointSpin;
 
@@ -98,7 +102,8 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
     private int checkPallet = -2;
 
     private User mUser;
-
+    private List<Binsta> mBinstas;
+    private BinstaAdapter mBaseAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,7 +119,11 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
         Intent intent = getIntent();
         mUser = (User) intent.getSerializableExtra(LoginActivity.USER);
 
-        hideProgress();
+        showProgress();
+        mBaseAdapter = new BinstaAdapter(mBinstas,this);
+        GoodPresenterImpl binstaImpl = new GoodPresenterImpl(this);
+        String url = Url.PATH + "/GetBinstas";
+        binstaImpl.loadData(url, GoodPresenterImpl.GET_BINSTA);
     }
 
     @Override
@@ -136,6 +145,13 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
             if (usersALL == null) {
                 showLoadFail(OkHttpUtils.NO_REAL_DATA);
             } else {
+                if (type==GoodPresenterImpl.GET_BINSTA) {
+                    mBinstas = usersALL.getBinstas();
+                    setSpinnerContent(mBinstas);
+                }
+
+
+
                 if (type == GoodPresenterImpl.CHECK_PALLET_ID) {
                     checkPallet = usersALL.getNumber();
                     IS_FINISHED.addAndGet(1);
@@ -205,6 +221,16 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
             hideProgress();
             mNext.setEnabled(true);
         }
+    }
+
+
+    private void setSpinnerContent(List<Binsta> binstas) {
+        if (mBaseAdapter.getBinstas() != null) {
+            mBaseAdapter.getBinstas().clear();
+        }
+        mBaseAdapter.setBinstas(binstas);
+        mPointSpin.setAdapter(mBaseAdapter);
+        mBaseAdapter.notifyDataSetChanged();
     }
 
 
