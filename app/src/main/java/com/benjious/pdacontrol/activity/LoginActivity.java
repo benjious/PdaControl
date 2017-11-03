@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.benjious.pdacontrol.R;
 import com.benjious.pdacontrol.been.User;
 import com.benjious.pdacontrol.been.UsersALL;
+import com.benjious.pdacontrol.util.MD5Util;
 import com.benjious.pdacontrol.util.OkHttpUtils;
 import com.benjious.pdacontrol.view.CommonView;
 import com.benjious.pdacontrol.webService.WLoginService;
@@ -90,6 +91,7 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
                 }
                 mLoginButton.setEnabled(false);
                 showProgress();
+                password = MD5Util.createMD5Hash(password);
                 WLoginService.executeHttpGet(username, password, LoginActivity.this);
 
             }

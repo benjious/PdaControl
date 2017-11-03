@@ -35,4 +35,5 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'de.codecrafters.tableview:tableview:2.8.0'
     compile 'de.codecrafters.tableview:tableview:2.8.0'
+    compile files('libs/JavaMD5.jar')
 }
