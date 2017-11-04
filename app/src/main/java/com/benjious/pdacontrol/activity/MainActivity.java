@@ -49,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         Intent intent = getIntent();
         mUser = (User) intent.getSerializableExtra(LoginActivity.USER);
-        String userName = mUser.get_userCnName();
-        mWelcome.setText("欢迎你 : " + userName);
+//        String userName = mUser.get_userCnName();
+//        mWelcome.setText("欢迎你 : " + userName);
         this.setTitle("登录界面");
     }
 
@@ -60,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent();
         switch (view.getId()) {
             case R.id.MaduoInstore:
+                intent.putExtra(LoginActivity.USER, mUser);
+                intent.setClass(MainActivity.this, SortPortActivity.class);
+                startActivity(intent);
                 break;
             case R.id.goodInStore:
                 intent.putExtra(LoginActivity.USER, mUser);

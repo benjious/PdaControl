@@ -110,14 +110,14 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
             //这个是空的
             mPickings = (List<Picking>) mBundle.getSerializable(PICKING_SEND);
             String getSDetail = Url.PATH + "/GetStockDetail/?stock_oid=" + mPickings.get(0).get_sTOCK_OID();
-            showProgress();
+            beforeRequest();
 //            String getSDetailUrl = Url.PATH + "/GetStockDetail?stock_oid=" + "6198";
 //            Log.d(TAG, "xyz  onCreate: URL " + getSDetailUrl);
             GoodPresenterImpl goodPresenter = new GoodPresenterImpl(this);
             goodPresenter.loadData(getSDetail, GoodPresenterImpl.GET_STOCK_DETAIL);
         }
         user = (User) mBundle.getSerializable(USER_SEND);
-        hideProgress();
+        finishRequest();
         mNextBtn.setEnabled(false);
     }
 
@@ -167,7 +167,7 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
 
 //            String proNo_url = Url.PATH + "/CheckPro_No?pro_no=" + "01.01.03.0008";
             GoodPresenterImpl checkProNoImpl = new GoodPresenterImpl(this);
-            showProgress();
+            beforeRequest();
             mAddBtn.setEnabled(false);
             checkProNoImpl.loadData(proNo_url, GoodPresenterImpl.CHECK_PRO_NO);
             mNextBtn.setEnabled(true);
@@ -176,19 +176,19 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
 
 
     @Override
-    public void showProgress() {
+    public void beforeRequest() {
         mProgressBar3.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void hideProgress() {
+    public void finishRequest() {
         mProgressBar3.setVisibility(View.INVISIBLE);
 
     }
 
     @Override
     public void addData(String response, int type) {
-        hideProgress();
+        finishRequest();
         mNextBtn.setEnabled(false);
         try {
             Gson gson = new Gson();
@@ -295,7 +295,7 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
 
     @Override
     public void loadExecption(Exception e) {
-        hideProgress();
+        finishRequest();
         mNextBtn.setEnabled(true);
         mAddBtn.setEnabled(true);
         super.showToast("请求过程中出现异常！！" + e);
@@ -303,7 +303,7 @@ public class ProductsAddActivity extends BaseActivity implements CommonView, Dat
 
     @Override
     public void showLoadFail(int failNum) {
-        hideProgress();
+        finishRequest();
         mAddBtn.setEnabled(true);
         mNextBtn.setEnabled(true);
         IS_FINISHED.set(0);

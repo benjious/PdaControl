@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
 
     <TextView
@@ -12,7 +13,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="69dp"
         android:layout_marginTop="140dp"
-        android:text="@string/port"/>
+        android:text="@string/port_point"/>
 
     <TextView
         android:id="@+id/product_id"
@@ -21,24 +22,15 @@
         android:layout_alignStart="@+id/port"
         android:layout_below="@+id/port"
         android:layout_marginTop="60dp"
-        android:text="@string/pallet_id"/>
-
-    <TextView
-        android:id="@+id/inStorePoint"
-        android:layout_width="wrap_content"
-        android:layout_marginTop="60dp"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/port"
-        android:layout_below="@+id/product_id"
-        android:text="@string/inStorePoint"/>
-
+        android:text="@string/product_id"
+        />
 
 
     <EditText
         android:id="@+id/port_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
+        android:layout_marginStart="25dp"
         android:layout_alignBaseline="@+id/port"
         android:layout_toEndOf="@+id/port"
         android:ems="10"
@@ -56,26 +48,18 @@
         android:layout_alignStart="@+id/port_edit"
         android:layout_alignBaseline="@+id/product_id"
         android:ems="10"
-       />
+        />
 
-
-    <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/inStorePoint"
-        android:layout_alignEnd="@+id/port_edit"
-        android:layout_alignStart="@+id/prodcut_id_edit"/>
 
 
     <Button
         android:id="@+id/instoreBtn"
+        android:layout_below="@+id/product_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/instore"
+        android:layout_alignStart="@+id/port"
         android:layout_marginTop="70dp"
-        android:layout_below="@+id/spinner"
-        android:layout_alignStart="@+id/inStorePoint"/>
+        android:text="录入"/>
 
     <Button
         android:id="@+id/backBtn"

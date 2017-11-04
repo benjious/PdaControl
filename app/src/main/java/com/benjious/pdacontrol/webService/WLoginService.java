@@ -48,6 +48,7 @@ public class WLoginService {
                     view.loadExecption(e);
                 }
             };
+
             OkHttpUtils.get(path, resultCallback);
 
         } catch (Exception e) {

@@ -73,8 +73,7 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
 
     @Bind(R.id.textView3)
     TextView mTextView3;
-    @Bind(R.id.progressBar2)
-    ProgressBar mProgressBar2;
+
 
     public static final String TAG = " xyz =";
     public static AtomicInteger IS_FINISHED = new AtomicInteger();
@@ -119,7 +118,7 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
         Intent intent = getIntent();
         mUser = (User) intent.getSerializableExtra(LoginActivity.USER);
 
-        showProgress();
+        beforeRequest();
         mBaseAdapter = new BinstaAdapter(mBinstas,this);
         GoodPresenterImpl binstaImpl = new GoodPresenterImpl(this);
         String url = Url.PATH + "/GetBinstas";
@@ -127,13 +126,15 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
     }
 
     @Override
-    public void showProgress() {
-        mProgressBar2.setVisibility(View.VISIBLE);
+    public void beforeRequest() {
+        super.showProgress();
+//        mProgressBar2.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void hideProgress() {
-        mProgressBar2.setVisibility(View.INVISIBLE);
+    public void finishRequest() {
+        super.hideProgress();
+//        mProgressBar2.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -218,7 +219,7 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
             Toast.makeText(this, "解析数据出现错误" + e, Toast.LENGTH_SHORT).show();
             Log.d(TAG, "xyz  addData: " + e);
         } finally {
-            hideProgress();
+            finishRequest();
             mNext.setEnabled(true);
         }
     }
@@ -250,20 +251,21 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
 
     @Override
     public void loadExecption(Exception e) {
-        hideProgress();
+        finishRequest();
         mNext.setEnabled(true);
         Toast.makeText(this, "请求过程中出现异常！！" + e.toString(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showLoadFail(int failNum) {
-        hideProgress();
+        finishRequest();
         mNext.setEnabled(true);
         IS_FINISHED.set(0);
         if (failNum == OkHttpUtils.SERVER_OFFLINE) {
             Toast.makeText(this, "请求服务器出现错误！！", Toast.LENGTH_SHORT).show();
         } else if (failNum == OkHttpUtils.NO_REAL_DATA) {
-            mProgressBar2.setVisibility(View.INVISIBLE);
+           // mProgressBar2.setVisibility(View.INVISIBLE);
+            finishRequest();
             Toast.makeText(this, "获取数据成功，但数据为空！！", Toast.LENGTH_SHORT).show();
         }
 
@@ -288,7 +290,7 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
             pallet_id = mStockIdEdit.getText().toString();
             p_code = mInStorePointEdit.getText().toString();
 //            comboBIN = mPointSpin.getSelectedItem().toString();
-            if ((!(mInStorePointEdit.getText().toString().equals(""))) && (!(mStockIdEdit.getText().toString().equals(""))) && (!((mStyleSpin.getSelectedItem()).equals("")))) {
+            if ((!(mInStorePointEdit.getText().toString().equals(""))) && (!(mStockIdEdit.getText().toString().equals(""))) && (!((mStyleSpin.getSelectedItem()).equals("")))&&(!(mBinstas==null)) ){
 
                 //进行数据库查询
                 String checkPalletUrl = Url.PATH + "/CheckPallet?pallet_id=" + pallet_id + "&status=" + 1;
@@ -307,9 +309,12 @@ public class ProductReadyActivity extends BaseActivity implements CommonView {
 
 
                 mNext.setEnabled(false);
-                showProgress();
+                beforeRequest();
 
             } else {
+                if (mBinstas==null) {
+                    Toast.makeText(this, "请先等待入库库位查询完毕再操作! ", Toast.LENGTH_SHORT).show();
+                }
                 if (p_code.equals("")) {
                     Toast.makeText(this, "站口号不能为空", Toast.LENGTH_SHORT).show();
                 } else {

@@ -74,7 +74,6 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
 
     private List<ProductBeen> mBeens = new ArrayList<>();
     private Boolean checkNot;
-    private ProcessDialogFragment fragment;
 
 //    prvivate AtomicInteger IS_INSERT_STOCK_DETAIL =;
 
@@ -82,7 +81,6 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.product_in);
-        fragment = new ProcessDialogFragment();
         Intent intent = getIntent();
         kind = intent.getIntExtra(ProductReadyActivity.KIND_SEND, 0);
         user = (User) intent.getSerializableExtra(ProductReadyActivity.USER_SEND);
@@ -110,7 +108,7 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
         if (mStackingItems == null && mStockDetails == null) {
             super.showToast("请先返回添加物料,提交无法操作");
         } else {
-            showProgress();
+            beforeRequest();
             if (kind == 1) {
                 super.showToast("正在提交物料");
                 String checkPalletUrl = Url.PATH + "/CheckPallet?pallet_id=" + mStacking.get_pALLET_ID() + "&status=" + 0;
@@ -131,7 +129,7 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
     @Override
     public void addData(String response, int type) {
         Log.d(TAG, "xyz  addData: 这里这里");
-        hideProgress();
+        finishRequest();
         try {
             Gson gson = new Gson();
             UsersALL usersALL = gson.fromJson(response, UsersALL.class);
@@ -159,7 +157,7 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
                         if (havanot == 1) {
                             super.showToast("该任务已经存在,请勿重复插入");
                         }
-                        hideProgress();
+                        finishRequest();
                     }
                 }
 
@@ -173,7 +171,7 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
                         GoodPresenterImpl presenter = new GoodPresenterImpl(this);
                         presenter.loadData(url, GoodPresenterImpl.INSERT_STACKINGITEM);
                     }else {
-                        hideProgress();
+                        finishRequest();
                         super.showToast("插入STACK过程出错!");
                     }
                 }
@@ -187,7 +185,7 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
                         GoodPresenterImpl presenter = new GoodPresenterImpl(this);
                         presenter.loadData(url, GoodPresenterImpl.UPDATE_PALLET);
                     }else {
-                        hideProgress();
+                        finishRequest();
                         super.showToast("插入STACKITEM过程出错!");
                     }
                 }
@@ -201,7 +199,7 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
                         mStackingItems.remove(rowNowIndex);
                         tableviewFresh();
                     } else {
-                        hideProgress();
+                        finishRequest();
                         super.showToast("提交失败");
                     }
                 }
@@ -220,7 +218,7 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
                         }
                     }else {
                         super.showToast("更新STOCK失败");
-                        hideProgress();
+                        finishRequest();
                     }
                 }
 
@@ -236,12 +234,12 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
             }
 
         } catch (Exception e) {
-            hideProgress();
+            finishRequest();
             e.printStackTrace();
             super.showToast("解析数据出现错误" + e);
             Log.d(TAG, "xyz  addData: " + e);
         }finally {
-            hideProgress();
+            finishRequest();
         }
 
     }
@@ -273,19 +271,19 @@ public class ProductsInActivity extends BaseActivity implements OnUpdateProductL
 
 
     @Override
-    public void showProgress() {
-        fragment.show(getFragmentManager(), "进度框");
+    public void beforeRequest() {
+      showProgress();
     }
 
     @Override
-    public void hideProgress() {
-        fragment.dismiss();
+    public void finishRequest() {
+        super.hideProgress();
     }
 
 
     @Override
     public void loadExecption(Exception e) {
-        super.showToast("请求过    程中出现异常！！" + e);
+        super.showToast("请求过程中出现异常！！" + e);
     }
 
     @Override

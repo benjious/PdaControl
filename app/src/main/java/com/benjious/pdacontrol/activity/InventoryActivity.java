@@ -44,9 +44,9 @@ import de.codecrafters.tableview.toolkit.SimpleTableHeaderAdapter;
 
 public class InventoryActivity extends BaseActivity implements CommonView, OnUpdateInventoryStore {
 
-    @Bind(R.id.service_name)
+    @Bind(R.id.product_id)
     TextView mPalletId;
-    @Bind(R.id.service_name_edit)
+    @Bind(R.id.prodcut_id_edit)
     EditText mPalletIdEdit;
     @Bind(R.id.find_product_btn)
     Button mFindProductBtn;
@@ -72,7 +72,7 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inverntory);
         ButterKnife.bind(this);
-         fragment = new ProcessDialogFragment();
+        fragment = new ProcessDialogFragment();
 
         Intent intent = getIntent();
         mUser = (User) intent.getSerializableExtra(LoginActivity.USER);
@@ -84,9 +84,8 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
         if (mPalletIdEdit.getText().toString().equals("")) {
             super.showToast("请输入托盘编号!");
         } else {
-            showProgress();
-            mFindProductBtn.setEnabled(false);
-            String invenUrl = Url.PATH + "/GetInventorys?pallet_id=" + mFindProductBtn.getText();
+            beforeRequest();
+            String invenUrl = Url.PATH + "/GetInventorys?pallet_id=" + mPalletIdEdit.getText();
             GoodPresenterImpl invenImp = new GoodPresenterImpl(this);
             invenImp.loadData(invenUrl, GoodPresenterImpl.GET_INVENTORYS);
             Log.d(TAG, "xyz  setContent: invenurl : " + invenUrl);
@@ -111,19 +110,19 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
 
 
     @Override
-    public void showProgress() {
-       fragment.show(getFragmentManager(),"进度框");
+    public void beforeRequest() {
+        super.showProgress();
     }
 
     @Override
-    public void hideProgress() {
-        fragment.dismiss();
+    public void finishRequest() {
+        super.hideProgress();
     }
 
     @Override
     public void addData(String response, int type) {
-        hideProgress();
-        mFindProductBtn.setEnabled(true);
+        finishRequest();
+//        mFindProductBtn.setEnabled(true);
         try {
             Gson gson = new Gson();
             UsersALL usersALL = gson.fromJson(response, UsersALL.class);
@@ -144,7 +143,7 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
                         //数据刷新
                         tableviewFresh();
                     }
-                    hideProgress();
+                    finishRequest();
                 }
                 if (type == GoodPresenterImpl.UPDATE_INVENTORYS) {
                     boolean result = usersALL.isYesNo();
@@ -157,12 +156,12 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
                     } else {
                         super.showToast("修改出现错误!!! ");
                     }
-                    hideProgress();
+                    finishRequest();
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
-            hideProgress();
+            finishRequest();
             super.showToast("解析数据出现错误" + e);
             Log.d(TAG, "xyz  addData: " + e);
         }
@@ -170,15 +169,15 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
 
     @Override
     public void loadExecption(Exception e) {
-        mFindProductBtn.setEnabled(true);
-        hideProgress();
+//        mFindProductBtn.setEnabled(true);
+        finishRequest();
         super.showToast("请求过程中出现异常！！" + e);
     }
 
     @Override
     public void showLoadFail(int failNum) {
-        mFindProductBtn.setEnabled(true);
-        hideProgress();
+//        mFindProductBtn.setEnabled(true);
+        finishRequest();
         if (failNum == OkHttpUtils.SERVER_OFFLINE) {
             Toast.makeText(this, "请求服务器出现错误！！", Toast.LENGTH_SHORT).show();
         } else if (failNum == OkHttpUtils.NO_REAL_DATA) {
@@ -205,7 +204,7 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
         oid = mInventories.get(rowNowIndex).get_oID();
         String url = Url.PATH + "/UpdateInventorys?last_updated_by=" + mUser.get_userID() + "&check_list_no=" + check_list_no + "&oid=" + oid + "&qty=" + num;
         GoodPresenterImpl upStoreImpl = new GoodPresenterImpl(this);
-        showProgress();
+        beforeRequest();
         upStoreImpl.loadData(url, GoodPresenterImpl.UPDATE_INVENTORYS);
 
     }
@@ -265,4 +264,6 @@ public class InventoryActivity extends BaseActivity implements CommonView, OnUpd
         textView.setTextSize(14);
         return textView;
     }
+
+
 }

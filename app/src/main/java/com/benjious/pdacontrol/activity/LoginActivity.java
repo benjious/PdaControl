@@ -2,9 +2,11 @@ package com.benjious.pdacontrol.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 import com.benjious.pdacontrol.R;
 import com.benjious.pdacontrol.been.User;
 import com.benjious.pdacontrol.been.UsersALL;
+import com.benjious.pdacontrol.url.Url;
 import com.benjious.pdacontrol.util.MD5Util;
 import com.benjious.pdacontrol.util.OkHttpUtils;
 import com.benjious.pdacontrol.view.CommonView;
@@ -24,7 +27,9 @@ import com.google.gson.Gson;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
+import static com.benjious.pdacontrol.R.string.ip;
 
 
 //这是master
@@ -59,6 +64,8 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
     private String password = "";
     private User mUser;
 
+    private SharedPreferences mPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +73,18 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
         ButterKnife.bind(this);
         mProgressBar.setVisibility(View.INVISIBLE);
         setListener();
+        getUrlFromXml();
     }
+
+    private void getUrlFromXml() {
+        mPreferences = getSharedPreferences("test", MODE_PRIVATE);
+        String ip_address = mPreferences.getString("IP_ADDRESS", "");
+        String service_name = mPreferences.getString("SERVICE_NAME", "");
+        Log.d(TAG, "xyz  getUrlFromXml: 输出ip 和 服务器地址看一下 : "+ip_address+" "+service_name);
+        Url.getPathUrl(ip_address,service_name);
+//        Url.getPathUrl("a","b");
+    }
+
 
     private void setListener() {
         mLoginButton.setOnClickListener(new View.OnClickListener() {
@@ -90,10 +108,9 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
                     return;
                 }
                 mLoginButton.setEnabled(false);
-                showProgress();
+                beforeRequest();
                 password = MD5Util.createMD5Hash(password);
                 WLoginService.executeHttpGet(username, password, LoginActivity.this);
-
             }
         });
 
@@ -154,18 +171,18 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
 
 
     @Override
-    public void showProgress() {
+    public void beforeRequest() {
         mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void hideProgress() {
+    public void finishRequest() {
         mProgressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void addData(final String response, int type) {
-        hideProgress();
+        finishRequest();
         try {
             Gson gson = new Gson();
             UsersALL usersALL = gson.fromJson(response, UsersALL.class);
@@ -185,14 +202,14 @@ public class LoginActivity extends AppCompatActivity implements CommonView {
 
     @Override
     public void loadExecption(Exception e) {
-        hideProgress();
+        finishRequest();
         mLoginButton.setEnabled(true);
         Toast.makeText(this, "请求服务器出现错误！！" + e.toString(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showLoadFail(int failNum) {
-        hideProgress();
+        finishRequest();
         mLoginButton.setEnabled(true);
         if (failNum == OkHttpUtils.SERVER_OFFLINE) {
             Toast.makeText(this, "请求服务器出现错误！！", Toast.LENGTH_SHORT).show();

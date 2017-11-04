@@ -1,5 +1,7 @@
 package com.benjious.pdacontrol.model;
 
+import android.util.Log;
+
 import com.benjious.pdacontrol.interfazes.OnLoadGoodLisenter;
 import com.benjious.pdacontrol.presenter.GoodPresenterImpl;
 import com.benjious.pdacontrol.util.OkHttpUtils;

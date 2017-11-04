@@ -14,10 +14,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activity.LoginActivity"
             >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
+
 
 
         </activity>
@@ -25,6 +22,11 @@
             android:name=".activity.MainActivity"
             android:label="主界面"
             android:launchMode="singleTask">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
 
         <activity
@@ -63,11 +65,18 @@
 
         </activity>
 
-        <activity android:name=".activity.NetworkActivity"
-                  android:label="网络设置界面">
+        <activity
+            android:name=".activity.NetworkActivity"
+            android:label="网络设置界面">
+        </activity>
+        <activity
+            android:name=".activity.SortPortActivity"
+            android:label="码垛入库界面">
+
 
 
         </activity>
+
     </application>
 
 </manifest>

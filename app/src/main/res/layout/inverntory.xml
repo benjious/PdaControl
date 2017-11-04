@@ -6,7 +6,7 @@
                 android:orientation="vertical">
 
     <TextView
-        android:id="@+id/service_name"
+        android:id="@+id/product_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -18,12 +18,12 @@
         android:text="@string/pallet_id"/>
 
     <EditText
-        android:id="@+id/service_name_edit"
+        android:id="@+id/prodcut_id_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/service_name"
+        android:layout_alignBaseline="@+id/product_id"
         android:layout_centerHorizontal="true"
-        android:layout_toEndOf="@+id/service_name"
+        android:layout_toEndOf="@+id/product_id"
         android:ems="10"
         android:maxLines="1"
         android:singleLine="true"/>
@@ -33,7 +33,7 @@
         android:id="@+id/product_tableView"
         android:layout_width="match_parent"
         android:layout_height="360dp"
-        android:layout_below="@+id/service_name"/>
+        android:layout_below="@+id/product_id"/>
 
     <ViewStub
         android:id="@+id/viewStub"

@@ -1,8 +1,13 @@
 package com.benjious.pdacontrol.presenter;
 
+import android.content.Context;
+import android.widget.Toast;
+
+import com.benjious.pdacontrol.activity.BaseActivity;
 import com.benjious.pdacontrol.interfazes.OnLoadGoodLisenter;
 import com.benjious.pdacontrol.model.GoodModel;
 import com.benjious.pdacontrol.model.GoodModelImpl;
+import com.benjious.pdacontrol.util.NetworkUtil;
 import com.benjious.pdacontrol.view.CommonView;
 
 /**
@@ -43,6 +48,7 @@ public class GoodPresenterImpl implements GoodPresenter, OnLoadGoodLisenter {
     public static final int UPDATE_STOCK_DETAIL = 14;
 
     public static final int GET_BINSTA = 15;
+    public static final int INSERT_SORT = 16;
     private CommonView mCommonView;
     private GoodModel mGoodModel;
 
@@ -69,7 +75,6 @@ public class GoodPresenterImpl implements GoodPresenter, OnLoadGoodLisenter {
 
     @Override
     public void loadData(String url, int style) {
-        mGoodModel.loadData(url, this, style);
-
+            mGoodModel.loadData(url, this, style);
     }
 }

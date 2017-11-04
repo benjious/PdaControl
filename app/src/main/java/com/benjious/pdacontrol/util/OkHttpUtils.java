@@ -23,32 +23,40 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Benjious on 2017/1/8.
+ *
  */
 
 public class OkHttpUtils {
-    private static final String TAG="OkHttpUtils";
+    private static final String TAG = "OkHttpUtils";
     private static OkHttpUtils mInstance;
     private OkHttpClient mOkHttpClient;
     private Handler mDelivery;
-    public static final int NO_REAL_DATA =2 ;
-    public static final int SERVER_OFFLINE =1 ;
-
+    public static final int NO_REAL_DATA = 2;
+    public static final int SERVER_OFFLINE = 1;
 
 
     private OkHttpUtils() {
-        mOkHttpClient=new OkHttpClient();
-        mOkHttpClient.setConnectTimeout(10, TimeUnit.SECONDS);
+        mOkHttpClient = new OkHttpClient();
+        mOkHttpClient.setConnectTimeout(7, TimeUnit.SECONDS);
         mOkHttpClient.setWriteTimeout(10, TimeUnit.SECONDS);
         mOkHttpClient.setReadTimeout(30, TimeUnit.SECONDS);
 
         //cookie enabled
         mOkHttpClient.setCookieHandler(new CookieManager(null, CookiePolicy.ACCEPT_ORIGINAL_SERVER));
-
         //这里定义一个handler,方便转回主线程执行操作
-        mDelivery=new Handler(Looper.getMainLooper());
+        mDelivery = new Handler(Looper.getMainLooper());
     }
 
-    private synchronized static OkHttpUtils getmInstance() {
+    private void stopAllRequest(){
+        mOkHttpClient.cancel("stop");
+    }
+
+    public static void stopRequest(){
+        mInstance.stopAllRequest();
+    }
+
+
+    public synchronized static OkHttpUtils getmInstance() {
         if (mInstance == null) {
             mInstance = new OkHttpUtils();
         }
@@ -56,10 +64,16 @@ public class OkHttpUtils {
     }
 
 
-
     private void getRequest(String url, final ResultCallback callback) {
-        final Request request = new Request.Builder().url(url).build();
-        deliveryResult(callback, request);
+        try {
+            final Request request = new Request.Builder().url(url).build();
+            deliveryResult(callback, request);
+
+        } catch (Exception e) {
+            Log.d(TAG, "xyz  getRequest: 输出错误: " + e);
+            e.printStackTrace();
+            sendFailCallback(callback, e);
+        }
     }
 
     private void postRequest(String url, final ResultCallback callback, List<Param> params) {
@@ -129,8 +143,9 @@ public class OkHttpUtils {
 
     /**
      * get请求
-     * @param url  请求url
-     * @param callback  请求回调
+     *
+     * @param url      请求url
+     * @param callback 请求回调
      */
     public static void get(String url, ResultCallback callback) {
         getmInstance().getRequest(url, callback);
@@ -138,9 +153,10 @@ public class OkHttpUtils {
 
     /**
      * post请求
-     * @param url       请求url
-     * @param callback  请求回调
-     * @param params    请求参数
+     *
+     * @param url      请求url
+     * @param callback 请求回调
+     * @param params   请求参数
      */
     public static void post(String url, final ResultCallback callback, List<Param> params) {
         getmInstance().postRequest(url, callback, params);
@@ -148,13 +164,14 @@ public class OkHttpUtils {
 
     /**
      * http请求回调类,回调方法在UI线程中执行
+     *
      * @param <T>
      */
     public static abstract class ResultCallback<T> {
 
         Type mType;
 
-        public ResultCallback(){
+        public ResultCallback() {
             mType = getSuperclassTypeParameter(getClass());
         }
 
@@ -169,12 +186,14 @@ public class OkHttpUtils {
 
         /**
          * 请求成功回调
+         *
          * @param response
          */
         public abstract void onSuccess(T response);
 
         /**
          * 请求失败回调
+         *
          * @param e
          */
         public abstract void onFailure(Exception e);

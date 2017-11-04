@@ -1,9 +1,10 @@
 package com.benjious.pdacontrol.activity;
 
-import android.app.Dialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,13 +24,13 @@ import butterknife.OnClick;
  */
 
 public class NetworkActivity extends AppCompatActivity implements OnNetworkModityListener {
-    @Bind(R.id.ip_address)
+    @Bind(R.id.port)
     TextView mIpAddress;
-    @Bind(R.id.service_name)
+    @Bind(R.id.product_id)
     TextView mServiceName;
-    @Bind(R.id.ip_edit)
+    @Bind(R.id.port_edit)
     EditText mIpEdit;
-    @Bind(R.id.service_name_edit)
+    @Bind(R.id.prodcut_id_edit)
     EditText mServiceNameEdit;
     @Bind(R.id.save_setting)
     Button mSaveSetting;
@@ -40,24 +41,31 @@ public class NetworkActivity extends AppCompatActivity implements OnNetworkModit
 
     private String ip_adress;
     private String service_name;
+    private SharedPreferences mPreferences;
+    private  SharedPreferences.Editor editor;
 
+    public static final String TAG="NetworkActivity xyz =";
     private final String matchStr = "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d[1-9])\\."
-            + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d[1-9])\\."
-            + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d[1-9])\\."
-            + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d[1-9])$";
+            + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
+            + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
+            + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d):"
+            +"\\d+$";
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.network_setting);
         ButterKnife.bind(this);
-
+        mPreferences = getSharedPreferences("test", MODE_PRIVATE);
     }
 
     @OnClick({R.id.save_setting, R.id.backBtn})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.save_setting:
+                editor =mPreferences.edit();
                 saveSetting();
                 break;
             case R.id.backBtn:
@@ -72,24 +80,27 @@ public class NetworkActivity extends AppCompatActivity implements OnNetworkModit
         if (ip_adress.equals("") && service_name.equals("")) {
             Toast.makeText(this, "请填写IP地址或服务器名字", Toast.LENGTH_SHORT).show();
         } else {
-            if ((!ip_adress.equals("")) && (!mServiceNameEdit.equals(""))) {
+            if ((!ip_adress.equals("")) && (!service_name.equals(""))) {
                 //同时修改
                 if (checkIP(ip_adress)) {
-                    Url.IP=ip_adress;
-                    Url.SERVICE_NAME=mServiceNameEdit.getText().toString();
+//                    ip_adress=
+                    editor.putString(Url.IP_ADDRESS, ip_adress);
+                    editor.putString(Url.SERVICE_NAME1,service_name);
+                    editor.commit();
+                    Log.d(TAG, "xyz  saveSetting: 查看地址: "+ mPreferences.getString("IP_ADDRESS",""));
                     Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
-
                 } else {
                     Toast.makeText(this, "IP地址输入有误", Toast.LENGTH_SHORT).show();
                 }
             } else if (ip_adress.equals("")) {
                 //修改服务器
-                Url.SERVICE_NAME=mServiceNameEdit.getText().toString();
+                editor.putString(Url.SERVICE_NAME1,service_name);
                 Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
+
             } else {
                 //修改IP
                 if (checkIP(ip_adress)) {
-                    Url.IP=ip_adress;
+                    editor.putString(Url.IP_ADDRESS, ip_adress);
                     Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, "IP地址输入有误", Toast.LENGTH_SHORT).show();

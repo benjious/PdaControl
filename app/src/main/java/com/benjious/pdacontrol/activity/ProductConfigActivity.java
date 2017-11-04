@@ -24,7 +24,7 @@ import com.benjious.pdacontrol.fragment.ProductConfirmJianFragment;
 import com.benjious.pdacontrol.interfazes.OnUpdateProductConfirm;
 import com.benjious.pdacontrol.presenter.GoodPresenterImpl;
 import com.benjious.pdacontrol.url.Url;
-import com.benjious.pdacontrol.util.FullFlagUtil;
+import com.benjious.pdacontrol.util.CheckboxUtil;
 import com.benjious.pdacontrol.util.OkHttpUtils;
 import com.benjious.pdacontrol.view.CommonView;
 import com.google.gson.Gson;
@@ -58,13 +58,13 @@ import static com.benjious.pdacontrol.activity.ProductReadyActivity.USER_SEND;
  */
 
 public class ProductConfigActivity extends BaseActivity implements CommonView, OnUpdateProductConfirm {
-    @Bind(R.id.ip_address)
+    @Bind(R.id.port)
     TextView mPortId;
-    @Bind(R.id.ip_edit)
+    @Bind(R.id.port_edit)
     EditText mPortIdEdit;
-    @Bind(R.id.service_name)
+    @Bind(R.id.product_id)
     TextView mPalletId;
-    @Bind(R.id.service_name_edit)
+    @Bind(R.id.prodcut_id_edit)
     EditText mPalletIdEdit;
     @Bind(R.id.find_product_btn)
     Button mFindProductBtn;
@@ -92,7 +92,6 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
     private User mUser;
     private TableView<ProductConfirmBeen> mProductTableView;
     private int out_store_num;
-    private ProcessDialogFragment fragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,22 +103,31 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
         mUser = (User) intent.getSerializableExtra(LoginActivity.USER);
         kind = intent.getIntExtra(LoginActivity.KIND, 0);
         mAddProduct.setEnabled(false);
-        fragment = new ProcessDialogFragment();
 
+        mProductTableView = (TableView<ProductConfirmBeen>) findViewById(R.id.product_tableView);
+        TableColumnWeightModel columnWeightModel = new TableColumnWeightModel(4);
+        columnWeightModel.setColumnWeight(1, 1);
+        columnWeightModel.setColumnWeight(2, 1);
+        columnWeightModel.setColumnWeight(3, 1);
+        columnWeightModel.setColumnWeight(4, 1);
+        mProductTableView.setColumnModel(columnWeightModel);
         if (kind==2) {
             this.setTitle("补料确认界面");
+            mProductTableView.setHeaderAdapter(new SimpleTableHeaderAdapter(this, BU_HEAD));
+        }else {
+            mProductTableView.setHeaderAdapter(new SimpleTableHeaderAdapter(this, JIAN_HEAD));
         }
     }
 
 
     @Override
-    public void showProgress() {
-        fragment.show(getFragmentManager(), "进度框");
+    public void beforeRequest() {
+        showProgress();
     }
 
     @Override
-    public void hideProgress() {
-        fragment.dismiss();
+    public void finishRequest() {
+        hideProgress();
     }
 
     @Override
@@ -162,7 +170,7 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
                         GoodPresenterImpl updateImpl = new GoodPresenterImpl(this);
                         updateImpl.loadData(url, GoodPresenterImpl.UPDATE_STOCK_DETAIL);
                     } else {
-                        hideProgress();
+                        finishRequest();
                         super.showToast("更新stock失败!!!");
                     }
 
@@ -177,7 +185,7 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
                     } else {
                         super.showToast("更新失败!!!");
                     }
-                    hideProgress();
+                    finishRequest();
                 }
 
                 if (CHECK_FINISHED.get() == 2) {
@@ -194,13 +202,13 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
                         mPalletIdEdit.getText().clear();
                     }
                     CHECK_FINISHED.set(0);
-                    hideProgress();
+                    finishRequest();
                 }
             }
         } catch (Exception e) {
             CHECK_FINISHED.set(0);
             mFindProductBtn.setEnabled(true);
-            hideProgress();
+            finishRequest();
             e.printStackTrace();
             Log.d(TAG, "xyz  addData: 出现的错误 " + e);
             super.showToast("解析出现错误!!" + e);
@@ -210,7 +218,7 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
 
     @Override
     public void loadExecption(Exception e) {
-        hideProgress();
+        finishRequest();
         mFindProductBtn.setEnabled(true);
         super.showToast("请求过程中出现异常！！" + e);
 
@@ -218,7 +226,7 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
 
     @Override
     public void showLoadFail(int failNum) {
-        hideProgress();
+        finishRequest();
         mFindProductBtn.setEnabled(true);
         if (failNum == OkHttpUtils.SERVER_OFFLINE) {
             Toast.makeText(this, "请求服务器出现错误！！", Toast.LENGTH_SHORT).show();
@@ -272,8 +280,8 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
         pallet_id = mPalletIdEdit.getText().toString();
         if ((!p_code.equals("")) && (!pallet_id.equals(""))) {
 //          进行数据库查询
-            showProgress();
-            mFindProductBtn.setEnabled(false);
+            beforeRequest();
+           // mFindProductBtn.setEnabled(false);
             String checkPalletUrl = Url.PATH + "/CheckPallet?pallet_id=" + pallet_id + "&status=" + 1;
             Log.d(TAG, "xyz url " + checkPalletUrl);
             GoodPresenterImpl mPresenter = new GoodPresenterImpl(this);
@@ -306,7 +314,7 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
             been.setProduct_unit(picking.get_uOM());
             mProductConfirmBeens.add(been);
         }
-        hideProgress();
+        finishRequest();
         setTableView();
         tableviewFresh();
 //        mFindProductBtn.setEnabled(false);
@@ -315,22 +323,10 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
     }
 
     private void setTableView() {
-        mProductTableView = (TableView<ProductConfirmBeen>) findViewById(R.id.product_tableView);
         adapter = new ProductConfirmBeenAdapter(this, mProductConfirmBeens);
         mProductTableView.addDataClickListener(new ProductConfirmlistener());
         mProductTableView.setDataAdapter(adapter);
 
-        TableColumnWeightModel columnWeightModel = new TableColumnWeightModel(4);
-        columnWeightModel.setColumnWeight(1, 1);
-        columnWeightModel.setColumnWeight(2, 1);
-        columnWeightModel.setColumnWeight(3, 1);
-        columnWeightModel.setColumnWeight(4, 1);
-        mProductTableView.setColumnModel(columnWeightModel);
-        if (kind == 2) {
-            mProductTableView.setHeaderAdapter(new SimpleTableHeaderAdapter(this, BU_HEAD));
-        } else {
-            mProductTableView.setHeaderAdapter(new SimpleTableHeaderAdapter(this, JIAN_HEAD));
-        }
     }
 
 
@@ -340,14 +336,14 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
 
     @Override
     public void updateProductConfirm(int num, boolean isChecked) {
-        showProgress();
+        beforeRequest();
         out_store_num = num;
         if (kind == 1) {
             mPicking.set_oUT_QTY(num);
         } else if (kind == 2) {
             mPicking.set_oUT_QTY(mPicking.get_oUT_QTY() - num);
         }
-        String url = String.format(Url.PATH + "/UpdateStock?Last_update_by=%s&Stock_oid=%s&Full_Flag=%s", mUser.get_userID(), mPicking.get_sTOCK_OID(), FullFlagUtil.convert(isChecked));
+        String url = String.format(Url.PATH + "/UpdateStock?Last_update_by=%s&Stock_oid=%s&Full_Flag=%s", mUser.get_userID(), mPicking.get_sTOCK_OID(), CheckboxUtil.convert(isChecked));
         Log.d(TAG, "xyz  updateProductConfirm: upateStock_url : " + url);
         GoodPresenterImpl updateConfirm = new GoodPresenterImpl(this);
         updateConfirm.loadData(url, GoodPresenterImpl.UPDATE_STOCK);
@@ -396,7 +392,7 @@ public class ProductConfigActivity extends BaseActivity implements CommonView, O
         @Override
         public void onDataClicked(int rowIndex, ProductConfirmBeen clickedData) {
             rowNowIndex = rowIndex;
-            showProgress();
+            beforeRequest();
             mPicking.set_oID(mPickings.get(rowNowIndex).get_oID());
             mPicking.set_sTOCK_OID(mPickings.get(rowNowIndex).get_sTOCK_OID());
             mPicking.set_oUT_QTY(mPickings.get(rowNowIndex).get_oUT_QTY());

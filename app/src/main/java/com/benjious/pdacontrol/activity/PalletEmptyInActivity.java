@@ -29,35 +29,33 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static android.icu.text.DateTimePatternGenerator.PatternInfo.OK;
 import static com.benjious.pdacontrol.util.OkHttpUtils.SERVER_OFFLINE;
 
 /**
  * Created by Benjious on 2017/11/1.
  * 这里有个bug就是: spinner 在选择的同时,此时有可能空的库位在操作,有可能在进行库位操作时会不一致
- *
- *
  */
 
 public class PalletEmptyInActivity extends BaseActivity implements CommonView {
 
     private static final AtomicInteger CHECK_FINISHED_PM = new AtomicInteger();
 
-    @Bind(R.id.ip_address)
+    @Bind(R.id.port)
     TextView mPortId;
-    @Bind(R.id.service_name)
+    @Bind(R.id.product_id)
     TextView mPalletId;
     @Bind(R.id.inStorePoint)
     TextView mInStorePoint;
-    @Bind(R.id.ip_edit)
+    @Bind(R.id.port_edit)
     EditText mPortIdEdit;
-    @Bind(R.id.service_name_edit)
+    @Bind(R.id.prodcut_id_edit)
     EditText mPalletIdEdit;
     @Bind(R.id.spinner)
     Spinner mSpinner;
@@ -65,7 +63,6 @@ public class PalletEmptyInActivity extends BaseActivity implements CommonView {
     Button mInstoreBtn;
     @Bind(R.id.backBtn)
     Button mBackBtn;
-    private ProcessDialogFragment mFragment;
     private String port_id;
     private String pallet_id;
     public static final String TAG = "PalletEmptyInActivity ";
@@ -84,20 +81,19 @@ public class PalletEmptyInActivity extends BaseActivity implements CommonView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pallet_empty_in);
         ButterKnife.bind(this);
-        mFragment = new ProcessDialogFragment();
 
         Intent intent = getIntent();
         mUser = (User) intent.getSerializableExtra(LoginActivity.USER);
 
-        mBaseAdapter = new BinstaAdapter(mBinstas,this);
-        showProgress();
+        mBaseAdapter = new BinstaAdapter(mBinstas, this);
+
+        beforeRequest();
         //这里还有个定时器获取空位
         GoodPresenterImpl binstaImpl = new GoodPresenterImpl(this);
         String url = Url.PATH + "/GetBinstas";
         binstaImpl.loadData(url, GoodPresenterImpl.GET_BINSTA);
 
     }
-
 
 
     private void setSpinnerContent(List<Binsta> binstas) {
@@ -119,9 +115,13 @@ public class PalletEmptyInActivity extends BaseActivity implements CommonView {
             if (usersALL == null) {
                 showLoadFail(OkHttpUtils.NO_REAL_DATA);
             } else {
-                if (type==GoodPresenterImpl.GET_BINSTA) {
+                if (type == GoodPresenterImpl.GET_BINSTA) {
                     mBinstas = usersALL.getBinstas();
-                    setSpinnerContent(mBinstas);
+                    if (mBinstas == null) {
+                        showLoadFail(OkHttpUtils.SERVER_OFFLINE);
+                    } else {
+                        setSpinnerContent(mBinstas);
+                    }
                 }
 
 
@@ -149,7 +149,7 @@ public class PalletEmptyInActivity extends BaseActivity implements CommonView {
                         String url = Url.PATH + "/GetBinstas";
                         binstaImpl.loadData(url, GoodPresenterImpl.GET_BINSTA);
                     }
-                    hideProgress();
+                    finishRequest();
                 }
 
                 if (type == GoodPresenterImpl.INSERT_STACKINGITEM) {
@@ -215,13 +215,13 @@ public class PalletEmptyInActivity extends BaseActivity implements CommonView {
                         Log.d(TAG, "xyz  addData: 准备执行第三个");
                     } else if (!checkPort) {
                         super.showToast("入库站口不存在,请重新输入!");
-                        hideProgress();
+                        finishRequest();
                         mPortIdEdit.setText("");
                         CHECK_FINISHED_PM.set(0);
                     } else if (checkPallet != 1) {
                         super.showToast("托盘编号不存在,请重新输入!");
                         mPalletIdEdit.setText("");
-                        hideProgress();
+                        finishRequest();
                         CHECK_FINISHED_PM.set(0);
                     } else {
                         // super.showToast("怎么会是这里");
@@ -238,7 +238,7 @@ public class PalletEmptyInActivity extends BaseActivity implements CommonView {
 
                     } else if (checkPallet == 1) {
                         super.showToast("该任务已经存在,请勿重复插入");
-                        hideProgress();
+                        finishRequest();
                     } else {
                         super.showToast("请求的数据有问题");
                     }
@@ -247,19 +247,19 @@ public class PalletEmptyInActivity extends BaseActivity implements CommonView {
 
         } catch (Exception e) {
             CHECK_FINISHED_PM.set(0);
-            hideProgress();
+            finishRequest();
             e.printStackTrace();
             Log.d(TAG, "xyz  addData: 解析出现错误!!" + e);
             super.showToast("解析出现错误!!");
         } finally {
-            hideProgress();
+            finishRequest();
         }
     }
 
     private void inTostore() {
-        if (!mSpinner.getSelectedItem().toString().equals("")) {
+        if (mBinstas!=null) {
             if ((!mPortIdEdit.getText().toString().equals("")) && (!mPalletIdEdit.getText().toString().equals(""))) {
-                showProgress();
+                beforeRequest();
                 port_id = mPortIdEdit.getText().toString();
                 pallet_id = mPalletIdEdit.getText().toString();
 
@@ -282,7 +282,7 @@ public class PalletEmptyInActivity extends BaseActivity implements CommonView {
 
     @Override
     public void loadExecption(Exception e) {
-        hideProgress();
+        finishRequest();
         mInstoreBtn.setEnabled(true);
         super.showToast("请求过程中出现异常！！" + e);
 
@@ -311,13 +311,13 @@ public class PalletEmptyInActivity extends BaseActivity implements CommonView {
 
 
     @Override
-    public void showProgress() {
-        mFragment.show(getFragmentManager(), "进度框");
+    public void beforeRequest() {
+        showProgress();
     }
 
     @Override
-    public void hideProgress() {
-        mFragment.dismiss();
+    public void finishRequest() {
+        hideProgress();
     }
 
 }
